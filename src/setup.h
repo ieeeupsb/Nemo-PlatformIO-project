@@ -19,3 +19,5 @@
 
 #define SONAR_TRIG D4
 #define SONAR_ECHO D19
+
+#define BUZZER_PIN D35

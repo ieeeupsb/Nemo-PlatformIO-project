@@ -2,7 +2,6 @@
 
 #include "setup.h"
 #include "Arduino.h"
-#include "QTRSensors.h"
 
 
 void sonar_setup() {

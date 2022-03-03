@@ -1,30 +1,49 @@
 #include <Arduino.h>
 #include "sonar/sonar.h"
+#include "udp_client/udp_client.h"
+#include "music/music.h"
+#include "setup.h"
+
+char color_code[4] = {};
 
 void setup() {
   Serial.begin(9600);
-  sonar_setup();
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-
-void loop() {
-  // put your main code here, to run repeatedly:
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
   
-  float d = distance();
+  delay(1000);
+  Serial.print("Hello Esp32! \n");
+  udp_setup();
+  sonar_setup();
 
-  Serial.print("Distancia = ");
-  if (d >= 400 || d <= 2.5) {
-    Serial.println("Fora de alcance");
-    delay(500);
-    }
-  else {
-    Serial.print(d);
-    Serial.println(" cm");
-    delay(25);
-    }
-   Serial.println(MAXTIME);
+  Serial.println("Waiting for color code...");
+  do {
+    recieve_color_code(color_code);
+  } while(color_code[0] == '\0');
+  digitalWrite(13, HIGH);
+  zelda_link_to_the_past_secret(BUZZER_PIN);
+
+  Serial.println(color_code[0]);
+  Serial.println(color_code[1]);
+  Serial.println(color_code[2]);
+  Serial.println(color_code[3]);
+} 
+#define BUZZER_CHANNEL 0
+void loop() { 
+ledcAttachPin(BUZZER_PIN, BUZZER_CHANNEL);
+  ledcWriteNote(BUZZER_CHANNEL, NOTE_C, 4);
+  delay(500);
+  ledcWriteNote(BUZZER_CHANNEL, NOTE_D, 4);
+  delay(500);
+  ledcWriteNote(BUZZER_CHANNEL, NOTE_E, 4);
+  delay(500);
+  ledcWriteNote(BUZZER_CHANNEL, NOTE_F, 4);
+  delay(500);
+  ledcWriteNote(BUZZER_CHANNEL, NOTE_G, 4);
+  delay(500);
+  ledcWriteNote(BUZZER_CHANNEL, NOTE_A, 4);
+  delay(500);
+  ledcWriteNote(BUZZER_CHANNEL, NOTE_B, 4);
+  delay(500);
+  ledcDetachPin(BUZZER_PIN);
 }
