@@ -1,0 +1,1005 @@
+﻿/*
+	Canvas by TEMPLATE STOCK
+	templatestock.co @templatestock
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+*/
+
+
+ /*!
+ * nav
+ * Header
+ * about
+ * how it works
+ * resposive
+ * price
+ * contact
+
+ */
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    font-family: "Open Sans",sans-serif;
+    font-size:14px;
+}
+
+a {
+    transition: all 0.35s ease 0s;
+    -webkit-transition: all 0.35s ease 0s;
+     -moz-transition: all 0.35s ease 0s;
+}
+#loading {
+    background-image: url("../img/preloader.GIF");
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 200px;
+    left: 50%;
+    margin: -100px 0 0 -100px;
+    position: absolute;
+    top: 50%;
+    width: 200px;
+}
+#preloader {
+    background: #fff none repeat scroll 0 0;
+    bottom: 0;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    z-index: 9999;
+}
+.parallax {
+  background-attachment: fixed !important;
+  background-position: 50% 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  overflow: hidden;
+  position: relative;
+}
+.headding
+{
+    text-align:center;
+}
+.headding p {
+    margin-bottom: 30px;
+    padding: 20px 100px;
+}
+.headding h1 {
+    font-size: 42px !important;	
+}
+.headding h2
+{
+    color:#ff4c00;
+    margin-bottom:20px;
+    position:relative;
+	font-family: "Oswald";
+}
+.headding h2 span
+{
+    color:#000;
+}
+
+.headding h2::before {
+    background: #555 none repeat scroll 0 0;
+    content: "";
+    height: 1px;
+    left: 47%;
+    position: absolute;
+    top: 41px;
+    width: 82px;
+}
+.iconfont {
+    background: #fff none repeat scroll 0 0;
+    border: 1px solid #fff;
+    border-radius: 47%;
+    box-shadow: 6px 2px 5px #eee;
+    color: #ff4c00;
+    float: right;
+    font-size: 28px;
+    height: 55px;
+    margin-top: 45px;
+    padding: 12px;
+    text-align: center;
+    width: 55px;
+}
+.iconfont2 {
+   background: #fff none repeat scroll 0 0;
+    border: 1px solid #fff;
+    border-radius: 47%;
+    box-shadow: -6px 2px 5px #eee;
+    color: #ff4c00;
+    float: left;
+    font-size: 28px;
+    height: 55px;
+    margin-top: 92px;
+    padding: 12px;
+    text-align: center;
+    width: 55px;
+}
+.textright
+{
+    text-align:right;
+    margin-top:35px;
+    margin-bottom:35px;
+}
+.textleft
+{
+    text-align:left;
+    margin-top:85px;
+}
+.textcenter
+{
+    text-align:center;
+}
+.angle::before {
+    border-bottom: 72px solid #333;
+    border-right: 960px solid transparent;
+    left: 0;
+}
+.angle::before, .angle::after {
+    bottom: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle::after {
+    border-bottom: 72px solid #333;
+    border-left: 960px solid transparent;
+    right: 0;
+}
+.angle2::before {
+    border-top: 72px solid #333;
+    border-right: 960px solid transparent;
+    left: 0;
+}
+.angle2::before, .angle2::after {
+    top: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle2::after {
+    border-top: 72px solid #333;
+    border-left: 960px solid transparent;
+    right: 0;
+}
+    #owl-demo .item{
+        margin: 3px;
+    }
+    #owl-demo .item img{
+        display: block;
+        width: 100%;
+        height: auto;
+    }
+a {
+    color: #ff4c00;
+    text-decoration: none;
+}
+a:hover {
+    color: #ddd;
+    text-decoration: none;
+}
+
+/*-------- nav css --------------*/
+
+.navbar-brand > img {
+    height: 50px;
+    transition: all 0.35s ease 0s; 
+    -webkit-transition: all 0.35s ease 0s;
+     -moz-transition: all 0.35s ease 0s;
+}
+.navbar-brand {
+    float: left;
+    font-size: 18px;
+    height: 50px;
+    line-height: 20px;
+    padding: 0;
+}
+.navbar-default {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: medium none;
+    transition: all 0.35s ease 0s;
+    -webkit-transition: all 0.35s ease 0s;
+     -moz-transition: all 0.35s ease 0s;
+}
+
+nav.affix {
+    background: #333;
+    padding:5px 0;
+}
+nav.affix img {
+    height: 38px;
+    margin-top: 5px;
+   transition: all 0.35s ease 0s;
+    -webkit-transition: all 0.35s ease 0s;
+     -moz-transition: all 0.35s ease 0s;
+}
+nav.affix-top {
+   padding: 15px 0;
+}
+.navbar-default {
+   font-family: 'Open Sans', sans-serif;
+}
+.navbar-default .navbar-nav > li > a {
+    color: #fff;
+    font-size:16px;
+    text-align:center;
+    border-radius: 5px;    
+      -webkit-border-radius: 5px;
+      -moz-border-radius: 5px;
+}
+.navbar-default .navbar-nav > li > a:focus, 
+.navbar-default .navbar-nav > li > a:hover {
+    background-color: transparent;
+     background-color: #ff4c00;
+      border-radius: 10px;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+    color: #fff;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
+    background-color: #ff4c00;   
+       border-radius: 10px;
+      -webkit-border-radius: 10px;
+      -moz-border-radius: 10px;
+    color: #fff;
+}
+
+/*-------- header css --------------*/
+
+header {
+    background:url("../img/bg_slilder-1.jpg") ;
+    background-attachment:fixed;
+    background-size:cover;
+    height: 670px;
+    color: #fff;
+    transition: all 0.35s ease 0s;
+    -webkit-transition: all 0.35s ease 0s;
+     -moz-transition: all 0.35s ease 0s;
+overflow:hidden;	 
+}
+header .header-content {
+   margin-top: 220px;
+}
+.header-content img {
+    width: 100%;
+      z-index: 999;
+      position:relative;
+}
+.header-content h2 {
+    font-size: 44px;
+    margin-bottom: 28px;
+	font-family: "Oswald";
+}
+.header-content h3 {
+    margin-bottom: 28px;
+    color: #ff4c00;
+	font-family: "Oswald";
+}
+.header-content p {
+    color: #ddd;
+    font-size: 16px;
+    margin-bottom: 28px;
+	font-family: "Oswald";
+}
+.header-content .btn-ornge {
+    background: #ff4c00 none repeat scroll 0 0;
+    border: medium none;
+    border-radius: 20px;
+    font-weight:bold;
+    padding-top:0;
+    padding-bottom:0;
+    padding-right:0;
+    padding-left:28px;
+    position:relative;    
+    transition: all .5s ease-in-out 0s;
+    -webkit-transition: all .5s ease-in-out 0s;
+     -moz-transition: all .5s ease-in-out 0s;
+}
+.btn-ornge span {
+    position: relative;
+}
+.header-content .btn-ornge:hover {
+    background: #fff none repeat scroll 0 0;
+    color:#ff4c00;   
+}
+.btn-ornge .fa-cloud-download {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 20px;
+    color: #000;
+    margin-left: 13px;
+    margin-right: -24px;
+    padding: 22px;
+    position: relative;
+    z-index: 99;
+}
+.btn-ornge .hbtn {  
+    border-radius: 20px;
+    display: inline-block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    width: 0;
+     transition: all .3s ease 0s;
+    -webkit-transition: all .3s easen 0s;
+     -moz-transition: all .3s ease 0s;
+}
+.btn-ornge:hover .hbtn {
+    background: #fff none repeat scroll 0 0;   
+    width: 100%;    
+}
+
+/*-------- about css --------------*/
+#about {
+	background-color: #E2E1E1;
+    background-size:10%;
+    position:relative;
+    padding: 120px 0;
+    width: 100%;   
+	overflow:hidden;
+}
+#about::before {
+    background:rgba(255, 255, 255, 0.5);
+    content:"";
+    height: 10%;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
+#about h1 {
+    font-size: 42px !important;
+	font-family: "Oswald";
+}
+#about h1 span 
+{
+    color:#ff4c00;
+}
+
+/*-------- how it works css --------------*/
+#how-it-works {
+    padding: 120px 0 0;  
+     width: 100%;   
+}
+#how-it-works::before {
+    background:rgba(255, 255, 255, 0.5);
+    content:"";
+    height: 10%;
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
+
+#how-it-works h1 span 
+{
+    color:#ff4c00;
+}
+/*-------- Screenshots --------------*/
+#Screenshots {
+    padding: 120px 0 0;  
+     width: 100%;   
+     position:relative;
+     background: linen none repeat scroll 0 0;
+}
+/*-------- contact --------------*/
+#contact {
+    background: #333 none repeat scroll 0 0;
+    color: #fff;
+    padding: 60px 0 0px;
+    position: relative;
+    width: 100%;
+}
+#contact .btn-block {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: 1px solid;
+    border-radius: 3px;
+    display: block;
+	margin-bottom: 50px;
+    width: 150px;
+     transition: all .3s ease 0s;
+    -webkit-transition: all .3s easen 0s;
+     -moz-transition: all .3s ease 0s;
+}
+#contact iframe {
+    transform: skewY(5.5deg);
+	-webkit-transform: skewY(5.5deg);
+	 -moz-transform: skewY(5.5deg);
+}
+#contact .btn-block:hover {
+    background: orangered none repeat scroll 0 0;
+     border: 1px solid #666;
+     color:#fff;
+      transition: all .3s ease 0s;
+    -webkit-transition: all .3s easen 0s;
+     -moz-transition: all .3s ease 0s;
+}
+#contact .form-control {
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #666;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+    color: #555;
+    display: block;
+    font-size: 14px;
+    height: 57px;
+    line-height: 1.42857;
+    padding: 10px 12px;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    width: 100%;
+}
+#contact .headding h2 span {
+    color: #fff;
+}
+#contact .map
+{
+height:272px;
+}
+
+/*-------- footer --------------*/
+#footer {
+    background: #333 none repeat scroll 0 0;
+    color: #fff;
+    padding: 60px 0 120px;
+    position: relative;
+    width: 100%;  
+    text-align: center;
+}
+#footer .social-links {
+    border-bottom: 2px dashed #444;
+    border-top: 2px dashed #444;
+    list-style: outside none none;
+    margin: 0 0 20px;
+    padding: 35px 0;
+  
+}
+#footer .social-links li {
+    display: inline-block;
+    margin: 5px;
+}
+#footer .social-links a {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    color: rgba(255, 255, 255, 0.2);
+    display: block;
+    font-size: 14px;
+    height: 36px;
+    line-height: 35px;
+    text-align: center;
+    width: 36px;
+}
+#footer .social-links a:hover {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/*-------- price --------------*/
+#Price
+{
+     padding: 120px 0 ;  
+     width: 100%;   
+     position:relative;
+}
+.price-wrapper .price-title {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border-color: #ededed #ededed #ededed;
+    border-image: none;
+    border-style: solid solid none;
+    border-width: 1px 1px medium;
+    font-weight: normal;
+    line-height: 0;
+    margin: 0;
+    padding: 1.3em 1em;
+    text-align: center;
+      box-shadow: 0 -2px 2px #F5F5F5;
+    -webket-box-shadow: 0 -2px 2px #F5F5F5;
+     -moz-box-shadow: 0 -2px 2px #F5F5F5;
+	 font-family: "Oswald";
+}
+.price-wrapper .value-box {
+    background: #f5f5f5 none repeat scroll 0 0;
+    color: #434343;
+    cursor: default;
+    height: 200px;
+    line-height: 200px;
+    text-align: center;
+}
+.price-wrapper .value-box .value-box-content {
+    display: inline-block;
+    line-height: 1;
+    vertical-align: bottom;
+}
+.price-wrapper .value-box .value {
+    display: inline-block;
+    font-size: 60px;
+    line-height: 38px;
+    position: relative;
+    vertical-align: top;
+	font-family: "Oswald";
+}
+.price-wrapper .value-box .meta {
+    background: #ddd none repeat scroll 0 0;
+    border-radius: 0;
+    color: #afdcd3;
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    height: auto;
+    letter-spacing: 1px;
+    line-height: 1em;
+    margin: 50px auto 0;
+    padding: 0.8em 0.5em;
+    text-transform: uppercase;
+}
+
+.price-wrapper .price .content-box { 
+    border-color: #ededed;
+    border-image: none;
+    border-style: solid;
+    border-width: 0 1px;
+    color: #6e6e6e;
+    padding: 15px 30px;
+}
+.price-wrapper .price .content-box ul {
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+}
+.price-wrapper .price .content-box ul li {
+    border-bottom: 1px solid #ededed;
+    color: #2b2f34;
+    line-height: 1em;
+    padding: 18px 0;
+    text-align: center;
+}
+.price-wrapper .price .sign-box {   
+    border-color: #ededed #ededed #ededed;
+    border-image: none;
+    border-style: none solid solid;
+    border-width: 0 1px 1px;
+    padding: 10px 10px 25px;
+    text-align: center;
+    box-shadow: 0 2px 2px #ddd;
+    -webket-box-shadow: 0 2px 2px #ddd;
+     -moz-box-shadow: 0 2px 2px #ddd;
+}
+.sign-box a {
+    border: 1px solid;
+    border-radius: 3px;
+    color: #ff4c00;
+    padding: 10px 0;
+    text-decoration: none;
+    position:relative;
+}
+.sign-box a::after {
+    background: #fff none repeat scroll 0 0;
+    bottom: 0;
+    content: "";
+    height: 0;
+    left: 0;
+    position: absolute;
+    transition: all 0.3s ease 0s;
+    width: 110px;
+    z-index: -1;
+}
+.sign-box a:hover::after {
+    background: #ff4c00 none repeat scroll 0 0;
+    bottom: 0;
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    color:#fff;
+    transition: all 0.3s ease 0s;
+    width: 110px;
+    z-index: -1;
+}
+.sign-box a span
+{
+    position:relative;
+    z-index:999;
+    padding: 10px 30px;
+    width:100%;
+}
+.sign-box a span:hover
+{
+    color:#fff;
+}
+
+.price-wrapper .value-box .month {
+    background: #ff4c00 none repeat scroll 0 0;
+    border-radius: 0;
+    color: #fff;
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    height: auto;
+    letter-spacing: 1px;
+    line-height: 1em;
+    margin: 50px auto 0;
+    padding: 0.8em 0.5em;
+    text-transform: uppercase;
+}
+.standard .value-box {
+    background: #FFC440 none repeat scroll 0 0;
+    position: relative;
+}
+.standard .value-box::before {
+    color: #ddd;
+    font-size: 34px;
+    font-style: normal;
+    left: 50%;
+    line-height: normal;
+    margin-left: -17px;
+    position: absolute;
+    top: 25px;
+    z-index: 1;
+}
+.price-wrapper {
+    margin-bottom: 50px;
+}
+
+/*-------- popup css --------------*/
+.imghover
+{
+    position:relative;
+}
+.hover-bg {
+    content: "";
+    cursor: pointer;
+    height: 100%;
+    left: 0;
+    opacity: 0;
+    position: absolute;
+    text-align: center;
+    top: 0;
+    transition: all 0.3s ease 0s;
+    vertical-align: middle;
+    width: 100%;
+}
+.hover-bg:hover {
+    background: rgba(34, 34, 34, 0.7);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transition: all 0.3s ease 0s;
+    width: 100%;
+    opacity: 1;
+}
+.hover-bg:hover .camera {
+    color: #fff;
+    font-size: 50px;
+    padding: 70% 0 0;
+	transition: all 0.3s ease 0s;
+}
+.hover-bg:hover.camera::before {
+    color: #fff;
+    font-size: 50px;
+    padding: 70% 0 0;
+	transition: all 0.3s ease 0s;
+	-webkit-transform: scale(0,1);
+	transform: scale(0,1);
+}
+.hover-bg:hover .camera::after {
+    color: #fff;
+    font-size: 50px;
+    padding: 70% 0 0;
+	transition: all 0.3s ease 0s;
+	-webkit-transform: scale(1,0);
+	transform: scale(1,0);
+}
+
+/*-------- resposive css --------------*/
+
+@media (min-width:320px) and (max-width:680px) 
+{
+    header {  
+    height: 674px;
+}
+ header .header-content {
+    margin-top: 97px;
+    text-align: center;
+    height:300px;
+}
+.header-content h2 {
+    font-size: 22px;
+    margin-bottom: 22px;
+}
+.header-content h3 {
+    color: #ff4c00;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+.header-content p {
+    color: #ddd;
+    font-size: 13px;
+    margin-bottom: 28px;
+}
+.header-content img {
+    position: relative;
+    width: 76%;
+    z-index: 999;
+}
+.headding p {
+    margin-bottom: 30px;
+    padding: 20px 0;
+}
+.navbar-collapse {
+    background: #ff4c00;
+}
+.textcenter.animated img {
+    width: 50% !important;
+}
+#about {
+    padding: 80px 0;
+}
+#how-it-works {
+    padding: 80px 0;
+}
+.angle::before {
+    border-bottom: 72px solid #333;
+    border-right: 600px solid transparent;
+    left: 0;
+}
+.angle::before, .angle::after {
+    bottom: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle::after {
+    border-bottom: 72px solid #333;
+    border-left: 600px solid transparent;
+    right: 0;
+}
+.angle2::before {
+    border-top: 72px solid #333;
+    border-right: 600px solid transparent;
+    left: 0;
+}
+.angle2::before, .angle2::after {
+    top: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle2::after {
+    border-top: 72px solid #333;
+    border-left: 600px solid transparent;
+    right: 0;
+}
+}
+@media (min-width:768px) and (max-width:1024px) {
+  header {
+        height: 530px;
+    }
+    .header-content h2 {
+    font-size: 20px;
+       margin-bottom: 11px;
+}
+.header-content h3 {  
+    font-size: 18px;
+    margin-bottom: 11px;
+}
+.header-content p {
+    color: #ddd;
+    font-size: 13px;
+    margin-bottom: 18px;
+}
+.btn-ornge .fa-cloud-download {
+    border-radius: 15px;
+     padding: 14px;
+}
+.header-content .btn-ornge {
+    border-radius: 15px;
+    padding: 0 0 0 16px;
+}
+.iconfont {
+    margin-top: 15px;
+}
+.iconfont2 {
+    margin-right: -32px;
+    margin-top: 15px;
+    float:right;
+}
+.col-xs-12.col-sm-4.col-md-4.wow.bounceIn.textcenter.animated > img {
+    width: 100%;
+}
+.textleft {
+    font-size: 12px;
+    margin-top: 0;
+    text-align: left;
+}
+.textright {
+    font-size: 12px;
+    margin-top: 0;
+    text-align: left;
+}
+.angle::before {
+    border-bottom: 30px solid #333;
+    border-right: 960px solid transparent;
+    left: 0;
+}
+.angle::before, .angle::after {
+    bottom: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle::after {
+    border-bottom: 30px solid #333;
+    border-left: 960px solid transparent;
+    right: 0;
+}
+.angle2::before {
+    border-top: 30px solid #333;
+    border-right: 960px solid transparent;
+    left: 0;
+}
+.angle2::before, .angle2::after {
+    top: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle2::after {
+    border-top: 30px solid #333;
+    border-left: 960px solid transparent;
+    right: 0;
+}
+
+}
+@media (max-width:480px) 
+{
+    header {  
+    height: 578px;
+}
+ header .header-content {
+    margin-top: 97px;
+    text-align: center;
+    height:300px;
+}
+.header-content h2 {
+    font-size: 22px;
+    margin-bottom: 22px;
+}
+.header-content h3 {
+    color: #ff4c00;
+    font-size: 15px;
+    margin-bottom: 8px;
+}
+.header-content p {
+    color: #ddd;
+    font-size: 13px;
+    margin-bottom: 28px;
+}
+.header-content img {
+    position: relative;
+    width: 76%;
+    z-index: 999;
+}
+.headding p {
+    margin-bottom: 30px;
+    padding: 20px 0;
+}
+.navbar-collapse {
+    background: #ff4c00;
+}
+.textcenter.animated img {
+    width: 50% !important;
+}
+#about {
+    padding: 80px 0;
+}
+#how-it-works {
+    padding: 80px 0;
+}
+.angle::before {
+    border-bottom: 30px solid #333;
+    border-right: 480px solid transparent;
+    left: 0;
+}
+.angle::before, .angle::after {
+    bottom: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle::after {
+    border-bottom: 30px solid #333;
+    border-left: 480px solid transparent;
+    right: 0;
+}
+.angle2::before {
+    border-top: 30px solid #333;
+    border-right: 480px solid transparent;
+    left: 0;
+}
+.angle2::before, .angle2::after {
+    top: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle2::after {
+    border-top: 30px solid #333;
+    border-left: 480px solid transparent;
+    right: 0;
+}
+}
+@media (max-width:360px) 
+{
+       header {  
+    height: 544px;
+}
+.angle::before {
+    border-bottom: 30px solid #333;
+    border-right: 320px solid transparent;
+    left: 0;
+}
+.angle::before, .angle::after {
+    bottom: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle::after {
+    border-bottom: 30px solid #333;
+    border-left: 320px solid transparent;
+    right: 0;
+}
+.angle2::before {
+    border-top: 30px solid #333;
+    border-right: 320px solid transparent;
+    left: 0;
+}
+.angle2::before, .angle2::after {
+    top: 0;
+    content: "";
+    height: 0;
+    position: absolute;
+    width: 0;
+    z-index: 4;
+}
+.angle2::after {
+    border-top: 30px solid #333;
+    border-left: 320px solid transparent;
+    right: 0;
+}
+.iconfont2 {
+    margin-top: 12px;
+}
+.textleft {
+    margin-top: 5px;
+}
+.iconfont {
+    margin-top: 12px;
+}
+.textright {
+    margin-top: 5px;
+}
+}
