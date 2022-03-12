@@ -18,7 +18,35 @@ const char * udpAddress = "192.168.1.69"; // your pc ip
 void udp_setup() {
   Serial.print("Conecting to WiFi");
   
-  WiFi.begin(ssid, password);
+  int n_networks = WiFi.scanNetworks();
+  
+  String ssid;
+   String password;
+
+  if(n_networks) {
+    bool aux_break = 0;
+    
+    for (int i = 0; i < n_networks; i++) {
+      
+      if(aux_break) break;
+      
+      Serial.println(WiFi.SSID(i));
+      for (int j = 0; j < N_NETWORKS; j++)
+        if (WiFi.SSID(i).compareTo(networks[j]) == 0 ) {
+          ssid = networks[j];  
+          password = passwords[j];
+          aux_break = 1;
+          break;
+        }
+
+    }
+  }
+  else {
+    Serial.println("Não encontrrou nenhuma rede Wifi conhecida");
+    return;
+  }
+  
+  WiFi.begin(ssid.c_str(), password.c_str());
   int retries = 0;
   while ((WiFi.status() != WL_CONNECTED) && (retries < 15)) {
     retries++;

@@ -160,29 +160,6 @@ int grafo_aresta(grafo *g, int origem, int dest)
     return 0;
 }
 
-/* imprime as listas de adjacencias do grafo */
-void grafo_imprime(grafo* g)
-{
-    int i;
-    for (i = 0; i < g->tamanho; i++)
-    {
-        lista_no* aux = g->adjacencias[i].inicio;
-        printf("%d: ", i);
-        if(aux)
-        {
-            printf("%d", aux->vertice);
-            aux = aux->proximo;
-
-            while (aux)
-            {
-                printf("->%d", aux->vertice);
-                aux = aux->proximo;
-            }
-        }
-        printf("\n");
-    }
-}
-
 int dfs_helper(grafo *g, int inicio, int fim, int profundidade, int *visitados)
 {
     int i, d;

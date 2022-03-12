@@ -17,7 +17,7 @@
 // #define DC_MOTOR_1 12
 // #define DC_MOTOR_2 12
 
-#define SONAR_TRIG D4
-#define SONAR_ECHO D19
-
-#define BUZZER_PIN D35
+#define SONAR_TRIG_1 D4
+#define SONAR_ECHO_1 D19
+#define SONAR_TRIG_2 D13
+#define SONAR_ECHO_2 D18
