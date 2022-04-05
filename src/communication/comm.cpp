@@ -1,22 +1,21 @@
-#include "udp_client.h"
+#include "comm.h"
 #include "wifi_credentials_private.h"
+#include "setup.h"
 
 //https://www.alejandrowurts.com/projects/esp32-wifi-udp/
+// https://www.youtube.com/watch?v=U3vOyzJzGRU
 
 #include <WiFi.h>
 #include <WiFiUdp.h>
 
 #define N_BOXES 4
 #define M_CHARS 32
-#define UDP_PORT 1234
+#define UDP_PORT 44832U
 
 WiFiUDP udp;  // Creation of wifi Udp instance
 
-unsigned int udpPort = 44832;
-const char * udpAddress = "192.168.1.69"; // your pc ip
-
-void udp_setup() {
-  Serial.print("Conecting to WiFi");
+void wifi_setup() {
+  Serial.print("Trying to conecting to ");
   
   int n_networks = WiFi.scanNetworks();
   
@@ -64,8 +63,25 @@ void udp_setup() {
   udp.begin(UDP_PORT);
 }
 
-void recieve_color_code(char* color_code) {  
+void recieve_color_code(char* color_code, char local) {  
   char* message = NULL;
+
+  switch (local)
+  {
+  case 'I':
+    send_data("IWP", COMP_UPD_ADDRESS);
+    break;
+  case 'O':
+    send_data("OWP", COMP_UPD_ADDRESS);
+    break;
+  case 'A':
+    send_data("MAP", COMP_UPD_ADDRESS);
+    break;
+  case 'B':
+    send_data("MBP", COMP_UPD_ADDRESS);
+    break;
+  }
+  
   Serial.println("Looking for next UDP package"); 
   while (!message) message = receive_data();
   Serial.println("Valid package recieved from server...");
@@ -88,8 +104,30 @@ char* receive_data() {
     Serial.print("Returning message from server: ");
     return ret;
   }
-  //Serial.print(".d");
   free(ret);
   ret = NULL;
   return ret;
+}
+
+char* recieve_data_impl() {
+  char* message = NULL;
+  Serial.println("Looking for next UDP package"); 
+  while (!message) message = receive_data();
+  Serial.println("Valid package recieved from server...");
+
+  Serial.print("Recieving: ");
+  Serial.println(message);
+  
+  return message;
+}
+
+void send_data(const char* message, const char* udpAddress) {
+
+  udp.beginPacket(udpAddress,UDP_PORT);   //Initiate transmission of data
+    
+    udp.printf(message);
+    udp.endPacket();  // Close communication
+    
+    Serial.print("Sending: ");
+    Serial.println(message);
 }
