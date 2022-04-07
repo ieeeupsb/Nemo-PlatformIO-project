@@ -4,8 +4,8 @@
 
 #define N_NETWORKS 3
 
-#define casa_ssid "Vodafone-E828C5"
-#define casa_password "a1234567"
+#define casa_ssid "Vodafone-77312E"
+#define casa_password "jkJyjeh7cp"
 
 #define ieee_ssid "ieeehotspot"
 #define ieee_password "Jk638td9og35"

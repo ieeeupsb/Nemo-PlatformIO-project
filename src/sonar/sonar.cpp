@@ -7,10 +7,8 @@
 #include <stdint.h>
 
 void sonar_setup() {
-    pinMode(SONAR_TRIG_1, OUTPUT);
-    pinMode(SONAR_TRIG_2, OUTPUT);
-    pinMode(SONAR_ECHO_1, INPUT);
-    pinMode(SONAR_ECHO_2, INPUT);
+    pinMode(SONAR_TRIG, OUTPUT);
+    pinMode(SONAR_ECHO, INPUT);
 }
 
 void send_pulse(int trigPin) {

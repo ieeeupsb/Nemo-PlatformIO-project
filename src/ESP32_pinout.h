@@ -13,10 +13,10 @@
 #define GPIO10 10 //SPI0/1: usually connected to the SPI flash and PSRAM integrated on the module and therefore should not be used for other purposes.
 #define GPIO11 11 //SPI0/1: usually connected to the SPI flash and PSRAM integrated on the module and therefore should not be used for other purposes.
 #define GPIO12 12 //This pins cannot be used when Wi-Fi is used
-#define GPIO13 13 //pins cannot be used when Wi-Fi is used
-#define GPIO14 14 //pins cannot be used when Wi-Fi is used
-#define GPIO15 15 //pins cannot be used when Wi-Fi is used
-#define GPIO16 16 //pins cannot be used when Wi-Fi is used
+#define GPIO13 13 //ADC2 pins cannot be used when Wi-Fi is used
+#define GPIO14 14 //ADC2 pins cannot be used when Wi-Fi is used
+#define GPIO15 15 //ADC2 pins cannot be used when Wi-Fi is used
+#define GPIO16 16 //ADC2 pins cannot be used when Wi-Fi is used
 #define GPIO18 18
 #define GPIO19 19
 #define GPIO21 21
@@ -25,6 +25,7 @@
 #define GPIO25 25 //ADC2 pins cannot be used when Wi-Fi is used.
 #define GPIO26 26 //ADC2 pins cannot be used when Wi-Fi is used.
 #define GPIO27 27 //ADC2 pins cannot be used when Wi-Fi is used.
+#define GPIO33 33 
 #define GPIO34 34 //INPUT ONLY
 #define GPIO35 35 //INPUT ONLY
 #define GPIO36 36 //INPUT ONLY

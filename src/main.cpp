@@ -12,15 +12,15 @@ void setup() {
   delay(1000);
   Serial.print("Hello Esp32! \n");
   wifi_setup();
-  // sonar_setup();
+  sonar_setup();
   //motors_setup();
   pinMode(DC_MOTOR_1A, OUTPUT);
   digitalWrite(DC_MOTOR_1A, HIGH);
 
-  Serial.println("Waiting for color code...");
-  do {
-    recieve_color_code(color_code, 'I');
-  } while(color_code[0] == '\0');
+  // Serial.println("Waiting for color code...");
+  // do {
+  //   recieve_color_code(color_code, 'I');
+  // } while(color_code[0] == '\0');
 
   Serial.println(color_code[0]);
   Serial.println(color_code[1]);
@@ -30,4 +30,5 @@ void setup() {
 void loop() { 
   //move_forward();
   delay(1000);
+  Serial.println(distance(SONAR_TRIG, SONAR_ECHO));
 }
