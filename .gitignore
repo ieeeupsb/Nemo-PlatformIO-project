@@ -3,4 +3,4 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
-src/udp_client/wifi_credentials_private.h
+src/communication/wifi_credentials_private.h
