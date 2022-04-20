@@ -10,9 +10,11 @@
 
 #define N_BOXES 4
 #define M_CHARS 32
-#define UDP_PORT 44832U
 
 WiFiUDP udp;  // Creation of wifi Udp instance
+WiFiUDP udp_monitor;  // Creation of wifi Udp instance
+
+char ip_address[] = UDP_ADDRESS;
 
 void wifi_setup() {
   Serial.print("Trying to conecting to ");
@@ -61,25 +63,25 @@ void wifi_setup() {
       Serial.println(WiFi.localIP()); //192.168.1.151
   }
   udp.begin(UDP_PORT);
+  Serial.println("Is this your local ip: " + (String)ip_address + "?");
 }
 
-void recieve_color_code(char* color_code, char local) {  
+void recieve_colour_code(char* colour_code, char local) {  
   char* message = NULL;
 
-  switch (local)
-  {
-  case 'I':
-    send_data("IWP", COMP_UPD_ADDRESS);
-    break;
-  case 'O':
-    send_data("OWP", COMP_UPD_ADDRESS);
-    break;
-  case 'A':
-    send_data("MAP", COMP_UPD_ADDRESS);
-    break;
-  case 'B':
-    send_data("MBP", COMP_UPD_ADDRESS);
-    break;
+  switch (local) {
+    case 'I':
+      send_data("IWP", UDP_ADDRESS);
+      break;
+    case 'O':
+      send_data("OWP", UDP_ADDRESS);
+      break;
+    case 'A':
+      send_data("MAP", UDP_ADDRESS);
+      break;
+    case 'B':
+      send_data("MBP", UDP_ADDRESS);
+      break;
   }
   
   Serial.println("Looking for next UDP package"); 
@@ -90,15 +92,15 @@ void recieve_color_code(char* color_code, char local) {
     char aux = message[i];
 
     if((aux != 'R') & (aux != 'G') & (aux != 'B')) {
-      Serial.println("Invalid message for color code");
-      color_code[0] = '\0';
+      Serial.println("Invalid message for colour code");
+      colour_code[0] = '\0';
       return;
     }
-    color_code[i] = aux;
+    colour_code[i] = aux;
   }
 }
 char* receive_data() {
-  char* ret = (char*)calloc(M_CHARS, 1);
+  char *ret = (char*)calloc(M_CHARS, 1);
   udp.parsePacket();
   if(udp.read(ret, M_CHARS) > 0){
     Serial.print("Returning message from server: ");
@@ -125,9 +127,25 @@ void send_data(const char* message, const char* udpAddress) {
 
   udp.beginPacket(udpAddress,UDP_PORT);   //Initiate transmission of data
     
-    udp.printf(message);
-    udp.endPacket();  // Close communication
+  udp.printf(message);
+  udp.endPacket();  // Close communication
+}
+
+void debug_message(const char* message) {
     
-    Serial.print("Sending: ");
-    Serial.println(message);
+  if(!DEBUG_MODE) return;
+  udp.beginPacket(UDP_ADDRESS, UDP_PORT);   //Initiate transmission of data
+  
+  udp.printf(message);
+  udp.endPacket();  // Close communication
+
+  Serial.println(message);
+}
+
+void receive_colour_code_imp(char colour_code[4]) {
+  
+  debug_message("Waiting for colour code...");
+  do {
+    recieve_colour_code(colour_code, 'I');
+  } while(colour_code[0] == '\0');
 }

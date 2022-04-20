@@ -1,10 +1,20 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <limits.h>
 
-#define MAX 18
+#define MAX 19
 #define INFINITY 4000
 
-enum  turning {RIGHT, LEFT, BOTH, DRIFT};
+
+//substituir depois pelas variaveis que de facto existem
+#ifndef LINE_SENSOR_2
+#define LINE_SENSOR_1 1
+#define LINE_SENSOR_2 2
+#define LINE_SENSOR_3 3
+#define LINE_SENSOR_4 4
+#endif
+
+enum  turning {RIGHT, LEFT, BOTH};
 
 //Matriz G das distancias entre pontos
 //é essencial, saber de que lado deteto cada vertice, porque assim sei para onde estou a ir e a minha actual location
@@ -14,15 +24,17 @@ enum  turning {RIGHT, LEFT, BOTH, DRIFT};
 
 
 
-
 //o facto de criar uma estrutura aqui, n significa que seja uma variavel global :), debugging for 30 min to find out that shit
 typedef struct _movement{
-    int origem;     //onde comecei e para onde vou
-    int destino;    //onde quero chegar
-    int k;          //numero de elementos em path, vai decrementando
-    int path[MAX];  //caminho a tomar
-    int atual;      //must recent position
-    enum turning turn;    //saber qual o proximo lado a detetar, DRIFT is like
+	int origem;     //onde comecei e para onde vou
+	int destino;    //onde quero chegar
+	int k;          //numero de elementos em path, vai decrementando
+	int path[MAX];  //caminho a tomar
+	int atual;      //must recent position
+	int anterior;		//last position
+	enum turning turn;    //saber qual o proximo lado a detetar 
+	int boxAttached;		//indica se tem box attached or not
+	int lastRotation;		//last direction this mf rotated
 }movement;
 
 
@@ -35,4 +47,9 @@ int dijkstra(int j[],int n,int startnode, int finishnode);
 
 //detetou a interseçao que estavamos a espera
 //para navegaçao ao longo do caminho
-void detected(movement *mov);
+int detected(movement *mov);
+
+
+int _180180360(movement *mov);
+
+
