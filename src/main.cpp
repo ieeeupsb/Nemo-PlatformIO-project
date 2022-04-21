@@ -1,3 +1,4 @@
+#include "Arduino.h"
 #include "communication/comm.h"
 #include "eletromagnet/eletromagnet.h"
 #include "line/line.h"
@@ -8,6 +9,7 @@
 #include "factory_lite/factory_lite.h"
 
 void nemo_setup() {
+    Serial.begin(115200);
     motors_setup();
     sonar_setup();
     line_setup();
@@ -15,6 +17,7 @@ void nemo_setup() {
     eletromagnet_setup();
 }
 
-void setup() { factory_lite(); }
+void setup() { // factory_lite();
+}
 
 void loop() {}

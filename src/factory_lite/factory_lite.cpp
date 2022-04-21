@@ -144,13 +144,13 @@ int rotation(int direction, int boxAttached) {
             break;
 
         case 1:
-            printf("Com a boxAttached, ");
+            debug_message("Com a boxAttached, ");
             rotate(90);
             return 1;
             break;
 
         case -1:
-            printf("Com a boxAttached, ");
+            debug_message("Com a boxAttached, ");
             rotate(-90);
             return -1;
             break;
@@ -282,36 +282,34 @@ void handle_movement(movement *mov) {
 
 int factory_lite() {
 
-    int i = 0;
-    int lev = LEVEL;
-    char input_colour[4] = {'B', 'B', 'B', 'B'};
-    char machine_B[4] = {'X', 'X', 'X', 'X'};
-    char output_colour[4] = {'X', 'X', 'X', 'X'};
+    char colour_code[4] = {'X', 'X', 'X', 'X'};
+    recieve_colour_code(colour_code, 'I');
+    // int lev = LEVEL;
+    // char input_colour[4] = {'B', 'B', 'B', 'B'};
+    // char machine_B[4] = {'X', 'X', 'X', 'X'};
+    // char output_colour[4] = {'X', 'X', 'X', 'X'};
 
-    printf("É isto não é?\n");
-    movement *mov = (movement *)malloc(sizeof(movement));
-    printf("Yup, é esta shit mesmo\n");
+    // movement *mov = (movement *)malloc(sizeof(movement));
 
-    mov->boxAttached = 0;
-    printf("Entao será aqui I guess\n");
-    mov->origem = 0;
-    mov->anterior = 0;
+    // mov->boxAttached = 0;
+    // mov->origem = 0;
+    // mov->anterior = 0;
 
-    // codigo teste
+    // // codigo teste
+
+    // mov->destino = i + 1;
+    // handle_movement(mov);
+    // input_colour[i] = 'X';
+    // mov->origem = mov->destino;
+    // mov->destino = i + 5;
+    // handle_movement(mov);
+
     /*
-    mov->destino=i+1;
-                            handle_blue(mov);
-                            input_colour[i]='X';
-                            mov->origem=mov->destino;
-                            mov->destino=i+5;
-                            handle_blue(mov);
-
-    */
 
     switch (lev) {
 
     case 1:
-        for (i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             mov->destino = i + 1;
             handle_movement(mov);
             input_colour[i] = 'X';
@@ -326,7 +324,7 @@ int factory_lite() {
 
     case 2:
         // this part takes the green boxes to the machine_B
-        for (i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             if (input_colour[i + 1] == 'B') {
                 continue;
             }
@@ -354,7 +352,7 @@ int factory_lite() {
         }
 
         // we deliver the Blue boxes to the exit
-        for (i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             if (input_colour[i] == 'X') {
                 continue;
             }
@@ -370,7 +368,7 @@ int factory_lite() {
         }
 
         // we deliver the green boxes to the exit
-        for (i = 1; i < 8; i += 2) {
+        for (int i = 1; i < 8; i += 2) {
             if (machine_B[i % 4] == 'B') {
                 mov->destino = 15 - ((i % 4) % 3);
                 handle_movement(mov);
@@ -389,6 +387,8 @@ int factory_lite() {
 
         break;
     }
+*/
+    // free(mov);
 
-    free(mov);
+    return 0;
 }
