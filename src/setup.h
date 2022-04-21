@@ -14,10 +14,10 @@
 // 1 electroiman
 
 // SENSORES DE LINHA
-#define LINE_SENSOR_1 GPIO36 // RIGHT SIDE (VP) //
+#define LINE_SENSOR_4 GPIO35 // LEFT SIDE //green
 #define LINE_SENSOR_2 GPIO39 // (VN) // grey
-#define LINE_SENSOR_3 GPIO34 // 
-#define LINE_SENSOR_4 GPIO35 // LEFT SIDE
+#define LINE_SENSOR_3 GPIO34 // orange
+#define LINE_SENSOR_1 GPIO36 // RIGHT SIDE (VP) // purple
 
 // ELETROINAGNET
 #define ELECTROMAGNET GPIO32 //purple
