@@ -16,7 +16,7 @@ void line_setup() {
     pinMode(LINE_SENSOR_4, INPUT);
 }
 
-void line_case_debug() {
+int line_case_debug() {
     switch (LINE_CASE_FAST) {
     case CORRECT_TO_RIGHT:
         debug_message("CORRECT_TO_RIGHT");
@@ -41,5 +41,8 @@ void line_case_debug() {
         break;
     default:
         debug_message("ERROR");
+        return -1;
     }
+
+    return LINE_CASE_FAST;
 }
