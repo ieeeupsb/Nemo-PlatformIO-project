@@ -17,13 +17,13 @@
 #define LINE_SENSOR_4 GPIO35 // LEFT SIDE //green
 #define LINE_SENSOR_2 GPIO39 // (VN) // grey
 #define LINE_SENSOR_3 GPIO34 // orange
-#define LINE_SENSOR_1 GPIO36 // RIGHT SIDE (VP) // purple
+#define LINE_SENSOR_1 VP     // RIGHT SIDE (VP) // purple
 
 // ELETROINAGNET
 #define ELECTROMAGNET GPIO32 // purple
 
 // LEFT MOTOR
-#define DC_MOTOR_1L GPIO3 // white
+#define DC_MOTOR_1L RDX   // white
 #define DC_MOTOR_2L GPIO5 // brown
 #define ENABLE_L GPIO12   // WARNING: ADC2 PIN //red
 #define ENC1_L GPIO16     // yellow
