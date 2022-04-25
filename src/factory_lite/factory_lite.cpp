@@ -5,8 +5,8 @@
 #include "../communication/comm.h"
 #include "../eletromagnet/eletromagnet.h"
 #include "../line/line.h"
+#include "../nemo_motion/nemo_motion.h"
 #include "../sonar/sonar.h"
-#include "nemo_motion.h"
 #include <motor.h>
 
 /*UDP commands

@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "positioning.h": "c"
+        "positioning.h": "c",
+        "cmath": "cpp"
     }
 }

@@ -14,9 +14,14 @@ class Motor {
   public:
     void setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
                uint8_t enable_pin, uint8_t channel, int enc1_pin, int enc2_pin);
-    void set_speed(uint8_t dir, uint32_t pwmVal);
+    void set_speed(uint8_t _dir, uint32_t _pwmVal);
     void stop();
     ESP32Encoder encoder;
+    uint32_t pwmVal;
+    uint8_t dir;
+    float get_speed();
+    void refresh(int pwm_dif);
+    void set_pwm(unsigned int _pwmVal);
 
   private:
     uint8_t pwm_channel;
@@ -25,6 +30,9 @@ class Motor {
 
     uint8_t dc_motor_1;
     uint8_t dc_motor_2;
+
+    int previous_tick_number = 0;
+    unsigned int previous_time = 0;
 };
 
 class SimplePID {
