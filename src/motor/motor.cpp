@@ -32,7 +32,7 @@ void rotate(int degrees) {
     right_motor.stop();
 }
 
-void walk(int millimeters, int direction) {
+void walk(int millimeters, int direction, int turn) {
     int left_speed = NEMO_SPEED;
     int right_speed = NEMO_SPEED;
     left_motor.encoder.setCount(0);
