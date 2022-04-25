@@ -1,11 +1,13 @@
 #include "factory_lite.h"
 #include "positioning.h"
+#include "setup.h"
 
 #include "../communication/comm.h"
 #include "../eletromagnet/eletromagnet.h"
 #include "../line/line.h"
-#include "../motor/motor.h"
 #include "../sonar/sonar.h"
+#include "nemo_motion.h"
+#include <motor.h>
 
 /*UDP commands
 receive_color_code(char* color_code, char local(I, O, A, B));
@@ -24,6 +26,16 @@ int rotation(int direction, int boxAttached);
 int motor_go_forward(movement *mov, int type);
 int movimentacao(movement *mov);
 void handle_movement(movement *mov);
+
+void factory_lite_setup() {
+    if (DEBUG_MODE)
+        Serial.begin(11520);
+    wifi_setup();
+    motors_setup();
+    sonar_setup();
+    line_setup();
+    eletromagnet_setup();
+}
 
 // serve para orientar para o sitio certo sempre que tivermos um novo dijkstra
 int orientation(movement *mov) {
@@ -281,7 +293,7 @@ void handle_movement(movement *mov) {
 }
 
 int factory_lite() {
-
+    factory_lite_setup();
     char colour_code[4] = {'X', 'X', 'X', 'X'};
     recieve_colour_code(colour_code, 'I');
     // int lev = LEVEL;

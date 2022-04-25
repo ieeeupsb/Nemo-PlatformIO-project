@@ -10,7 +10,7 @@
 
 #define line_state(__LINE_SENSOR__) (digitalRead(__LINE_SENSOR__))
 #define LINE_CASE_FAST                                                         \
-    GPIO.in1.val & 0x9C // GPIO.in1.val & 0x9C = L200L1 L4L300
+    (GPIO.in1.val & 0x9C) // GPIO.in1.val & 0x9C = L200L1 L4L300
 
 void line_setup();
 int line_case_debug();

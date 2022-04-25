@@ -1,9 +1,10 @@
 #define DEBUG_MODE true
-#define NEMO_SPEED 170              // 0-255
 #define UDP_ADDRESS "192.168.0.116" // Comp server ip addr
 #define UDP_PORT 44832U
 
 #define ENV ESP32DEV
+#define MODE FACTORY_LITE
+
 #if ENV == ESP32DEV
 
 #include <ESP32_pinout.h>
