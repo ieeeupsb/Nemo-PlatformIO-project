@@ -19,52 +19,13 @@ void handle_movement(movement *mov);
 
 void factory_lite_setup() {
     if (DEBUG_MODE)
-        Serial.begin(11520);
+        Serial.begin(115200);
 
     wifi_setup(UDP_ADDRESS, UDP_PORT);
     motors_setup();
     sonar_setup();
     line_setup();
     eletromagnet_setup();
-}
-
-void recieve_colour_code(char *colour_code, char local,
-                         const char *ip_address) {
-    char *message = NULL;
-
-    switch (local) {
-    case 'I':
-        send_data("IWP", ip_address);
-        break;
-    case 'O':
-        send_data("OWP", ip_address);
-        break;
-    case 'A':
-        send_data("MAP", ip_address);
-        break;
-    case 'B':
-        send_data("MBP", ip_address);
-        break;
-    }
-
-    Serial.println("Looking for next UDP package");
-    do {
-        message = receive_data();
-
-    } while (!message);
-
-    Serial.println("Valid package recieved from server...");
-
-    for (int i = 0; i < N_BOXES; i++) {
-        char aux = message[i];
-
-        if ((aux != 'R') & (aux != 'G') & (aux != 'B')) {
-            Serial.println("Invalid message for colour code");
-            colour_code[0] = '\0';
-            return;
-        }
-        colour_code[i] = aux;
-    }
 }
 
 // serve para orientar para o sitio certo sempre que tivermos um novo
@@ -120,24 +81,33 @@ int box_operations(movement *mov) {
     // END of test code
 
     debug_message("Entramos em Box operations, orientating\n");
-    if ((mov->atual != 12)) {
-        if (line2 && line3 && (mov->atual != 1) &&
-            (mov->atual != 8)) { // substituir line2 e line3 por
-                                 // digitalRead() dos IR correspondentes
-            if (mov->turn == RIGHT) {
+    if ((mov->atual != 12) && (LINE_CASE_FAST == LINE) && (mov->atual != 1) &&
+        (mov->atual != 8) && (mov->turn == RIGHT))
+        mov->lastRotation = rotation(1, mov->boxAttached);
+    else if ((mov->atual != 12) && (LINE_CASE_FAST == LINE) &&
+             (mov->atual != 1) && (mov->atual != 8) && (mov->turn != RIGHT))
+        mov->lastRotation = rotation(-1, mov->boxAttached);
+    else if ((mov->atual != 12) && (mov->anterior == 10) ||
+             (mov->anterior == 15))
+
+        if ((mov->atual != 12)) {
+            if (line2 && line3 && (mov->atual != 1) &&
+                (mov->atual != 8)) { // substituir line2 e line3 por
+                                     // digitalRead() dos IR correspondentes
+                if (mov->turn == RIGHT)
+                    mov->lastRotation = rotation(1, mov->boxAttached);
+                else
+                    mov->lastRotation = rotation(-1, mov->boxAttached);
+
+                // se estiver no 1 ou 8
+            } else if (mov->anterior == 10 || mov->anterior == 15)
+                debug_message("No rotation needed\n");
+            else
                 mov->lastRotation = rotation(1, mov->boxAttached);
-            } else {
-                mov->lastRotation = rotation(-1, mov->boxAttached);
-            }
-
-            // se estiver no 1 ou 8
-        } else if (mov->anterior == 10 || mov->anterior == 15) {
-            debug_message("No rotation needed\n");
-        } else {
+        } else if ((mov->origem >= 1) && (mov->origem <= 4))
+            mov->lastRotation = rotation(-1, mov->boxAttached);
+        else
             mov->lastRotation = rotation(1, mov->boxAttached);
-        }
-
-    } // adicionar comando qualquer para ir buscar box a 12
 
     debug_message("Robot already orientado com box\n");
     if (!motor_go_forward(mov, MISSION)) {
@@ -326,12 +296,17 @@ void handle_movement(movement *mov) {
 
 int factory_lite() {
     factory_lite_setup();
-    char colour_code[4] = {'G', 'G', 'G', 'G'};
-    // recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
-    // int lev = LEVEL;
-    // char input_colour[4] = {'B', 'B', 'B', 'B'};
-    // char machine_B[4] = {'X', 'X', 'X', 'X'};
-    // char output_colour[4] = {'X', 'X', 'X', 'X'};
+    char colour_code[N_BOXES] = {'G', 'G', 'G', 'G'};
+    recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
+    for (size_t i = 0; i < N_BOXES; i++) {
+        debug_message(colour_code);
+    }
+
+    //  line_case_debug();
+    //  int lev = LEVEL;
+    //  char input_colour[4] = {'B', 'B', 'B', 'B'};
+    //  char machine_B[4] = {'X', 'X', 'X', 'X'};
+    //  char output_colour[4] = {'X', 'X', 'X', 'X'};
 
     // movement *mov = (movement *)malloc(sizeof(movement));
 
