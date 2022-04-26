@@ -1,8 +1,8 @@
 #include "nemo_motion.h"
 
 #include "../line/line.h"
+#include "../nemo_debug/nemo_debug.h"
 #include "../setup.h"
-#include "communication/comm.h"
 #include <motor.h>
 
 #define WALK_CONST 3.43
@@ -33,13 +33,9 @@ void walk_line(int millimeters, int direction, int turn) {
     bool stop = false;
     do {
         correct_trajectory_line();
-        char auxs[50];
-        sprintf(auxs, "Left encoder: %d \n",
-                (int32_t)left_motor.encoder.getCount());
-        debug_message(auxs);
-        sprintf(auxs, "Right encoder: %d \n",
-                (int32_t)right_motor.encoder.getCount());
-        debug_message(auxs);
+        debug_encoder(left_motor);
+        debug_encoder(right_motor);
+
         line_case_debug();
         stop = (turn == LINE_CASE_FAST) ||
                ((int32_t)left_motor.encoder.getCount() > ticks);
@@ -72,7 +68,7 @@ void correct_trajectory() {
 void correct_trajectory_line() {
     int _case = LINE_CASE_FAST;
     if (_case == LINE) {
-        correct_trajectory;
+        correct_trajectory();
         return;
     }
 

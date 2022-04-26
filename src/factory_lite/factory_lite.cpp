@@ -1,17 +1,7 @@
 #include "factory_lite.h"
-#include "positioning.h"
-#include "setup.h"
 
-#include "../communication/comm.h"
-#include "../eletromagnet/eletromagnet.h"
-#include "../line/line.h"
-#include "../nemo_motion/nemo_motion.h"
-#include "../sonar/sonar.h"
-#include <motor.h>
+#define N_BOXES 4
 
-/*UDP commands
-receive_color_code(char* color_code, char local(I, O, A, B));
-*/
 #define LEVEL 1
 
 #define MISSION 0 // Buscar/Deixar caixa
@@ -30,14 +20,55 @@ void handle_movement(movement *mov);
 void factory_lite_setup() {
     if (DEBUG_MODE)
         Serial.begin(11520);
-    wifi_setup();
+
+    wifi_setup(UDP_ADDRESS, UDP_PORT);
     motors_setup();
     sonar_setup();
     line_setup();
     eletromagnet_setup();
 }
 
-// serve para orientar para o sitio certo sempre que tivermos um novo dijkstra
+void recieve_colour_code(char *colour_code, char local,
+                         const char *ip_address) {
+    char *message = NULL;
+
+    switch (local) {
+    case 'I':
+        send_data("IWP", ip_address);
+        break;
+    case 'O':
+        send_data("OWP", ip_address);
+        break;
+    case 'A':
+        send_data("MAP", ip_address);
+        break;
+    case 'B':
+        send_data("MBP", ip_address);
+        break;
+    }
+
+    Serial.println("Looking for next UDP package");
+    do {
+        message = receive_data();
+
+    } while (!message);
+
+    Serial.println("Valid package recieved from server...");
+
+    for (int i = 0; i < N_BOXES; i++) {
+        char aux = message[i];
+
+        if ((aux != 'R') & (aux != 'G') & (aux != 'B')) {
+            Serial.println("Invalid message for colour code");
+            colour_code[0] = '\0';
+            return;
+        }
+        colour_code[i] = aux;
+    }
+}
+
+// serve para orientar para o sitio certo sempre que tivermos um novo
+// dijkstra
 int orientation(movement *mov) {
 
     debug_message("Entramos em orientation\n");
@@ -91,8 +122,8 @@ int box_operations(movement *mov) {
     debug_message("Entramos em Box operations, orientating\n");
     if ((mov->atual != 12)) {
         if (line2 && line3 && (mov->atual != 1) &&
-            (mov->atual != 8)) { // substituir line2 e line3 por digitalRead()
-                                 // dos IR correspondentes
+            (mov->atual != 8)) { // substituir line2 e line3 por
+                                 // digitalRead() dos IR correspondentes
             if (mov->turn == RIGHT) {
                 mov->lastRotation = rotation(1, mov->boxAttached);
             } else {
@@ -208,8 +239,8 @@ int motor_go_forward(movement *mov, int type) {
 
         walk(1500, FORWARD);
 
-        // esperamos 10ms, para ver se mais algum deste sensor entra na fita or
-        // not
+        // esperamos 10ms, para ver se mais algum deste sensor entra na fita
+        // or not
         if ((line1 || line4) && !flag) {
             // esperar 10ms mais coisa menos coisa
             delay(10);
@@ -264,8 +295,9 @@ int movimentacao(movement *mov) {
 
             // verifica a necessidade de virar or not e atualiza mov->turn
             if (detected(mov)) {
-                mov->lastRotation = rotation(
-                    _180180360(mov), mov->boxAttached); // roda +/- 90 degrees
+                mov->lastRotation =
+                    rotation(_180180360(mov),
+                             mov->boxAttached); // roda +/- 90 degrees
                 continue;
             }
 
@@ -294,8 +326,8 @@ void handle_movement(movement *mov) {
 
 int factory_lite() {
     factory_lite_setup();
-    char colour_code[4] = {'X', 'X', 'X', 'X'};
-    recieve_colour_code(colour_code, 'I');
+    char colour_code[4] = {'G', 'G', 'G', 'G'};
+    // recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
     // int lev = LEVEL;
     // char input_colour[4] = {'B', 'B', 'B', 'B'};
     // char machine_B[4] = {'X', 'X', 'X', 'X'};

@@ -1,5 +1,8 @@
 #pragma once
 
+#include "../src/setup.h"
+#include <Arduino.h>
+
 #define CORRECT_TO_RIGHT 4  // NEED TO TURN RIGHT 0010
 #define CORRECT_TO_LEFT 128 // NEED TO TURN LEFT 0100
 #define RIGHT_CURVE 144     // 0111
