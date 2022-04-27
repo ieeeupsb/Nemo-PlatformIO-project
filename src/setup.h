@@ -5,6 +5,8 @@
 #define ENV ESP32DEV
 #define MODE FACTORY_LITE
 
+#define BAUD_RATE 115200
+
 #if ENV == ESP32DEV
 
 #include <ESP32_pinout.h>

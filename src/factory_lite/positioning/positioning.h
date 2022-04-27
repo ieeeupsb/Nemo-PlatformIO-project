@@ -9,7 +9,8 @@ enum turning { RIGHT, LEFT, BOTH };
 
 // Matriz G das distancias entre pontos
 //é essencial, saber de que lado deteto cada vertice, porque assim sei para onde
-//estou a ir e a minha actual location De forma a saber se tem de ser direita ou
+// estou a ir e a minha actual location De forma a saber se tem de ser direita
+// ou
 // esquerda, vamos considerar as colunas os sitios para onde têm de ir, e as
 // linhas o sitio de onde começam para isso vamos usar numeros positivos para
 // conhecer a direita, e numeros negativos para a esquerda
@@ -19,7 +20,7 @@ enum turning { RIGHT, LEFT, BOTH };
 typedef struct _movement {
     int origem;        // onde comecei e para onde vou
     int destino;       // onde quero chegar
-    int k;             // numero de elementos em path, vai decrementando
+    size_t path_len;   // numero de elementos em path, vai decrementando
     int path[MAX];     // caminho a tomar
     int atual;         // must recent position
     int anterior;      // last position

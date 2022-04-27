@@ -44,6 +44,23 @@ void walk_line(int millimeters, int direction, int turn) {
     right_motor.stop();
 }
 
+void walk(int millimeters, int direction) {
+    int ticks = (int32_t)(WALK_CONST * float(millimeters));
+
+    left_motor.encoder.setCount(0);
+    right_motor.encoder.setCount(0);
+
+    bool stop = false;
+    do {
+        correct_trajectory();
+        debug_encoder(left_motor);
+        debug_encoder(right_motor);
+        stop = ((int32_t)left_motor.encoder.getCount() >= ticks);
+    } while (!stop);
+    left_motor.stop();
+    right_motor.stop();
+}
+
 void correct_trajectory() {
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());

@@ -1,21 +1,7 @@
 #include "factory_lite.h"
 
-#define N_BOXES 4
-
-#define LEVEL 1
-
 #define MISSION 0 // Buscar/Deixar caixa
 #define AROUND 1  // Move around the map
-
-// typedef enum colour{RED, BLUE, GREEN};
-int box;
-
-int orientation(movement *mov);
-int box_operations(movement *mov);
-int rotation(int direction, int boxAttached);
-int motor_go_forward(movement *mov, int type);
-int movimentacao(movement *mov);
-void handle_movement(movement *mov);
 
 void factory_lite_setup() {
     if (DEBUG_MODE)
@@ -31,10 +17,9 @@ void factory_lite_setup() {
 // serve para orientar para o sitio certo sempre que tivermos um novo
 // dijkstra
 int orientation(movement *mov) {
-
     debug_message("Entramos em orientation\n");
     // se voltarmos a onde estavamos anteriormente
-    if (mov->anterior == mov->path[mov->k]) {
+    if (mov->anterior == mov->path[mov->path_len]) {
         if (mov->lastRotation) {
             mov->lastRotation = rotation(
                 mov->lastRotation,
@@ -64,7 +49,6 @@ int orientation(movement *mov) {
 // vai buscar a box ao sitio, rotates , goes and backs but with box ;)
 // substituir line() por digitalWrite
 int box_operations(movement *mov) {
-
     int line2 = 0, line3 = 0;
 
     // BEGGINING of test code
@@ -81,33 +65,24 @@ int box_operations(movement *mov) {
     // END of test code
 
     debug_message("Entramos em Box operations, orientating\n");
-    if ((mov->atual != 12) && (LINE_CASE_FAST == LINE) && (mov->atual != 1) &&
-        (mov->atual != 8) && (mov->turn == RIGHT))
-        mov->lastRotation = rotation(1, mov->boxAttached);
-    else if ((mov->atual != 12) && (LINE_CASE_FAST == LINE) &&
-             (mov->atual != 1) && (mov->atual != 8) && (mov->turn != RIGHT))
-        mov->lastRotation = rotation(-1, mov->boxAttached);
-    else if ((mov->atual != 12) && (mov->anterior == 10) ||
-             (mov->anterior == 15))
 
-        if ((mov->atual != 12)) {
-            if (line2 && line3 && (mov->atual != 1) &&
-                (mov->atual != 8)) { // substituir line2 e line3 por
-                                     // digitalRead() dos IR correspondentes
-                if (mov->turn == RIGHT)
-                    mov->lastRotation = rotation(1, mov->boxAttached);
-                else
-                    mov->lastRotation = rotation(-1, mov->boxAttached);
-
-                // se estiver no 1 ou 8
-            } else if (mov->anterior == 10 || mov->anterior == 15)
-                debug_message("No rotation needed\n");
-            else
+    if ((mov->atual != 12)) {
+        if (line2 && line3 && (mov->atual != 1) &&
+            (mov->atual != 8)) { // substituir line2 e line3 por
+            // digitalRead() dos IR correspondentes
+            if (mov->turn == RIGHT)
                 mov->lastRotation = rotation(1, mov->boxAttached);
-        } else if ((mov->origem >= 1) && (mov->origem <= 4))
-            mov->lastRotation = rotation(-1, mov->boxAttached);
+            else
+                mov->lastRotation = rotation(-1, mov->boxAttached);
+            // se estiver no 1 ou 8
+        } else if (mov->anterior == 10 || mov->anterior == 15)
+            debug_message("No rotation needed\n");
         else
             mov->lastRotation = rotation(1, mov->boxAttached);
+    } else if ((mov->origem >= 1) && (mov->origem <= 4))
+        mov->lastRotation = rotation(-1, mov->boxAttached);
+    else
+        mov->lastRotation = rotation(1, mov->boxAttached);
 
     debug_message("Robot already orientado com box\n");
     if (!motor_go_forward(mov, MISSION)) {
@@ -123,56 +98,6 @@ int box_operations(movement *mov) {
 }
 
 // retorna valor para atualizar mov->lastRotation
-int rotation(int direction, int boxAttached) {
-
-    switch (boxAttached) {
-    case 0:
-        switch (direction) {
-        case INFINITY:
-            debug_message("No rotation needed\n");
-            return 0;
-            break;
-
-        case 1:
-            rotate(90);
-            return 1;
-            break;
-
-        case -1:
-            rotate(-90);
-            return -1;
-            break;
-
-        default:
-            debug_message("ERROR rotation\n");
-            return 0;
-        }
-        break;
-
-    case 1:
-        switch (direction) {
-        case INFINITY:
-            debug_message("No rotation needed, mit boxAttached\n");
-            return 0;
-            break;
-
-        case 1:
-            debug_message("Com a boxAttached, ");
-            rotate(90);
-            return 1;
-            break;
-
-        case -1:
-            debug_message("Com a boxAttached, ");
-            rotate(-90);
-            return -1;
-            break;
-        }
-
-        break;
-    }
-    return 0;
-}
 
 // controlo do robot na linha
 // verifica interseçao e so sai dps de sair da interseçao
@@ -183,7 +108,6 @@ int rotation(int direction, int boxAttached) {
 // Atualiza o valor de boxAttached
 // substituir line1 e line4 por digitalRead ou whatever
 int motor_go_forward(movement *mov, int type) {
-
     int flag = 0; // indica se ja detetamos a interseçao alguma vez or not
     int line1 = 0, line4 = 0; // valores auxiliares para posteriormente
                               // substituir por digitalRead
@@ -206,7 +130,6 @@ int motor_go_forward(movement *mov, int type) {
     }
 
     while (1) {
-
         walk(1500, FORWARD);
 
         // esperamos 10ms, para ver se mais algum deste sensor entra na fita
@@ -225,6 +148,7 @@ int motor_go_forward(movement *mov, int type) {
             } else if (line4 && (mov->turn == BOTH) && line1) {
                 debug_message(
                     "Detetamos interseçao em ambos os lados, correctly\n");
+
                 flag = 1;
                 line4 = 0;
                 line1 = 0;
@@ -240,95 +164,97 @@ int motor_go_forward(movement *mov, int type) {
 }
 
 // vai pegar em dois nós (atual e em path)
-int movimentacao(movement *mov) {
-    char aux[64];
+void movimentacao(movement *mov) {
+
+    for (int i = 0; i < mov->path_len; i++) {
+        char auxs[64];
+        sprintf(auxs, "posiçao atual %d, posiçao de destino %d", mov->atual,
+                mov->path[mov->path_len]);
+        debug_message(auxs);
+    }
+    // char aux[64];
 
     // serve para ir de ponto a ponto, very beautiful indeed
-    while (1) {
-        // esta só a ir até um local
-        if (!motor_go_forward(mov, AROUND)) {
-            debug_message("funçao go_forward failed\n");
-        }
-        // verificar como funciona k, cause I dont really remember
-        // vai até local que queremos
-        mov->anterior = mov->atual;
-        mov->atual = mov->path[mov->k];
+    // while (1) {
+    //     // esta só a ir até um local
+    //     if (!motor_go_forward(mov, AROUND)) {
+    //         debug_message("funçao go_forward failed\n");
+    //     }
+    //     // verificar como funciona k, cause I dont really remember
+    //     // vai até local que queremos
+    //     mov->anterior = mov->atual;
+    //     mov->atual = mov->path[mov->path_len];
 
-        // se estiver a caminho do destino
-        if (mov->atual != mov->destino) {
-            --mov->k;
-            sprintf(aux, "Intersection number %d\n", mov->k + 1);
-            debug_message(aux);
-            sprintf(aux, "mov->atual=%d || proximo=%d\n", mov->atual,
-                    mov->path[mov->k]);
-            debug_message(aux);
+    //     // se estiver a caminho do destino
+    //     if (mov->atual != mov->destino) {
+    //         --mov->path_len;
+    //         sprintf(aux, "Intersection number %d\n", mov->path_len + 1);
+    //         debug_message(aux);
+    //         sprintf(aux, "mov->atual=%d || proximo=%d\n", mov->atual,
+    //                 mov->path[mov->path_len]);
+    //         debug_message(aux);
 
-            // verifica a necessidade de virar or not e atualiza mov->turn
-            if (detected(mov)) {
-                mov->lastRotation =
-                    rotation(_180180360(mov),
-                             mov->boxAttached); // roda +/- 90 degrees
-                continue;
-            }
+    //         // verifica a necessidade de virar or not e atualiza mov->turn
+    //         if (detected(mov)) {
+    //             mov->lastRotation =
+    //                 rotation(_180180360(mov),
+    //                          mov->boxAttached); // roda +/- 90 degrees
+    //             continue;
+    //         }
 
-            break;
-        }
-        // se estiver no destino, saimos de movimentaçao
-        break;
-    }
-    return 0;
+    //         break;
+    //     }
+    //     // se estiver no destino, saimos de movimentaçao
+    //     break;
+    // }
+    // return 0;
 }
 
 // blue boxes go directly from input to output, and vice-versa
 void handle_movement(movement *mov) {
-
-    mov->k = dijkstra(mov->path, MAX, mov->origem, mov->destino);
-    if (mov->origem) {
+    mov->path_len = dijkstra(mov->path, MAX, mov->origem, mov->destino);
+    if (mov->origem) { // não precisavamos de orientar no inicio da prova
+        debug_message("roda o robo para o caminho certo\n");
         orientation(mov);
     }
-    mov->atual = mov->origem;
-    detected(mov); // atualiza o valor de mov->turn
+    mov->atual = mov->origem; // robo está na origem
+    detected(mov);            // atualiza o valor de mov->turn
     debug_message("Going into movimentaçao\n");
     movimentacao(mov); // anda até mov->destino
     box_operations(
         mov); // vai buscar box e volta atras ate intersection, also rotates
 }
 
+movement *new_movement() {
+    movement *mov = (movement *)malloc(sizeof(movement));
+
+    mov->boxAttached = 0;
+    mov->origem = 0;
+    mov->anterior = 0;
+
+    return mov;
+}
+
 int factory_lite() {
     factory_lite_setup();
-    char colour_code[N_BOXES] = {'G', 'G', 'G', 'G'};
+    char colour_code[N_BOXES] = {'X', 'X', 'X', 'X'};
     recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
     for (size_t i = 0; i < N_BOXES; i++) {
         debug_message(colour_code);
     }
 
-    //  line_case_debug();
-    //  int lev = LEVEL;
-    //  char input_colour[4] = {'B', 'B', 'B', 'B'};
-    //  char machine_B[4] = {'X', 'X', 'X', 'X'};
-    //  char output_colour[4] = {'X', 'X', 'X', 'X'};
+    line_case_debug();
+    int level = BLUE_LEVEL;
+    char input_colour[4] = {'B', 'B', 'B', 'B'};
+    char machine_B[4] = {'X', 'X', 'X', 'X'};
+    char output_colour[4] = {'X', 'X', 'X', 'X'};
 
-    // movement *mov = (movement *)malloc(sizeof(movement));
+    movement *mov = new_movement();
 
-    // mov->boxAttached = 0;
-    // mov->origem = 0;
-    // mov->anterior = 0;
+    switch (LEVEL) {
 
-    // // codigo teste
-
-    // mov->destino = i + 1;
-    // handle_movement(mov);
-    // input_colour[i] = 'X';
-    // mov->origem = mov->destino;
-    // mov->destino = i + 5;
-    // handle_movement(mov);
-
-    /*
-
-    switch (lev) {
-
-    case 1:
-        for (int i = 0; i < 4; i++) {
+    case BLUE_LEVEL:
+        for (size_t i = 0; i < N_BOXES; i++) {
             mov->destino = i + 1;
             handle_movement(mov);
             input_colour[i] = 'X';
@@ -338,76 +264,8 @@ int factory_lite() {
             mov->origem = mov->destino;
             output_colour[i] = 'B';
         }
-
-        break;
-
-    case 2:
-        // this part takes the green boxes to the machine_B
-        for (int i = 0; i < 4; i++) {
-            if (input_colour[i + 1] == 'B') {
-                continue;
-            }
-
-            mov->destino = i + 1;
-            handle_movement(mov);
-            input_colour[i] = 'X';
-            mov->origem = mov->destino;
-            // chooses where to take the box inside machine_B
-            if (machine_B[1] == 'X') {
-                mov->destino = 13;
-                machine_B[1] = 'B';
-            } else if (machine_B[3] == 'X') {
-                mov->destino = 12;
-                machine_B[3] = 'B';
-            } else if (machine_B[0] == 'X') {
-                mov->destino = 13;
-                machine_B[0] = 'B';
-            } else {
-                mov->destino = 12;
-                machine_B[2] = 'B';
-            }
-            handle_movement(mov);
-            mov->origem = mov->destino;
-        }
-
-        // we deliver the Blue boxes to the exit
-        for (int i = 0; i < 4; i++) {
-            if (input_colour[i] == 'X') {
-                continue;
-            }
-            // entregamos as azuis primeiro
-            mov->destino = i + 1;
-            handle_movement(mov);
-            input_colour[i] = 'X';
-            mov->origem = mov->destino;
-            mov->destino = i + 5;
-            handle_movement(mov);
-            mov->origem = mov->destino;
-            output_colour[i] = 'B';
-        }
-
-        // we deliver the green boxes to the exit
-        for (int i = 1; i < 8; i += 2) {
-            if (machine_B[i % 4] == 'B') {
-                mov->destino = 15 - ((i % 4) % 3);
-                handle_movement(mov);
-                machine_B[i % 4] = 'X';
-                mov->origem = mov->destino;
-                mov->destino = i + 5;
-                handle_movement(mov);
-                mov->origem = mov->destino;
-                output_colour[i] = 'B';
-            }
-        }
-
-        break;
-
-    case 3:
-
         break;
     }
-*/
-    // free(mov);
 
     return 0;
 }
