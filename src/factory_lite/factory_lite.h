@@ -2,15 +2,15 @@
 
 #include "setup.h"
 
-#include "../eletromagnet/eletromagnet.h"
+#include <comm.h>
+#include <motor.h>
+
 #include "../line/line.h"
 #include "../nemo_debug/nemo_debug.h"
 #include "../nemo_motion/nemo_motion.h"
 #include "../sonar/sonar.h"
 #include "colour_code/colour_code.h"
 #include "positioning/positioning.h"
-#include <comm.h>
-#include <motor.h>
 
 #define BLUE_LEVEL 1
 #define GREEN_LEVEL 2

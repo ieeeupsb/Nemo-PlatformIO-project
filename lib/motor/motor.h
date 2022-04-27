@@ -8,7 +8,7 @@
 #define FORWARD 1
 #define BACKWARDS 0
 #define CLOCKWISE 1
-#define ANTI_CLOCKWISE 0
+#define ANTI_CLOCKWISE -1
 
 class Motor {
   public:

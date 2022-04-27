@@ -9,6 +9,8 @@
 
 #if ENV == ESP32DEV
 
+#define NEMO_SPEED 170
+
 #include <ESP32_pinout.h>
 
 // 4 linha
@@ -26,16 +28,16 @@
 #define ELECTROMAGNET GPIO32 // purple
 
 // LEFT MOTOR
-#define DC_MOTOR_1L RDX   // white
-#define DC_MOTOR_2L GPIO5 // brown
-#define ENABLE_L GPIO12   // WARNING: ADC2 PIN //red
-#define ENC1_L GPIO16     // yellow
+#define DC_MOTOR_1L RDX   // in_3 -> header_1_pin1 -> rdx
+#define DC_MOTOR_2L GPIO5 // in_4 -> header_1_pin2 -> gpio5
+#define ENABLE_L GPIO12   // en_b -> header_1_pin3-> gpio12
+#define ENC1_L GPIO16     //
 #define ENC2_L GPIO17     // white
 
 // RIGHT MOTOR
-#define DC_MOTOR_1R GPIO21 // white
-#define DC_MOTOR_2R GPIO23 // brown
-#define ENABLE_R GPIO13    // WARNING: ADC2 PIN //grey
+#define DC_MOTOR_1R GPIO21 // in_1 -> header_1_pin5 -> gpio21
+#define DC_MOTOR_2R GPIO23 // in_2 -> header_1_pin7 -> gpio23
+#define ENABLE_R GPIO13    // en_a -> header_1_pin8 -> gpio13
 #define ENC1_R GPIO18      // yellow
 #define ENC2_R GPIO19      // white
 

@@ -49,6 +49,9 @@ float Motor::get_speed() {
 
 void Motor::refresh(int pwm_dif) {
     pwmVal += pwm_dif;
+    if (pwmVal < 0 || pwmVal > 255) {
+        return;
+    }
     ledcWrite(pwm_channel, pwmVal);
 }
 void Motor::set_pwm(unsigned int _pwmVal) {

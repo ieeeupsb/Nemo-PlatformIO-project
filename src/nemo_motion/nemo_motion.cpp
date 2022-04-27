@@ -33,9 +33,6 @@ void walk_line(int millimeters, int direction, int turn) {
     bool stop = false;
     do {
         correct_trajectory_line();
-        debug_encoder(left_motor);
-        debug_encoder(right_motor);
-
         line_case_debug();
         stop = (turn == LINE_CASE_FAST) ||
                ((int32_t)left_motor.encoder.getCount() > ticks);
@@ -52,9 +49,7 @@ void walk(int millimeters, int direction) {
 
     bool stop = false;
     do {
-        correct_trajectory();
-        debug_encoder(left_motor);
-        debug_encoder(right_motor);
+        // correct_trajectory();
         stop = ((int32_t)left_motor.encoder.getCount() >= ticks);
     } while (!stop);
     left_motor.stop();
@@ -98,7 +93,7 @@ void correct_trajectory_line() {
             left_motor.refresh(-1);
             return;
         }
-        right_motor.refresh(1);
+        // right_motor.refresh(1);
         break;
     case CORRECT_TO_LEFT:
         if (right_speed > MIN_SPEED) {
@@ -146,6 +141,45 @@ void rotate(int degrees, int direction, int speed) {
         right_motor.set_speed(FORWARD, right_speed);
 
         while (left_motor.encoder.getCount() > -ticks) {
+        }
+        break;
+    default:
+        debug_message("invalid direction");
+        break;
+    }
+    left_motor.stop();
+    right_motor.stop();
+}
+
+int rotate_line(int degrees, int direction, int speed) {
+
+    if (!degrees) {
+        return 0;
+    }
+
+    int left_speed = speed;
+    int right_speed = speed;
+    left_motor.encoder.setCount(0);
+    right_motor.encoder.setCount(0);
+    int32_t ticks;
+
+    switch (direction) {
+    case CLOCKWISE:
+        ticks = (int32_t)((-2200 / 360.0) * degrees);
+        left_motor.set_speed(FORWARD, left_speed);
+        right_motor.set_speed(BACKWARDS, right_speed);
+
+        while ((right_motor.encoder.getCount() > -ticks / 2) ||
+               (LINE_CASE_FAST == LINE)) {
+        }
+        break;
+    case ANTI_CLOCKWISE:
+        ticks = (int32_t)((-2200 / 360.0) * degrees);
+        left_motor.set_speed(BACKWARDS, left_speed);
+        right_motor.set_speed(FORWARD, right_speed);
+
+        while (left_motor.encoder.getCount() > -ticks / 2 ||
+               (LINE_CASE_FAST == LINE)) {
         }
         break;
     default:

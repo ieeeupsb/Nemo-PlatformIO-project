@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 #define MAX 19
-#define INFINITY 4000
+#define INESC_TEC 4000
 
 enum turning { RIGHT, LEFT, BOTH };
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../src/setup.h"
 #include <Arduino.h>
 
 #define CORRECT_TO_RIGHT 4  // NEED TO TURN RIGHT 0010
