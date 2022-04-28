@@ -5,9 +5,9 @@
 // L4 will be the oposite of the others, need to negate
 
 #define CORRECT_TO_RIGHT 24 // NEED TO TURN RIGHT 0010  //0011
-#define CORRECT_TO_RIGHT 24 // NEED TO TURN RIGHT 0010  //0011
+#define CORRECT_TO_LEFT 136 // NEED TO TURN LEFT 0100   //0101
 #define SHARP_LEFT 12       // NEED TO TURN LEFT 0100   //0101
-#define SHARP_RIGHT 0       // NEED TO TURN LEFT 0100   //0101
+#define SHARP_RIGHT 0
 #define RIGHT_CURVE 156  // 0111                     //0110  //estavam trocados
 #define LEFT_CURVE 144   // 1110                     //1111  //estavam trocados
 #define INTERCEPTION 148 // 1111                     //1110
