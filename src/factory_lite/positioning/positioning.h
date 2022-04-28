@@ -1,13 +1,12 @@
 #pragma once
 
+#include "../../lib/line/line.h "
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX 19
 #define INESC_TEC 4000
-
-enum turning { RIGHT, LEFT, BOTH };
 
 // Matriz G das distancias entre pontos
 //é essencial, saber de que lado deteto cada vertice, porque assim sei para onde
@@ -20,15 +19,15 @@ enum turning { RIGHT, LEFT, BOTH };
 // o facto de criar uma estrutura aqui, n significa que seja uma variavel global
 // :), debugging for 30 min to find out that shit
 typedef struct _movement {
-    int origem;        // onde comecei e para onde vou
-    int destino;       // onde quero chegar
-    size_t path_len;   // numero de elementos em path, vai decrementando
-    int path[MAX];     // caminho a tomar
-    int atual;         // must recent position
-    int anterior;      // last position
-    enum turning turn; // saber qual o proximo lado a detetar
-    int boxAttached;   // indica se tem box attached or not
-    int lastRotation;  // last direction this mf rotated
+    int origem;       // onde comecei e para onde vou
+    int destino;      // onde quero chegar
+    size_t path_len;  // numero de elementos em path, vai decrementando
+    int path[MAX];    // caminho a tomar
+    int atual;        // must recent position
+    int anterior;     // last position
+    int turn;         // saber qual o proximo lado a detetar
+    int boxAttached;  // indica se tem box attached or not
+    int lastRotation; // last direction this mf rotated
 } movement;
 
 // To be honest dei CTRL+C de um code que vi online para dijkstra

@@ -3,6 +3,7 @@
 #include "../line/line.h"
 #include "../nemo_debug/nemo_debug.h"
 #include "../setup.h"
+#include "../sonar/sonar.h"
 #include <motor.h>
 
 #define DEBUG_SPEED                                                            \

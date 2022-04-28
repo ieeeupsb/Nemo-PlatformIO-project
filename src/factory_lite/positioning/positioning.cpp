@@ -137,13 +137,13 @@ int detected(movement *mov) {
     if ((mov->atual == 13) || (mov->atual == 11) ||
         ((mov->atual == 2) && (mov->path[mov->path_len] == 1)) ||
         ((mov->atual == 7) && (mov->path[mov->path_len] == 8))) {
-        mov->turn = BOTH;
+        mov->turn = INTERCEPTION;
         printf("Proxima intersection detetamos no meio\n");
     } else if (G[mov->atual][mov->path[mov->path_len]] > 0) {
-        mov->turn = RIGHT;
+        mov->turn = RIGHT_CURVE;
         printf("Proxima intersection detetamos a direita\n");
     } else {
-        mov->turn = LEFT;
+        mov->turn = LEFT_CURVE;
         printf("Proxima intersection detetamos a esquerda\n");
     }
 

@@ -86,8 +86,7 @@ int box_operations(movement *mov) {
         if (line2 && line3 && (mov->atual != 1) &&
             (mov->atual != 8)) { // substituir line2 e line3 por
             // digitalRead() dos IR correspondentes
-            if (mov->turn == RIGHT) {
-
+            if (mov->turn == RIGHT_CURVE) {
                 mov->lastRotation = CLOCKWISE;
                 rotate_line(90, CLOCKWISE, NEMO_SPEED);
             } else {
@@ -141,60 +140,30 @@ int motor_go_forward(movement *mov, int type) {
 
     while (1) {
         walk_line(1500, FORWARD, mov->turn);
-        sleep(0.01); // may need to use other function
 
-        // switch (LINE_CASE_FAST) {
-        // case LEFT_CURVE:
-        //     if (mov->turn != LEFT) {
-        //         debug_message("Probabily error, should detect LEFT\n");
-        //         flag++;
-        //     }
-        //     break;
-
-        // case RIGHT_CURVE:
-        //     if (mov->turn != RIGHT) {
-        //         debug_message("Probabily error, should detect RIGHT\n");
-        //         flag++;
-        //     }
-        //     break;
-
-        // case INTERCEPTION:
-        //     if (mov->turn != BOTH) {
-        //         debug_message("Probabily error, should detect BOTH\n");
-        //         flag++;
-        //     }
-        //     break;
-        // }
-
-        // walk(30, FORWARD);
-        // correct_trajectory_line();
-
-        if (((LINE_CASE_FAST == LEFT_CURVE) ||
-             (LINE_CASE_FAST == RIGHT_CURVE)) &&
-            !flag) {
-            // esperar 10ms mais coisa menos coisa
-            delay(10);
-            if ((LINE_CASE_FAST == RIGHT_CURVE) && (mov->turn == RIGHT)) {
+        if (!flag) {
+            if (LINE_CASE_FAST == mov->turn) {
                 debug_message("Detetamos interseçao a direita, correctly\n");
-                flag = 1;
-            } else if ((LINE_CASE_FAST == LEFT_CURVE) && (mov->turn == LEFT)) {
+            } else if ((LINE_CASE_FAST == mov->turn)) {
                 debug_message("Detetamos interseçao a esquerda, correctly\n");
-                flag = 1;
-            } else if ((LINE_CASE_FAST == INTERCEPTION) &&
-                       (mov->turn == BOTH)) {
+            } else if ((LINE_CASE_FAST == mov->turn)) {
                 debug_message(
                     "Detetamos interseçao em ambos os lados, correctly\n");
-                flag = 1;
             } else {
                 debug_message("Intersecao mal detetada\n");
-                return 0;
             }
-        } else if (flag &&
-                   ((LINE_CASE_FAST == LINE) || (LINE_CASE_FAST == FREE))) {
+
+            flag = 1;
+            mov->turn = LINE;
+
+        } else if (((LINE_CASE_FAST == LINE) || (LINE_CASE_FAST == FREE))) {
             debug_message("We arrived at the end of intersection\n");
             return 1;
         }
     }
+
+    if (mov->atual != mov->destino)
+        walk_line(200, FORWARD, INTERCEPTION);
 }
 
 // vai pegar em dois nós (atual e em path)

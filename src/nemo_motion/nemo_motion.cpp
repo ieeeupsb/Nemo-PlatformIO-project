@@ -46,7 +46,7 @@ void walk_line(int millimeters, int direction, int turn) {
             DEBUG_SPEED;
             correct_trajectory_line();
             line_case_debug();
-            stop = (turn == LINE_CASE_FAST) ||
+            stop = (turn == LINE_CASE_FAST) || (LINE_CASE_FAST == FREE) ||
                    ((int32_t)left_motor.encoder.getCount() > ticks);
         } while (!stop);
         break;
@@ -56,7 +56,55 @@ void walk_line(int millimeters, int direction, int turn) {
             DEBUG_SPEED;
             correct_trajectory_line();
             line_case_debug();
-            stop = (turn == LINE_CASE_FAST) ||
+            stop = (turn == LINE_CASE_FAST) || ((LINE_CASE_FAST == FREE)) ||
+                   (-(int32_t)left_motor.encoder.getCount() > ticks);
+        } while (!stop);
+        break;
+    }
+
+    left_motor.stop();
+    right_motor.stop();
+}
+
+void walk_sonar(int millimeters, int direction) {
+    int ticks = (int32_t)(3.7 * float(millimeters));
+    bool stop = false;
+
+    left_motor.encoder.setCount(0);
+    right_motor.encoder.setCount(0);
+
+    left_motor.set_speed(direction, NEMO_SPEED);
+    right_motor.set_speed(direction, NEMO_SPEED);
+
+    unsigned long last = 0;
+
+    // while (left_motor.get_speed() < 2 || right_motor.get_speed() < 2) {
+    //     if (millis() - last > 1000) {
+    //         left_motor.refresh(1);
+    //         right_motor.refresh(1);
+    //         last = millis();
+    //         DEBUG_SPEED;
+    //     }
+    //     correct_trajectory();
+    //     }
+
+    switch (direction) {
+    case FORWARD:
+        do {
+            DEBUG_SPEED;
+            correct_trajectory_line();
+            line_case_debug();
+            stop = ((distance(SONAR_TRIG, SONAR_ECHO)) <= 5) ||
+                   ((int32_t)left_motor.encoder.getCount() > ticks);
+        } while (!stop);
+        break;
+
+    case BACKWARDS:
+        do {
+            DEBUG_SPEED;
+            correct_trajectory_line();
+            line_case_debug();
+            stop = ((distance(SONAR_TRIG, SONAR_ECHO)) <= 5) ||
                    (-(int32_t)left_motor.encoder.getCount() > ticks);
         } while (!stop);
         break;
