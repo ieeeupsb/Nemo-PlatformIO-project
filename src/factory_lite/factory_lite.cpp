@@ -135,6 +135,7 @@ int motor_go_forward(movement *mov, int type) {
 
     if (!type) {
         debug_message("Andamos até ter a caixa\n");
+        walk(100, FORWARD);
         return 1;
     }
 
@@ -272,9 +273,11 @@ int factory_lite() {
     // sleep(0.5);
     //     /* code */
     // }
+    while (1) {
+        line_case_debug();
+    }
 
-    ELECTROMAGNET_ON;
-    walk(1500, FORWARD);
+    walk_line(300, FORWARD, RIGHT_CURVE);
     // debug_encoder(left_motor);
     // debug_encoder(right_motor);
 

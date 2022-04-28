@@ -5,7 +5,13 @@
 #include "../setup.h"
 #include <motor.h>
 
-
+#define DEBUG_SPEED                                                            \
+    {                                                                          \
+        char aux[128];                                                         \
+        sprintf(aux, "Left speed %f: Right speed %f \n", left_motor.speed,     \
+                right_motor.speed);                                            \
+        debug_message(aux);                                                    \
+    }
 
 extern Motor left_motor;
 extern Motor right_motor;

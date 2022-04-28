@@ -4,12 +4,14 @@ void debug_message(const char *message) {
 
     if (!DEBUG_MODE)
         return;
+    Serial.println(message);
+
+    if (!USE_WIFI)
+        return;
     udp.beginPacket(UDP_ADDRESS, UDP_PORT); // Initiate transmission of data
 
     udp.printf(message);
     udp.endPacket(); // Close communication
-
-    Serial.println(message);
 }
 
 int line_case_debug() {
