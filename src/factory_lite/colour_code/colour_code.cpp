@@ -1,8 +1,9 @@
-    #include "colour_code.h"
+#include "colour_code.h"
 #include "setup.h"
 
 void recieve_colour_code(char *colour_code, char local,
                          const char *udpAddress) {
+    if (!wifi_is_setup) return;
     char *message = NULL;
 
     switch (local) {

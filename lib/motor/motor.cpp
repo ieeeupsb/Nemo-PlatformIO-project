@@ -34,12 +34,14 @@ void Motor::stop() {
 }
 
 float Motor::get_speed() {
-    int current_tick_number = encoder.getCount();
-    unsigned int current_time = millis();
+    float current_tick_number = (float)encoder.getCount();
+    float current_time =(float)millis();
 
-    float speed = (current_tick_number - previous_tick_number) * WALK_CONST /
-                  (current_time - previous_time);
+    float distance = (current_tick_number - previous_tick_number) * WALK_CONST;
+    float time =  (current_time - previous_time);
+    if(!distance || !time) return speed;
 
+    float speed = distance/time; 
     // Refresh previous_vars in the end of the function
     previous_tick_number = encoder.getCount();
     previous_time = millis();

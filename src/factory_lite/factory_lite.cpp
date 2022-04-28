@@ -24,7 +24,8 @@ void factory_lite_setup() {
     if (DEBUG_MODE)
         Serial.begin(115200);
 
-    // wifi_setup(UDP_ADDRESS, UDP_PORT);
+    if (USE_WIFI)
+        wifi_setup(UDP_ADDRESS, UDP_PORT);
     motors_setup();
     sonar_setup();
     line_setup();
@@ -263,10 +264,19 @@ int factory_lite() {
     int aux;
     factory_lite_setup();
     char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
-    // recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
+    recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
+    // while (1)
+    // {
+    // debug_encoder(left_motor);
+    // debug_encoder(right_motor);
+    // sleep(0.5);
+    //     /* code */
+    // }
 
+    ELECTROMAGNET_ON;
     walk(1500, FORWARD);
-    
+    // debug_encoder(left_motor);
+    // debug_encoder(right_motor);
 
     // while (1) {
     //     sleep(1);

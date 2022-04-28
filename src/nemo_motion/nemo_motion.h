@@ -1,6 +1,14 @@
 #pragma once
 
-#define MIN_SPEED 5
+#include "../line/line.h"
+#include "../nemo_debug/nemo_debug.h"
+#include "../setup.h"
+#include <motor.h>
+
+
+
+extern Motor left_motor;
+extern Motor right_motor;
 
 void motors_setup();
 

@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 extern WiFiUDP udp; // Creation of wifi Udp instance
+extern bool wifi_is_setup;
 
 int server_setup();
 char *receive_data();

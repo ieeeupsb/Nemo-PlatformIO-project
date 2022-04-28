@@ -1,10 +1,5 @@
 #include "nemo_motion.h"
 
-#include "../line/line.h"
-#include "../nemo_debug/nemo_debug.h"
-#include "../setup.h"
-#include <motor.h>
-
 #define ENCODER_ERROR 0
 #define STABLE_STATE 0
 #define CORRECT_TO_RIGHT_STATE 1
@@ -50,9 +45,7 @@ void walk(int millimeters, int direction) {
     right_motor.set_speed(direction, NEMO_SPEED);
     bool stop = false;
     do {
-        sleep(0.1);
         stop = ((int32_t)left_motor.encoder.getCount() >= ticks);
-        Serial.println((int32_t)right_motor.encoder.getCount());
         correct_trajectory();
     } while (!stop);
     left_motor.stop();
@@ -73,12 +66,16 @@ void correct_trajectory() {
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());
 
-    if (left_speed < right_speed) {
+    // char auxs[128];
+    // sprintf(auxs, "left speed; %f  | right speed: %f", left_speed,
+    // right_speed); debug_message(auxs);
+    if (left_speed > right_speed) {
         if (left_speed > MIN_SPEED) {
             left_motor.refresh(-1);
             return;
         }
         right_motor.refresh(1);
+        return;
     }
     if (right_speed > left_speed) {
         if (right_speed > MIN_SPEED) {
@@ -100,17 +97,21 @@ void correct_trajectory_line() {
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());
 
+    char auxs[128];
+    sprintf(auxs, "left speed; %f  | right speed: %f", left_speed, right_speed);
+    debug_message(auxs);
+
     switch (_case) {
     case CORRECT_TO_RIGHT:
         if (left_speed > MIN_SPEED) {
-            left_motor.refresh(-1);
+            left_motor.refresh(1);
             return;
         }
         // right_motor.refresh(1);
         break;
     case CORRECT_TO_LEFT:
         if (right_speed > MIN_SPEED) {
-            right_motor.refresh(-1);
+            right_motor.refresh(1);
             return;
         }
         left_motor.refresh(1);
@@ -119,16 +120,21 @@ void correct_trajectory_line() {
         debug_message("Error");
         break;
     }
-    if (left_speed < right_speed) {
+
+    if (left_speed > right_speed) {
         if (left_speed > MIN_SPEED) {
             left_motor.refresh(-1);
             return;
         }
         right_motor.refresh(1);
-    }
-    if (right_speed > left_speed) {
         return;
     }
+    if (right_speed > left_speed) {
+        right_motor.refresh(-1);
+        return;
+    }
+    left_motor.refresh(1);
+    return;
 }
 
 void rotate(int degrees, int direction, int speed) {
@@ -201,4 +207,6 @@ int rotate_line(int degrees, int direction, int speed) {
     }
     left_motor.stop();
     right_motor.stop();
+
+    return 1;
 }
