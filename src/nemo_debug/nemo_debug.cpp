@@ -15,6 +15,8 @@ void debug_message(const char *message) {
 }
 
 int line_case_debug() {
+    Serial.println(LINE_CASE_FAST);
+
     switch (LINE_CASE_FAST) {
     case CORRECT_TO_RIGHT:
         debug_message("CORRECT_TO_RIGHT");
