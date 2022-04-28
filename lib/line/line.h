@@ -14,5 +14,18 @@
 #define LINE_CASE_FAST                                                         \
     (GPIO.in1.val & 0x9C) // GPIO.in1.val & 0x9C = L200L1 L4L300
 
+// 35 39 34 36
+// L1 L2 L3 L4
+
+// 32 33 ...40
+
+// shift
+// 3  7  2  4
+// L1 L2 L3 L4
+
+// 8 7  6 5 4  3  2  1 0
+// 0 L2 0 0 L4 L1 L3 0 0
+// 0 1  0 0 1  1  1  0 0
+
 void line_setup();
 int line_case_debug();
