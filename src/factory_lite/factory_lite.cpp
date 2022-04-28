@@ -83,7 +83,7 @@ int box_operations(movement *mov) {
     debug_message("Entramos em Box operations, orientating\n");
 
     if ((mov->atual != 12)) {
-        if (line2 && line3 && (mov->atual != 1) &&
+        if ((LINE_CASE_FAST == LINE) && (mov->atual != 1) &&
             (mov->atual != 8)) { // substituir line2 e line3 por
             // digitalRead() dos IR correspondentes
             if (mov->turn == RIGHT_CURVE) {
@@ -106,13 +106,21 @@ int box_operations(movement *mov) {
         rotate_line(90, CLOCKWISE, NEMO_SPEED);
         mov->lastRotation = CLOCKWISE;
     }
-
     debug_message("Robot already orientado com box\n");
+
     if (!motor_go_forward(mov, MISSION)) {
         debug_message("Motor go forward failed on a Mission\nKABUUUUUMMM");
     }
 
-    walk(300, BACKWARDS);
+    // anda para trás ate detetar interseção
+    if (mov->atual == 1 || mov->atual == 8) {
+        walk_line(300, BACKWARDS, RIGHT_CURVE);
+    } else
+        walk_line(300, BACKWARDS, INTERCEPTION);
+
+    // anda para a frente para deixar de detetar interceptio e estar pronto para
+    // rodar
+    walk_line(100, FORWARD, LEFT_CURVE);
 
     debug_message("We retrieved box and recuated até intersection detected "
                   "again and a little forward\n");
@@ -134,7 +142,8 @@ int motor_go_forward(movement *mov, int type) {
 
     if (!type) {
         debug_message("Andamos até ter a caixa\n");
-        walk(100, FORWARD);
+        walk_sonar(300, FORWARD);
+        ELECTROMAGNET_ON;
         return 1;
     }
 
@@ -192,7 +201,6 @@ void movimentacao(movement *mov) {
 
             // verifica a necessidade de virar or not e atualiza mov->turn
             if (detected(mov)) {
-                // roda +/- 90 graus
                 rotate_line(90, _180180360(mov), NEMO_SPEED);
                 mov->lastRotation = _180180360(mov);
                 continue;
@@ -216,8 +224,8 @@ void handle_movement(movement *mov) {
     detected(mov);            // atualiza o valor de mov->turn
     debug_message("Going into movimentaçao\n");
     movimentacao(mov); // anda até mov->destino
-    // // vai buscar box e volta atras ate intersection, also rotates
-    // box_operations(mov);
+    // vai buscar box e volta atras ate intersection, also rotates
+    box_operations(mov);
 }
 
 movement *new_movement() {
@@ -235,20 +243,12 @@ int factory_lite() {
     factory_lite_setup();
     char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
     recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
-    // while (1)
-    // {
-    // debug_encoder(left_motor);
-    // debug_encoder(right_motor);
-    // sleep(0.5);
-    //     /* code */
-    // }
+
     while (1) {
         line_case_debug();
     }
 
     walk_line(300, FORWARD, RIGHT_CURVE);
-    // debug_encoder(left_motor);
-    // debug_encoder(right_motor);
 
     // while (1) {
     //     sleep(1);

@@ -20,6 +20,7 @@ extern Motor right_motor;
 void motors_setup();
 
 void walk_line(int millimeters, int direction, int turn);
+void walk_sonar(int millimeters, int direction);
 void rotate(int degrees, int direction, int speed);
 int rotate_line(int degrees, int direction, int speed);
 void correct_trajectory();
