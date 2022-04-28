@@ -16,7 +16,6 @@
 #define GREEN_LEVEL 2
 #define RED_LEVEL 3
 
-#define NEMO_SPEED 170 // 0-255
 #define N_BOXES 4
 #define LEVEL BLUE_LEVEL
 

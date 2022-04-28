@@ -5,6 +5,8 @@
 #define LEFT_MOTOR_CHANNEL 0
 #define RIGHT_MOTOR_CHANNEL 1
 
+#define WALK_CONST 3.43
+
 #define FORWARD 1
 #define BACKWARDS 0
 #define CLOCKWISE 1

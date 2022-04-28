@@ -9,7 +9,7 @@
 
 #if ENV == ESP32DEV
 
-#define NEMO_SPEED 170
+#define NEMO_SPEED 120
 
 #include <ESP32_pinout.h>
 

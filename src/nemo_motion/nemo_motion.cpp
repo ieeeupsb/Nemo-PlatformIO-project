@@ -5,7 +5,6 @@
 #include "../setup.h"
 #include <motor.h>
 
-#define WALK_CONST 3.43
 #define ENCODER_ERROR 0
 #define STABLE_STATE 0
 #define CORRECT_TO_RIGHT_STATE 1
@@ -47,14 +46,28 @@ void walk(int millimeters, int direction) {
     left_motor.encoder.setCount(0);
     right_motor.encoder.setCount(0);
 
+    left_motor.set_speed(direction, NEMO_SPEED);
+    right_motor.set_speed(direction, NEMO_SPEED);
     bool stop = false;
     do {
-        // correct_trajectory();
+        sleep(0.1);
         stop = ((int32_t)left_motor.encoder.getCount() >= ticks);
+        Serial.println((int32_t)right_motor.encoder.getCount());
+        correct_trajectory();
     } while (!stop);
     left_motor.stop();
     right_motor.stop();
 }
+// void walk_debug() {
+
+//     left_motor.encoder.setCount(0);
+//     right_motor.encoder.setCount(0);
+
+//     bool stop = false;
+//     do {
+//         left_motor.set_pwm
+//     } while (1);
+// }
 
 void correct_trajectory() {
     float left_speed = fabs(left_motor.get_speed());

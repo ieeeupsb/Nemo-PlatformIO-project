@@ -265,13 +265,16 @@ int factory_lite() {
     char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
     // recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
 
-    while (1) {
-        sleep(1);
-        aux = distance(SONAR_TRIG, SONAR_ECHO);
-        Serial.print(aux);
-        Serial.print("  ||  ");
-        line_case_debug();
-    }
+    walk(1500, FORWARD);
+    
+
+    // while (1) {
+    //     sleep(1);
+    //     aux = distance(SONAR_TRIG, SONAR_ECHO);
+    //     Serial.print(aux);
+    //     Serial.print("  ||  ");
+    //     line_case_debug();
+    // }
 
     // char input_colour[4] = {'B', 'B', 'B', 'B'};
     // // char machine_B[4] = {'X', 'X', 'X', 'X'};

@@ -37,7 +37,7 @@ float Motor::get_speed() {
     int current_tick_number = encoder.getCount();
     unsigned int current_time = millis();
 
-    float speed = (current_tick_number - previous_tick_number) /
+    float speed = (current_tick_number - previous_tick_number) * WALK_CONST /
                   (current_time - previous_time);
 
     // Refresh previous_vars in the end of the function
@@ -46,7 +46,7 @@ float Motor::get_speed() {
 
     return speed;
 }
-
+/*ultimas duas  não testadas*/
 void Motor::refresh(int pwm_dif) {
     pwmVal += pwm_dif;
     if (pwmVal < 0 || pwmVal > 255) {
@@ -55,6 +55,9 @@ void Motor::refresh(int pwm_dif) {
     ledcWrite(pwm_channel, pwmVal);
 }
 void Motor::set_pwm(unsigned int _pwmVal) {
-    ledcWrite(pwm_channel, pwmVal);
-    pwmVal += _pwmVal;
+    if (_pwmVal < 0 || _pwmVal > 255) {
+        return;
+    }
+    ledcWrite(pwm_channel, _pwmVal);
+    pwmVal = _pwmVal;
 }
