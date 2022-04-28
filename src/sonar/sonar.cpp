@@ -21,5 +21,5 @@ void send_pulse(int trigPin) {
 
 float distance(int trigPin, int echoPin) {
     send_pulse(trigPin);
-    return pulseIn(echoPin, HIGH) / 2 * 0.0343;
+    return (pulseIn(echoPin, HIGH) / 2 * 0.0343);
 }

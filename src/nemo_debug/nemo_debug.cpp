@@ -4,10 +4,10 @@ void debug_message(const char *message) {
 
     if (!DEBUG_MODE)
         return;
-    udp.beginPacket(UDP_ADDRESS, UDP_PORT); // Initiate transmission of data
+    // udp.beginPacket(UDP_ADDRESS, UDP_PORT); // Initiate transmission of data
 
-    udp.printf(message);
-    udp.endPacket(); // Close communication
+    // udp.printf(message);
+    // udp.endPacket(); // Close communication
 
     Serial.println(message);
 }
@@ -18,7 +18,7 @@ int line_case_debug() {
         debug_message("CORRECT_TO_RIGHT");
         break;
     case CORRECT_TO_LEFT:
-        debug_message("CORRECT_TO_RIGHT");
+        debug_message("CORRECT_TO_LEFT");
         break;
     case RIGHT_CURVE:
         debug_message("RIGHT_CURVE");
