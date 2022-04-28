@@ -1,6 +1,20 @@
 #pragma once
 
-#define MIN_SPEED 5
+#include "../line/line.h"
+#include "../nemo_debug/nemo_debug.h"
+#include "../setup.h"
+#include <motor.h>
+
+#define DEBUG_SPEED                                                            \
+    {                                                                          \
+        char aux[128];                                                         \
+        sprintf(aux, "Left speed %f: Right speed %f \n", left_motor.speed,     \
+                right_motor.speed);                                            \
+        debug_message(aux);                                                    \
+    }
+
+extern Motor left_motor;
+extern Motor right_motor;
 
 void motors_setup();
 

@@ -1,11 +1,5 @@
 #include "nemo_motion.h"
 
-#include "../line/line.h"
-#include "../nemo_debug/nemo_debug.h"
-#include "../setup.h"
-#include <motor.h>
-
-#define WALK_CONST 3.43
 #define ENCODER_ERROR 0
 #define STABLE_STATE 0
 #define CORRECT_TO_RIGHT_STATE 1
@@ -25,47 +19,105 @@ void motors_setup() {
 }
 
 void walk_line(int millimeters, int direction, int turn) {
-    int ticks = (int32_t)(3.5 * float(millimeters));
+    int ticks = (int32_t)(3.7 * float(millimeters));
+    bool stop = false;
 
     left_motor.encoder.setCount(0);
     right_motor.encoder.setCount(0);
 
-    bool stop = false;
-    do {
-        correct_trajectory_line();
-        line_case_debug();
-        stop = (turn == LINE_CASE_FAST) ||
-               ((int32_t)left_motor.encoder.getCount() > ticks);
-    } while (!stop);
+    left_motor.set_speed(direction, NEMO_SPEED);
+    right_motor.set_speed(direction, NEMO_SPEED);
+
+    unsigned long last = 0;
+
+    // while (left_motor.get_speed() < 2 || right_motor.get_speed() < 2) {
+    //     if (millis() - last > 1000) {
+    //         left_motor.refresh(1);
+    //         right_motor.refresh(1);
+    //         last = millis();
+    //         DEBUG_SPEED;
+    //     }
+    //     correct_trajectory();
+    //     }
+
+    switch (direction) {
+    case FORWARD:
+        do {
+            DEBUG_SPEED;
+            correct_trajectory_line();
+            line_case_debug();
+            stop = (turn == LINE_CASE_FAST) ||
+                   ((int32_t)left_motor.encoder.getCount() > ticks);
+        } while (!stop);
+        break;
+
+    case BACKWARDS:
+        do {
+            DEBUG_SPEED;
+            correct_trajectory_line();
+            line_case_debug();
+            stop = (turn == LINE_CASE_FAST) ||
+                   (-(int32_t)left_motor.encoder.getCount() > ticks);
+        } while (!stop);
+        break;
+    }
+
     left_motor.stop();
     right_motor.stop();
 }
 
 void walk(int millimeters, int direction) {
-    int ticks = (int32_t)(WALK_CONST * float(millimeters));
+    int ticks = (int32_t)(float(millimeters) / WALK_CONST);
 
     left_motor.encoder.setCount(0);
     right_motor.encoder.setCount(0);
 
+    left_motor.set_speed(direction, NEMO_SPEED);
+    right_motor.set_speed(direction, NEMO_SPEED);
     bool stop = false;
-    do {
-        // correct_trajectory();
-        stop = ((int32_t)left_motor.encoder.getCount() >= ticks);
-    } while (!stop);
+
+    switch (direction) {
+    case FORWARD:
+        do {
+            stop = ((int32_t)left_motor.encoder.getCount() >= ticks);
+            correct_trajectory();
+        } while (!stop);
+
+    case BACKWARDS:
+        do {
+            stop = (-(int32_t)left_motor.encoder.getCount() >= ticks);
+            correct_trajectory();
+        } while (!stop);
+        break;
+    }
     left_motor.stop();
     right_motor.stop();
 }
+// void walk_debug() {
+
+//     left_motor.encoder.setCount(0);
+//     right_motor.encoder.setCount(0);
+
+//     bool stop = false;
+//     do {
+//         left_motor.set_pwm
+//     } while (1);
+// }
 
 void correct_trajectory() {
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());
 
-    if (left_speed < right_speed) {
+    // char auxs[128];
+    // sprintf(auxs, "left speed; %f  | right speed: %f", left_speed,
+    // right_speed); debug_message(auxs);
+    if (left_speed > right_speed) {
         if (left_speed > MIN_SPEED) {
             left_motor.refresh(-1);
             return;
         }
         right_motor.refresh(1);
+        return;
     }
     if (right_speed > left_speed) {
         if (right_speed > MIN_SPEED) {
@@ -87,35 +139,46 @@ void correct_trajectory_line() {
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());
 
+    char auxs[128];
+    sprintf(auxs, "left speed; %f  | right speed: %f", left_speed, right_speed);
+    debug_message(auxs);
+
     switch (_case) {
-    case CORRECT_TO_RIGHT:
-        if (left_speed > MIN_SPEED) {
-            left_motor.refresh(-1);
-            return;
-        }
-        // right_motor.refresh(1);
-        break;
     case CORRECT_TO_LEFT:
-        if (right_speed > MIN_SPEED) {
-            right_motor.refresh(-1);
-            return;
-        }
-        left_motor.refresh(1);
-        break;
-    default:
-        debug_message("Error");
-        break;
-    }
-    if (left_speed < right_speed) {
         if (left_speed > MIN_SPEED) {
             left_motor.refresh(-1);
             return;
         }
         right_motor.refresh(1);
-    }
-    if (right_speed > left_speed) {
         return;
+        break;
+    case CORRECT_TO_RIGHT:
+        if (right_speed > MIN_SPEED) {
+            right_motor.refresh(-1);
+            return;
+        }
+        left_motor.refresh(1);
+        return;
+        break;
+    default:
+        debug_message("Error");
+        break;
     }
+
+    // if (left_speed > right_speed) {
+    //     if (left_speed > MIN_SPEED) {
+    //         left_motor.refresh(-1);
+    //         return;
+    //     }
+    //     right_motor.refresh(1);
+    //     return;
+    // }
+    // if (right_speed > left_speed) {
+    //     right_motor.refresh(-1);
+    //     return;
+    // }
+    // left_motor.refresh(1);
+    // return;
 }
 
 void rotate(int degrees, int direction, int speed) {
@@ -188,4 +251,6 @@ int rotate_line(int degrees, int direction, int speed) {
     }
     left_motor.stop();
     right_motor.stop();
+
+    return 1;
 }

@@ -5,6 +5,7 @@
 #define M_CHARS 32
 
 WiFiUDP udp; // Creation of wifi Udp instance
+bool wifi_is_setup = false;
 
 void wifi_setup(const char *ip_address, int udp_port) {
     Serial.print("Trying to conecting to ");
@@ -52,9 +53,11 @@ void wifi_setup(const char *ip_address, int udp_port) {
     }
     udp.begin(udp_port);
     Serial.println("Is this your local ip: " + (String)ip_address + "?");
+    wifi_is_setup = true;
 }
 
 char *receive_data() {
+    if (!wifi_is_setup) return NULL;
     char *ret = (char *)calloc(32, 1);
     udp.parsePacket();
     if (udp.read(ret, M_CHARS) > 0) {
@@ -67,6 +70,7 @@ char *receive_data() {
 }
 
 char *recieve_data_impl() {
+    if (!wifi_is_setup) return NULL;
     char *message = NULL;
     Serial.println("Looking for next UDP package");
     while (!message)
@@ -81,6 +85,7 @@ char *recieve_data_impl() {
 
 void send_data(const char *message, const char *udpAddress, uint16_t udp_port) {
 
+    if (!wifi_is_setup) return;
     udp.beginPacket(udpAddress, udp_port); // Initiate transmission of data
 
     udp.printf(message);

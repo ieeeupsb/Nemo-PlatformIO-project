@@ -6,4 +6,4 @@
 
 void setup() { MAIN_FUNCTION; }
 
-void loop() {}
+void loop() { line_case_debug(); }

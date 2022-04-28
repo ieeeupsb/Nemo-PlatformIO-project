@@ -34,19 +34,21 @@ void Motor::stop() {
 }
 
 float Motor::get_speed() {
-    int current_tick_number = encoder.getCount();
-    unsigned int current_time = millis();
+    float current_tick_number = (float)encoder.getCount();
+    float current_time =(float)millis();
 
-    float speed = (current_tick_number - previous_tick_number) /
-                  (current_time - previous_time);
+    float distance = (current_tick_number - previous_tick_number) * WALK_CONST;
+    float time =  (current_time - previous_time);
+    if(!distance || !time) return speed;
 
+    float speed = distance/time; 
     // Refresh previous_vars in the end of the function
     previous_tick_number = encoder.getCount();
     previous_time = millis();
 
     return speed;
 }
-
+/*ultimas duas  não testadas*/
 void Motor::refresh(int pwm_dif) {
     pwmVal += pwm_dif;
     if (pwmVal < 0 || pwmVal > 255) {
@@ -55,6 +57,9 @@ void Motor::refresh(int pwm_dif) {
     ledcWrite(pwm_channel, pwmVal);
 }
 void Motor::set_pwm(unsigned int _pwmVal) {
-    ledcWrite(pwm_channel, pwmVal);
-    pwmVal += _pwmVal;
+    if (_pwmVal < 0 || _pwmVal > 255) {
+        return;
+    }
+    ledcWrite(pwm_channel, _pwmVal);
+    pwmVal = _pwmVal;
 }

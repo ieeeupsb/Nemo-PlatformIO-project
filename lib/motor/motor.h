@@ -5,6 +5,8 @@
 #define LEFT_MOTOR_CHANNEL 0
 #define RIGHT_MOTOR_CHANNEL 1
 
+#define WALK_CONST 3.43
+
 #define FORWARD 1
 #define BACKWARDS 0
 #define CLOCKWISE 1
@@ -22,6 +24,7 @@ class Motor {
     float get_speed();
     void refresh(int pwm_dif);
     void set_pwm(unsigned int _pwmVal);
+    float speed = 0;
 
   private:
     uint8_t pwm_channel;
@@ -31,8 +34,8 @@ class Motor {
     uint8_t dc_motor_1;
     uint8_t dc_motor_2;
 
-    int previous_tick_number = 0;
-    unsigned int previous_time = 0;
+    float previous_tick_number = 0;
+    float previous_time = 0;
 };
 
 class SimplePID {

@@ -5,7 +5,7 @@
 
 #define ELECTROMAGNET_ON digitalWrite(ELECTROMAGNET, HIGH)
 #define ELECTROMAGNET_OFF digitalWrite(ELECTROMAGNET, LOW)
-#define ELECTROMAGNET_SETUP pinMode(ELECTROMAGNET, INPUT)
+#define ELECTROMAGNET_SETUP pinMode(ELECTROMAGNET, OUTPUT)
 
 int orientation(movement *mov);
 int box_operations(movement *mov);
@@ -24,7 +24,8 @@ void factory_lite_setup() {
     if (DEBUG_MODE)
         Serial.begin(115200);
 
-    wifi_setup(UDP_ADDRESS, UDP_PORT);
+    if (USE_WIFI)
+        wifi_setup(UDP_ADDRESS, UDP_PORT);
     motors_setup();
     sonar_setup();
     line_setup();
@@ -120,33 +121,54 @@ int box_operations(movement *mov) {
     return 0;
 }
 
-// retorna valor para atualizar mov->lastRotation
-
 // controlo do robot na linha
 // verifica interseçao e so sai dps de sair da interseçao
-// Vinicius Domain
 // type vai definir se é para: buscar/deixar a caixa ou movimento entre nós
 // returns 1 if successful, 0 if not
 ////////////////////////////
-// Atualiza o valor de boxAttached
 // substituir line1 e line4 por digitalRead ou whatever
 // precisa de codigo para ir ate ao end da intersection
 int motor_go_forward(movement *mov, int type) {
     int flag = 0; // indica se ja detetamos a interseçao alguma vez or not
-                  // substituir por digitalRead
 
     debug_message("Motor a andar para a frente\n");
 
     if (!type) {
         debug_message("Andamos até ter a caixa\n");
+        walk(100, FORWARD);
         return 1;
     }
 
     while (1) {
-        // walk_line(1500, FORWARD);
+        walk_line(1500, FORWARD, mov->turn);
+        sleep(0.01); // may need to use other function
 
-        // esperamos 10ms, para ver se mais algum deste sensor entra na fita
-        // or not
+        // switch (LINE_CASE_FAST) {
+        // case LEFT_CURVE:
+        //     if (mov->turn != LEFT) {
+        //         debug_message("Probabily error, should detect LEFT\n");
+        //         flag++;
+        //     }
+        //     break;
+
+        // case RIGHT_CURVE:
+        //     if (mov->turn != RIGHT) {
+        //         debug_message("Probabily error, should detect RIGHT\n");
+        //         flag++;
+        //     }
+        //     break;
+
+        // case INTERCEPTION:
+        //     if (mov->turn != BOTH) {
+        //         debug_message("Probabily error, should detect BOTH\n");
+        //         flag++;
+        //     }
+        //     break;
+        // }
+
+        // walk(30, FORWARD);
+        // correct_trajectory_line();
+
         if (((LINE_CASE_FAST == LEFT_CURVE) ||
              (LINE_CASE_FAST == RIGHT_CURVE)) &&
             !flag) {
@@ -240,19 +262,33 @@ movement *new_movement() {
 }
 
 int factory_lite() {
+    int aux;
     factory_lite_setup();
     char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
     recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
-    debug_message(colour_code);
-
-    digitalWrite(ENABLE_L, HIGH);
-    digitalWrite(DC_MOTOR_1L, HIGH);
-    digitalWrite(DC_MOTOR_2L, HIGH);
-
-    // walk(1500, FORWARD);
+    // while (1)
+    // {
+    // debug_encoder(left_motor);
+    // debug_encoder(right_motor);
+    // sleep(0.5);
+    //     /* code */
+    // }
     while (1) {
         line_case_debug();
     }
+
+    walk_line(300, FORWARD, RIGHT_CURVE);
+    // debug_encoder(left_motor);
+    // debug_encoder(right_motor);
+
+    // while (1) {
+    //     sleep(1);
+    //     aux = distance(SONAR_TRIG, SONAR_ECHO);
+    //     Serial.print(aux);
+    //     Serial.print("  ||  ");
+    //     line_case_debug();
+    // }
+
     // char input_colour[4] = {'B', 'B', 'B', 'B'};
     // // char machine_B[4] = {'X', 'X', 'X', 'X'};
     // char output_colour[4] = {'X', 'X', 'X', 'X'};
@@ -273,6 +309,64 @@ int factory_lite() {
     // output_colour[i] = 'B';
     // }
     // break;
+
+    // case GREEN_LEVEL:
+    // // this part takes the green boxes to the machine_B
+    // for (int i = 0; i < 4; i++) {
+    //     if (input_colour[i + 1] == 'B') {
+    //         continue;
+    //     }
+    //     mov->destino = i + 1;
+    //     handle_movement(mov);
+    //     input_colour[i] = 'X';
+    //     mov->origem = mov->destino;
+    //     // chooses where to take the box inside machine_B
+    //     if (machine_B[1] == 'X') {
+    //         mov->destino = 13;
+    //         machine_B[1] = 'B';
+    //     } else if (machine_B[3] == 'X') {
+    //         mov->destino = 12;
+    //         machine_B[3] = 'B';
+    //     } else if (machine_B[0] == 'X') {
+    //         mov->destino = 13;
+    //         machine_B[0] = 'B';
+    //     } else {
+    //         mov->destino = 12;
+    //         machine_B[2] = 'B';
+    //     }
+    //     handle_movement(mov);
+    //     mov->origem = mov->destino;
+    // }
+    // // we deliver the Blue boxes to the exit
+    // for (int i = 0; i < 4; i++) {
+    //     if (input_colour[i] == 'X') {
+    //         continue;
+    //     }
+    //     // entregamos as azuis primeiro
+    //     mov->destino = i + 1;
+    //     handle_movement(mov);
+    //     input_colour[i] = 'X';
+    //     mov->origem = mov->destino;
+    //     mov->destino = i + 5;
+    //     handle_movement(mov);
+    //     mov->origem = mov->destino;
+    //     output_colour[i] = 'B';
+    // }
+    // // we deliver the green boxes to the exit
+    // for (int i = 1; i < 8; i += 2) {
+    //     if (machine_B[i % 4] == 'B') {
+    //         mov->destino = 15 - ((i % 4) % 3);
+    //         handle_movement(mov);
+    //         machine_B[i % 4] = 'X';
+    //         mov->origem = mov->destino;
+    //         mov->destino = i + 5;
+    //         handle_movement(mov);
+    //         mov->origem = mov->destino;
+    //         output_colour[i] = 'B';
+    //     }
+    // }
+    // break;
+
     // }
 
     return 0;
