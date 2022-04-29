@@ -1,8 +1,14 @@
 #include "nemo_debug.h"
 
+unsigned long last_time_debug_message = 0;
 void debug_message(const char *message) {
 
     if (!DEBUG_MODE)
+        return;
+
+    if (millis() - last_time_debug_message > 300) {
+        last_time_debug_message = millis();
+    } else
         return;
     Serial.println(message);
 
@@ -15,7 +21,6 @@ void debug_message(const char *message) {
 }
 
 int line_case_debug() {
-    Serial.println(LINE_CASE_FAST);
 
     switch (LINE_CASE_FAST) {
     case CORRECT_TO_RIGHT:

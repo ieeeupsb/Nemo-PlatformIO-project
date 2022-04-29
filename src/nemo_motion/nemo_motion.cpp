@@ -28,24 +28,11 @@ void walk_line(int millimeters, int direction, int turn) {
     left_motor.set_speed(direction, NEMO_SPEED);
     right_motor.set_speed(direction, NEMO_SPEED);
 
-    unsigned long last = 0;
-
-    // while (left_motor.get_speed() < 2 || right_motor.get_speed() < 2) {
-    //     if (millis() - last > 1000) {
-    //         left_motor.refresh(1);
-    //         right_motor.refresh(1);
-    //         last = millis();
-    //         DEBUG_SPEED;
-    //     }
-    //     correct_trajectory();
-    //     }
-
     switch (direction) {
     case FORWARD:
         do {
-            DEBUG_SPEED;
+            // DEBUG_SPEED;
             correct_trajectory_line();
-            line_case_debug();
             stop = (turn == LINE_CASE_FAST) || (LINE_CASE_FAST == FREE) ||
                    ((int32_t)left_motor.encoder.getCount() > ticks);
         } while (!stop);
@@ -53,9 +40,8 @@ void walk_line(int millimeters, int direction, int turn) {
 
     case BACKWARDS:
         do {
-            DEBUG_SPEED;
+            // DEBUG_SPEED;
             correct_trajectory_line();
-            line_case_debug();
             stop = (turn == LINE_CASE_FAST) || ((LINE_CASE_FAST == FREE)) ||
                    (-(int32_t)left_motor.encoder.getCount() > ticks);
         } while (!stop);
@@ -115,7 +101,7 @@ void walk_sonar(int millimeters, int direction) {
 }
 
 void walk(int millimeters, int direction) {
-    int ticks = (int32_t)(float(millimeters) / WALK_CONST);
+    int ticks = (int32_t)((float)(millimeters)*WALK_CONST);
 
     left_motor.encoder.setCount(0);
     right_motor.encoder.setCount(0);
@@ -128,9 +114,11 @@ void walk(int millimeters, int direction) {
     case FORWARD:
         do {
             stop = ((int32_t)left_motor.encoder.getCount() >= ticks);
+            debug_encoder(left_motor);
             correct_trajectory();
+            DEBUG_SPEED;
         } while (!stop);
-
+        break;
     case BACKWARDS:
         do {
             stop = (-(int32_t)left_motor.encoder.getCount() >= ticks);
@@ -141,16 +129,6 @@ void walk(int millimeters, int direction) {
     left_motor.stop();
     right_motor.stop();
 }
-// void walk_debug() {
-
-//     left_motor.encoder.setCount(0);
-//     right_motor.encoder.setCount(0);
-
-//     bool stop = false;
-//     do {
-//         left_motor.set_pwm
-//     } while (1);
-// }
 
 void correct_trajectory() {
     float left_speed = fabs(left_motor.get_speed());
@@ -187,25 +165,25 @@ void correct_trajectory_line() {
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());
 
-    char auxs[128];
-    sprintf(auxs, "left speed; %f  | right speed: %f", left_speed, right_speed);
-    debug_message(auxs);
-
     switch (_case) {
     case CORRECT_TO_LEFT:
-        if (left_speed > MIN_SPEED) {
+        debug_message("correcting to right");
+        if (left_speed > MAX_SPEED) {
             left_motor.refresh(-1);
             return;
         }
-        right_motor.refresh(1);
+        // if (right_speed < MIN_SPEED)
+        //     right_motor.refresh(1);
         return;
         break;
     case CORRECT_TO_RIGHT:
-        if (right_speed > MIN_SPEED) {
+        debug_message("correcting to left");
+        if (right_speed > MAX_SPEED) {
             right_motor.refresh(-1);
             return;
         }
-        left_motor.refresh(1);
+        // if (left_speed < MIN_SPEED)
+        //     left_motor.refresh(1);
         return;
         break;
     default:
