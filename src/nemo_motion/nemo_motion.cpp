@@ -35,7 +35,8 @@ void walk_line(int millimeters, int direction, int turn) {
             DEBUG_SPEED;
             correct_trajectory();
             stop = (turn == LINE_CASE_FAST) || (LINE_CASE_FAST == FREE) ||
-                   ((int32_t)left_motor.encoder.getCount() > ticks);
+                   ((int32_t)left_motor.encoder.getCount() > ticks) ||
+                   ((int32_t)right_motor.encoder.getCount() > ticks);
         } while (!stop);
         break;
 
@@ -44,7 +45,8 @@ void walk_line(int millimeters, int direction, int turn) {
             DEBUG_SPEED;
             correct_trajectory();
             stop = (turn == LINE_CASE_FAST) || ((LINE_CASE_FAST == FREE)) ||
-                   (-(int32_t)left_motor.encoder.getCount() > ticks);
+                   (-(int32_t)left_motor.encoder.getCount() > ticks) ||
+                   (-(int32_t)right_motor.encoder.getCount() > ticks);
         } while (!stop);
         break;
     }
@@ -81,7 +83,7 @@ void walk_sonar(int millimeters, int direction) {
     case FORWARD:
         do {
             DEBUG_SPEED;
-            correct_trajectory_line();
+            correct_trajectory();
             line_case_debug();
             stop = ((distance(SONAR_TRIG, SONAR_ECHO)) <= 5) ||
                    ((int32_t)left_motor.encoder.getCount() > ticks);
@@ -91,7 +93,7 @@ void walk_sonar(int millimeters, int direction) {
     case BACKWARDS:
         do {
             DEBUG_SPEED;
-            correct_trajectory_line();
+            correct_trajectory();
             line_case_debug();
             stop = ((distance(SONAR_TRIG, SONAR_ECHO)) <= 5) ||
                    (-(int32_t)left_motor.encoder.getCount() > ticks);
@@ -299,21 +301,17 @@ int rotate_line(int degrees, int direction, int speed) {
         left_motor.set_speed(FORWARD, left_speed);
         right_motor.set_speed(BACKWARDS, right_speed);
 
-        // while (-right_motor.encoder.getCount() < (ticks / 2) ||
-        //        !(LINE_CASE_FAST == LINE)) {
-        //     DEBUG_SPEED;
-        // }
         while ((-right_motor.encoder.getCount() < ticks / 2) ||
                (LINE_CASE_FAST != LINE)) {
             DEBUG_SPEED;
         }
         break;
-        // while (!stop) {
-        //     stop = (LINE_CASE_FAST == LINE) ||
-        //            ((int32_t)left_motor.encoder.getCount() >= ticks);
+        // while ((LINE_CASE_FAST != LINE) ||
+        //        ((int32_t)left_motor.encoder.getCount() < ticks / 2)) {
+        //     DEBUG_SPEED;
         // }
 
-        break;
+        // break;
     case ANTI_CLOCKWISE:
         ticks = (int32_t)(ROTATION_CONST * degrees);
         left_motor.set_speed(BACKWARDS, left_speed);
@@ -323,6 +321,10 @@ int rotate_line(int degrees, int direction, int speed) {
                !(LINE_CASE_FAST == LINE)) {
             DEBUG_SPEED;
         }
+        // while (right.encoder.getCount() < (ticks / 2) ||
+        //        !(LINE_CASE_FAST == LINE)) {
+        //     DEBUG_SPEED;
+        // }
         break;
     default:
         debug_message("invalid direction");
@@ -333,4 +335,43 @@ int rotate_line(int degrees, int direction, int speed) {
     right_motor.stop();
 
     return 0;
+}
+
+int P = 0, I = 0;
+void pid_control(int direction) {
+
+    int Kp = 5, Ki = 5;
+    int pidValue;
+
+    float left_speed = fabs(left_motor.get_speed());
+    float right_speed = fabs(right_motor.get_speed());
+
+    int _case = LINE_CASE_FAST;
+
+    switch (_case) {
+    case (LINE):
+        P = 0;
+        break;
+    case (CORRECT_TO_LEFT):
+        P = 1;
+        break;
+    case (CORRECT_TO_RIGHT):
+        P = -1;
+        break;
+    case (SHARP_LEFT):
+        P = 2;
+        break;
+    case (SHARP_RIGHT):
+        P = -2;
+        break;
+    }
+    I += P;
+
+    pidValue = P * Kp + I * Ki;
+
+    right_speed = NEMO_SPEED + pidValue;
+    left_speed = NEMO_SPEED - pidValue;
+
+    right_motor.set_speed(direction, right_speed);
+    left_motor.set_speed(direction, left_speed);
 }

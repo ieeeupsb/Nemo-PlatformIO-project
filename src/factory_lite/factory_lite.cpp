@@ -232,10 +232,28 @@ int factory_lite() {
     // recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
 
     walk_line(1500, FORWARD, RIGHT_CURVE);
-    rotate_line(90, CLOCKWISE, 140);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
+
+    // walk_line(1500, FORWARD, RIGHT_CURVE);
+    // walk_line(1500, FORWARD, RIGHT_CURVE);
+    // walk_line(1500, FORWARD, RIGHT_CURVE);
+    // ELECTROMAGNET_ON;
+    // walk_sonar(200, FORWARD);
+    // walk_line(200, BACKWARDS, RIGHT_CURVE);
+    // rotate_line(90, CLOCKWISE, NEMO_SPEED);
+    // walk_line(1500, FORWARD, LEFT_CURVE);
+    // walk_line(1500, FORWARD, LEFT_CURVE);
+    // walk_line(1500, FORWARD, LEFT_CURVE);
+    // walk_line(1500, FORWARD, RIGHT_CURVE);
+    // walk_line(1500, FORWARD, LEFT_CURVE);
+    // walk_line(1500, FORWARD, INTERCEPTION);
+    // walk_line(1500, FORWARD, RIGHT_CURVE);
+    // walk_line(1500, FORWARD, INTERCEPTION);
+    // rotate_line(90, ANTI_CLOCKWISE, NEMO_SPEED);
+    // walk_line(1500, FORWARD, RIGHT_CURVE);
+    // rotate_line(90, CLOCKWISE, NEMO_SPEED);
+    // walk_sonar(200, FORWARD);
+    // ELECTROMAGNET_OFF;
+    // walk_line(200, BACKWARDS, INTERCEPTION);
 
     return 0;
 }
