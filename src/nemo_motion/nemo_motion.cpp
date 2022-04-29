@@ -8,6 +8,7 @@
 Motor left_motor;
 Motor right_motor;
 
+void correct_trajectory_line_1();
 void correct_trajectory_line();
 
 void motors_setup() {
@@ -31,8 +32,8 @@ void walk_line(int millimeters, int direction, int turn) {
     switch (direction) {
     case FORWARD:
         do {
-            // DEBUG_SPEED;
-            correct_trajectory_line();
+            DEBUG_SPEED;
+            correct_trajectory();
             stop = (turn == LINE_CASE_FAST) || (LINE_CASE_FAST == FREE) ||
                    ((int32_t)left_motor.encoder.getCount() > ticks);
         } while (!stop);
@@ -40,8 +41,8 @@ void walk_line(int millimeters, int direction, int turn) {
 
     case BACKWARDS:
         do {
-            // DEBUG_SPEED;
-            correct_trajectory_line();
+            DEBUG_SPEED;
+            correct_trajectory();
             stop = (turn == LINE_CASE_FAST) || ((LINE_CASE_FAST == FREE)) ||
                    (-(int32_t)left_motor.encoder.getCount() > ticks);
         } while (!stop);
@@ -157,7 +158,56 @@ void correct_trajectory() {
     }
 }
 
+unsigned long last_time_line = 0;
+void correct_trajectory_line_1() {
+
+    int flag = 0;
+    int _case = LINE_CASE_FAST;
+    if (_case == LINE) {
+        correct_trajectory();
+        flag = 0;
+        return;
+    }
+
+    float left_speed = fabs(left_motor.get_speed());
+    float right_speed = fabs(right_motor.get_speed());
+
+    // char auxs[128];
+    // sprintf(auxs, "left speed; %f  | right speed: %f", left_speed,
+    // right_speed); debug_message(auxs);
+    if (flag) {
+        return;
+    }
+
+    switch (_case) {
+
+    case (CORRECT_TO_LEFT):
+        if (left_speed > MIN_SPEED) {
+            left_motor.refresh(-1);
+            flag = 0;
+            return;
+        }
+        right_motor.refresh(1);
+        flag = 1;
+        return;
+
+    case (CORRECT_TO_RIGHT):
+
+        if (right_speed > MIN_SPEED) {
+            right_motor.refresh(-1);
+            flag = 0;
+            return;
+        }
+        left_motor.refresh(1);
+        flag = 1;
+        return;
+
+        break;
+    }
+}
+
 void correct_trajectory_line() {
+
     int _case = LINE_CASE_FAST;
     if (_case == LINE) {
         correct_trajectory();
@@ -174,9 +224,9 @@ void correct_trajectory_line() {
             left_motor.refresh(-1);
             return;
         }
-        // if (right_speed < MIN_SPEED)
-        //     right_motor.refresh(1);
-        return;
+
+        right_motor.refresh(1);
+
         break;
     case CORRECT_TO_RIGHT:
         debug_message("correcting to left");
@@ -184,29 +234,20 @@ void correct_trajectory_line() {
             right_motor.refresh(-1);
             return;
         }
-        // if (left_speed < MIN_SPEED)
-        //     left_motor.refresh(1);
-        return;
+
+        if (millis() - last_time_line > 7) {
+            last_time_line = millis();
+            if (left_speed < MIN_SPEED)
+                left_motor.refresh(1);
+            return;
+        } else
+            return;
+
         break;
     default:
         debug_message("Error");
         break;
     }
-
-    // if (left_speed > right_speed) {
-    //     if (left_speed > MIN_SPEED) {
-    //         left_motor.refresh(-1);
-    //         return;
-    //     }
-    //     right_motor.refresh(1);
-    //     return;
-    // }
-    // if (right_speed > left_speed) {
-    //     right_motor.refresh(-1);
-    //     return;
-    // }
-    // left_motor.refresh(1);
-    // return;
 }
 
 void rotate(int degrees, int direction, int speed) {

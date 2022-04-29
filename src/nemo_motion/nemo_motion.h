@@ -25,3 +25,4 @@ void rotate(int degrees, int direction, int speed);
 int rotate_line(int degrees, int direction, int speed);
 void correct_trajectory();
 void correct_trajectory_line();
+void correct_trajectory_line_1();

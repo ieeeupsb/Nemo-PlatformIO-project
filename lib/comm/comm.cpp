@@ -8,12 +8,10 @@ WiFiUDP udp; // Creation of wifi Udp instance
 bool wifi_is_setup = false;
 
 void wifi_setup(const char *ip_address, int udp_port) {
-    Serial.print("Trying to conecting to ");
-
-    int n_networks = WiFi.scanNetworks();
-
     String ssid;
     String password;
+
+    int n_networks = WiFi.scanNetworks();
 
     if (n_networks) {
         bool aux_break = 0;
@@ -23,9 +21,10 @@ void wifi_setup(const char *ip_address, int udp_port) {
             if (aux_break)
                 break;
 
-            Serial.println(WiFi.SSID(i));
             for (int j = 0; j < N_NETWORKS; j++)
                 if (WiFi.SSID(i).compareTo(networks[j]) == 0) {
+                    Serial.print("Connecting to: ");
+                    Serial.println(WiFi.SSID(i));
                     ssid = networks[j];
                     password = passwords[j];
                     aux_break = 1;
@@ -33,8 +32,9 @@ void wifi_setup(const char *ip_address, int udp_port) {
                 }
         }
     } else {
-        Serial.println("Não encontrrou nenhuma rede Wifi conhecida");
-        return;
+        Serial.println("Não encontrou nenhuma rede Wifi conhecida");
+        ssid = networks[DEFAULT_NETWORK];
+        password = password[DEFAULT_NETWORK];
     }
 
     WiFi.begin(ssid.c_str(), password.c_str());
@@ -46,6 +46,8 @@ void wifi_setup(const char *ip_address, int udp_port) {
     }
     if (retries > 14) {
         Serial.println(F("WiFi connection FAILED"));
+        wifi_is_setup = false;
+        return;
     } else if (WiFi.status() == WL_CONNECTED) {
         Serial.println(F("WiFi connected!"));
         Serial.println("IP address: ");
@@ -57,7 +59,8 @@ void wifi_setup(const char *ip_address, int udp_port) {
 }
 
 char *receive_data() {
-    if (!wifi_is_setup) return NULL;
+    if (!wifi_is_setup)
+        return NULL;
     char *ret = (char *)calloc(32, 1);
     udp.parsePacket();
     if (udp.read(ret, M_CHARS) > 0) {
@@ -70,7 +73,8 @@ char *receive_data() {
 }
 
 char *recieve_data_impl() {
-    if (!wifi_is_setup) return NULL;
+    if (!wifi_is_setup)
+        return NULL;
     char *message = NULL;
     Serial.println("Looking for next UDP package");
     while (!message)
@@ -85,7 +89,8 @@ char *recieve_data_impl() {
 
 void send_data(const char *message, const char *udpAddress, uint16_t udp_port) {
 
-    if (!wifi_is_setup) return;
+    if (!wifi_is_setup)
+        return;
     udp.beginPacket(udpAddress, udp_port); // Initiate transmission of data
 
     udp.printf(message);

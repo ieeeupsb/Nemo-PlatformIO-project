@@ -57,7 +57,7 @@ class SimplePID {
     }
 
     // A function to compute the control signal
-    void evalu(int value, int target, float deltaT, int &pwr, int &dir) {
+    void evalu(int value, int target, float deltaT, int &pwmVal_, int &dir) {
         // error
         int e = target - value;
 
@@ -71,9 +71,9 @@ class SimplePID {
         float u = kp * e + kd * dedt + ki * eintegral;
 
         // motor power
-        pwr = (int)fabs(u);
-        if (pwr > umax) {
-            pwr = umax;
+        pwmVal_ = (int)fabs(u);
+        if (pwmVal_ > umax) {
+            pwmVal_ = umax;
         }
 
         // motor direction

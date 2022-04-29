@@ -36,9 +36,9 @@ void Motor::stop() {
 float Motor::get_speed() {
     float current_tick_number = (float)encoder.getCount();
     float current_time = (float)millis();
-
     float distance = (current_tick_number - previous_tick_number) / WALK_CONST;
     float time = (current_time - previous_time);
+
     if (!distance || !time)
         return speed;
 

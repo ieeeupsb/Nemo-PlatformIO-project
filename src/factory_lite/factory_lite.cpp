@@ -228,11 +228,14 @@ int factory_lite() {
     int aux;
     factory_lite_setup();
     char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
-    recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
 
-    walk(3000, FORWARD);
-    // walk_line(1500, FORWARD, RIGHT_CURVE);
-    // rotate_line(90, CLOCKWISE, 140);
-    // walk_line(1500, FORWARD, RIGHT_CURVE);
+    // recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
+
+    walk_line(1500, FORWARD, RIGHT_CURVE);
+    rotate_line(90, CLOCKWISE, 140);
+    walk_line(1500, FORWARD, RIGHT_CURVE);
+    walk_line(1500, FORWARD, RIGHT_CURVE);
+    walk_line(1500, FORWARD, RIGHT_CURVE);
+
     return 0;
 }
