@@ -50,6 +50,8 @@ void walk_line(int millimeters, int direction, int turn) {
 
     left_motor.stop();
     right_motor.stop();
+
+    walk(65, FORWARD);
 }
 
 void walk_sonar(int millimeters, int direction) {
@@ -217,19 +219,21 @@ void rotate(int degrees, int direction, int speed) {
 
     switch (direction) {
     case CLOCKWISE:
-        ticks = (int32_t)((-2200 / 360.0) * degrees);
+        ticks = (int32_t)(ROTATION_CONST * degrees);
         left_motor.set_speed(FORWARD, left_speed);
         right_motor.set_speed(BACKWARDS, right_speed);
 
-        while (right_motor.encoder.getCount() > -ticks) {
+        while (-right_motor.encoder.getCount() < ticks) {
+            DEBUG_SPEED;
         }
         break;
     case ANTI_CLOCKWISE:
-        ticks = (int32_t)((-2200 / 360.0) * degrees);
+        ticks = (int32_t)(ROTATION_CONST * degrees);
         left_motor.set_speed(BACKWARDS, left_speed);
         right_motor.set_speed(FORWARD, right_speed);
 
-        while (left_motor.encoder.getCount() > -ticks) {
+        while (-left_motor.encoder.getCount() < ticks) {
+            DEBUG_SPEED;
         }
         break;
     default:
@@ -242,10 +246,6 @@ void rotate(int degrees, int direction, int speed) {
 
 int rotate_line(int degrees, int direction, int speed) {
 
-    if (!degrees) {
-        return 0;
-    }
-
     int left_speed = speed;
     int right_speed = speed;
     left_motor.encoder.setCount(0);
@@ -254,29 +254,42 @@ int rotate_line(int degrees, int direction, int speed) {
 
     switch (direction) {
     case CLOCKWISE:
-        ticks = (int32_t)((-2200 / 360.0) * degrees);
+        ticks = (int32_t)((ROTATION_CONST)*degrees);
         left_motor.set_speed(FORWARD, left_speed);
         right_motor.set_speed(BACKWARDS, right_speed);
 
-        while ((right_motor.encoder.getCount() > -ticks / 2) ||
-               (LINE_CASE_FAST == LINE)) {
+        // while (-right_motor.encoder.getCount() < (ticks / 2) ||
+        //        !(LINE_CASE_FAST == LINE)) {
+        //     DEBUG_SPEED;
+        // }
+        while ((-right_motor.encoder.getCount() < ticks / 2) ||
+               (LINE_CASE_FAST != LINE)) {
+            DEBUG_SPEED;
         }
         break;
+        // while (!stop) {
+        //     stop = (LINE_CASE_FAST == LINE) ||
+        //            ((int32_t)left_motor.encoder.getCount() >= ticks);
+        // }
+
+        break;
     case ANTI_CLOCKWISE:
-        ticks = (int32_t)((-2200 / 360.0) * degrees);
+        ticks = (int32_t)(ROTATION_CONST * degrees);
         left_motor.set_speed(BACKWARDS, left_speed);
         right_motor.set_speed(FORWARD, right_speed);
 
-        while (left_motor.encoder.getCount() > -ticks / 2 ||
-               (LINE_CASE_FAST == LINE)) {
+        while (-left_motor.encoder.getCount() < (ticks / 2) ||
+               !(LINE_CASE_FAST == LINE)) {
+            DEBUG_SPEED;
         }
         break;
     default:
         debug_message("invalid direction");
         break;
     }
+
     left_motor.stop();
     right_motor.stop();
 
-    return 1;
+    return 0;
 }

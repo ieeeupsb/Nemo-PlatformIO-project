@@ -230,9 +230,9 @@ int factory_lite() {
     char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
     recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
 
-    walk_line(800, FORWARD, RIGHT_CURVE);
-    walk(60, FORWARD);
-    rotate(90, CLOCKWISE, NEMO_SPEED);
-
+    walk(3000, FORWARD);
+    // walk_line(1500, FORWARD, RIGHT_CURVE);
+    // rotate_line(90, CLOCKWISE, 140);
+    // walk_line(1500, FORWARD, RIGHT_CURVE);
     return 0;
 }

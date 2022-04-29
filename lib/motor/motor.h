@@ -6,6 +6,7 @@
 #define RIGHT_MOTOR_CHANNEL 1
 
 #define WALK_CONST 3.43
+#define ROTATION_CONST (2120.0 / 360.0)
 
 #define FORWARD 1
 #define BACKWARDS 0
