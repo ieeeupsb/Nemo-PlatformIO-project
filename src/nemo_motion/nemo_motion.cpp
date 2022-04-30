@@ -33,7 +33,8 @@ void walk_line(int millimeters, int direction, int turn) {
     case FORWARD:
         do {
             DEBUG_SPEED;
-            correct_trajectory();
+            pid_control(direction);
+            // pid_control(direction);
             stop = (turn == LINE_CASE_FAST) || (LINE_CASE_FAST == FREE) ||
                    ((int32_t)left_motor.encoder.getCount() > ticks) ||
                    ((int32_t)right_motor.encoder.getCount() > ticks);
@@ -44,6 +45,7 @@ void walk_line(int millimeters, int direction, int turn) {
         do {
             DEBUG_SPEED;
             correct_trajectory();
+            // pid_control(direction);
             stop = (turn == LINE_CASE_FAST) || ((LINE_CASE_FAST == FREE)) ||
                    (-(int32_t)left_motor.encoder.getCount() > ticks) ||
                    (-(int32_t)right_motor.encoder.getCount() > ticks);
@@ -84,7 +86,7 @@ void walk_sonar(int millimeters, int direction) {
         do {
             DEBUG_SPEED;
             correct_trajectory();
-            line_case_debug();
+            pid_control(direction);
             stop = ((distance(SONAR_TRIG, SONAR_ECHO)) <= 5) ||
                    ((int32_t)left_motor.encoder.getCount() > ticks);
         } while (!stop);
@@ -160,54 +162,59 @@ void correct_trajectory() {
     }
 }
 
-unsigned long last_time_line = 0;
 void correct_trajectory_line_1() {
-
-    int flag = 0;
     int _case = LINE_CASE_FAST;
     if (_case == LINE) {
         correct_trajectory();
-        flag = 0;
         return;
     }
 
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());
 
-    // char auxs[128];
-    // sprintf(auxs, "left speed; %f  | right speed: %f", left_speed,
-    // right_speed); debug_message(auxs);
-    if (flag) {
-        return;
-    }
-
     switch (_case) {
-
-    case (CORRECT_TO_LEFT):
-        if (left_speed > MIN_SPEED) {
+    case CORRECT_TO_LEFT:
+        debug_message("correcting to right");
+        if (left_speed > MAX_SPEED) {
             left_motor.refresh(-1);
-            flag = 0;
             return;
         }
-        right_motor.refresh(1);
-        flag = 1;
+        // if (right_speed < MIN_SPEED)
+        //     right_motor.refresh(1);
         return;
-
-    case (CORRECT_TO_RIGHT):
-
-        if (right_speed > MIN_SPEED) {
+        break;
+    case CORRECT_TO_RIGHT:
+        debug_message("correcting to left");
+        if (right_speed > MAX_SPEED) {
             right_motor.refresh(-1);
-            flag = 0;
             return;
         }
-        left_motor.refresh(1);
-        flag = 1;
+        // if (left_speed < MIN_SPEED)
+        //     left_motor.refresh(1);
         return;
-
+        break;
+    default:
+        debug_message("Error");
         break;
     }
+
+    // if (left_speed > right_speed) {
+    //     if (left_speed > MIN_SPEED) {
+    //         left_motor.refresh(-1);
+    //         return;
+    //     }
+    //     right_motor.refresh(1);
+    //     return;
+    // }
+    // if (right_speed > left_speed) {
+    //     right_motor.refresh(-1);
+    //     return;
+    // }
+    // left_motor.refresh(1);
+    // return;
 }
 
+int last_time_line = 0;
 void correct_trajectory_line() {
 
     int _case = LINE_CASE_FAST;
@@ -340,7 +347,7 @@ int rotate_line(int degrees, int direction, int speed) {
 int P = 0, I = 0;
 void pid_control(int direction) {
 
-    int Kp = 5, Ki = 5;
+    int Kp = 5, Ki = 0;
     int pidValue;
 
     float left_speed = fabs(left_motor.get_speed());
@@ -367,7 +374,7 @@ void pid_control(int direction) {
     }
     I += P;
 
-    pidValue = P * Kp + I * Ki;
+    pidValue = (P * Kp) + (I * Ki);
 
     right_speed = NEMO_SPEED + pidValue;
     left_speed = NEMO_SPEED - pidValue;
