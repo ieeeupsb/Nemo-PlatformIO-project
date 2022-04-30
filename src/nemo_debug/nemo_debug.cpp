@@ -6,7 +6,7 @@ void debug_message(const char *message) {
     if (!DEBUG_MODE)
         return;
 
-    if (millis() - last_time_debug_message > 300) {
+    if (millis() - last_time_debug_message > DEBUG_REFRESH_RATE) {
         last_time_debug_message = millis();
     } else
         return;

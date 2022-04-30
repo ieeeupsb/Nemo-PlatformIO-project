@@ -1,4 +1,4 @@
-#define DEBUG_MODE true
+#define USE_WIFI 0
 #define UDP_ADDRESS                                                            \
     "192.168.1.43" // "192.168.120.187" //"192.168.0.116" // Comp server ip
                    // addr
@@ -9,12 +9,14 @@
 
 #define BAUD_RATE 115200
 
+#define DEBUG_MODE true
+#define DEBUG_REFRESH_RATE 150
+
 #if ENV == ESP32DEV
 
-#define NEMO_SPEED 120 // 140
+#define NEMO_SPEED 130 // 140
 #define MAX_SPEED 0.19 // 0.5
 #define MIN_SPEED 0.17 // 0.25
-#define USE_WIFI 1
 
 #include <ESP32_pinout.h>
 

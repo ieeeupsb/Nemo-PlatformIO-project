@@ -227,6 +227,7 @@ movement *new_movement() {
 
 int factory_lite() {
     int aux;
+    char help[5];
     factory_lite_setup();
     char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
 
@@ -266,12 +267,12 @@ void caixa1() {
 
     sprintf(aux, "%d", i);
     debug_message(aux);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
+    walk_line(300, FORWARD, RIGHT_CURVE);
     i++;
     sprintf(aux, "%d", i);
     debug_message(aux);
 
-    walk_line(1500, FORWARD, RIGHT_CURVE);
+    walk_line(200, FORWARD, RIGHT_CURVE);
     i++;
     sprintf(aux, "%d", i);
     debug_message(aux);

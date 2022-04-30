@@ -34,19 +34,25 @@ void walk_line(int millimeters, int direction, int turn) {
         do {
             line_case_debug();
             pid_control(direction);
-            stop = (turn == LINE_CASE_FAST) ||
-                   ((int32_t)left_motor.encoder.getCount() > ticks) ||
-                   ((int32_t)right_motor.encoder.getCount() > ticks);
+            if (right_motor.speed == 0) {
+                right_motor.set_speed(direction, NEMO_SPEED);
+            }
+            if (left_motor.speed == 0) {
+                left_motor.set_speed(direction, NEMO_SPEED);
+            }
+            stop = ((turn == LINE_CASE_FAST) ||
+                    ((int32_t)left_motor.encoder.getCount() > ticks) ||
+                    ((int32_t)right_motor.encoder.getCount() > ticks));
         } while (!stop);
         break;
 
     case BACKWARDS:
         do {
-            DEBUG_SPEED;
+            line_case_debug();
             pid_control(direction);
-            stop = (turn == LINE_CASE_FAST) ||
-                   (-(int32_t)left_motor.encoder.getCount() > ticks) ||
-                   (-(int32_t)right_motor.encoder.getCount() > ticks);
+            stop = ((turn == LINE_CASE_FAST) ||
+                    (-(int32_t)left_motor.encoder.getCount() > ticks) ||
+                    (-(int32_t)right_motor.encoder.getCount() > ticks));
         } while (!stop);
         break;
     }
@@ -69,29 +75,18 @@ void walk_sonar(int millimeters, int direction) {
 
     unsigned long last = 0;
 
-    // while (left_motor.get_speed() < 2 || right_motor.get_speed() < 2) {
-    //     if (millis() - last > 1000) {
-    //         left_motor.refresh(1);
-    //         right_motor.refresh(1);
-    //         last = millis();
-    //         DEBUG_SPEED;
-    //     }
-    //     correct_trajectory();
-    //     }
-
     switch (direction) {
     case FORWARD:
         do {
-            DEBUG_SPEED;
             pid_control(direction);
-            stop = ((distance(SONAR_TRIG, SONAR_ECHO)) <= 5) ||
-                   ((int32_t)left_motor.encoder.getCount() > ticks);
+            stop = ((distance(SONAR_TRIG, SONAR_ECHO) <= 5) ||
+                    ((int32_t)left_motor.encoder.getCount() > ticks) ||
+                    (left_motor.speed == 0) || (right_motor.speed == 0));
         } while (!stop);
         break;
 
     case BACKWARDS:
         do {
-            DEBUG_SPEED;
             pid_control(direction);
             stop = ((distance(SONAR_TRIG, SONAR_ECHO)) <= 5) ||
                    (-(int32_t)left_motor.encoder.getCount() > ticks);
@@ -117,14 +112,14 @@ void walk(int millimeters, int direction) {
     case FORWARD:
         do {
             stop = ((int32_t)left_motor.encoder.getCount() >= ticks);
-            debug_encoder(left_motor);
+            line_case_debug();
             correct_trajectory();
-            DEBUG_SPEED;
         } while (!stop);
         break;
     case BACKWARDS:
         do {
             stop = (-(int32_t)left_motor.encoder.getCount() >= ticks);
+            line_case_debug();
             correct_trajectory();
         } while (!stop);
         break;
@@ -137,9 +132,6 @@ void correct_trajectory() {
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());
 
-    // char auxs[128];
-    // sprintf(auxs, "left speed; %f  | right speed: %f", left_speed,
-    // right_speed); debug_message(auxs);
     if (left_speed > right_speed) {
         if (left_speed > MIN_SPEED) {
             left_motor.refresh(-1);
@@ -289,7 +281,6 @@ int rotate_line(int degrees, int direction, int speed) {
 
         while ((-right_motor.encoder.getCount() < ticks / 2) ||
                (LINE_CASE_FAST != LINE)) {
-            DEBUG_SPEED;
         }
         break;
         // while ((LINE_CASE_FAST != LINE) ||
@@ -305,7 +296,6 @@ int rotate_line(int degrees, int direction, int speed) {
 
         while (-left_motor.encoder.getCount() < (ticks / 2) ||
                !(LINE_CASE_FAST == LINE)) {
-            DEBUG_SPEED;
         }
         // while (right.encoder.getCount() < (ticks / 2) ||
         //        !(LINE_CASE_FAST == LINE)) {
@@ -326,7 +316,7 @@ int rotate_line(int degrees, int direction, int speed) {
 int P = 0, I = 0;
 void pid_control(int direction) {
 
-    int Kp = 20, Ki = 0;
+    int Kp = 25, Ki = 0;
     int pidValue = 0;
     int right_speed, left_speed;
 

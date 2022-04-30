@@ -2,6 +2,8 @@
 #include <Arduino.h>
 #include <ESP32Encoder.h>
 
+#define MAX_PWM 180
+
 #define LEFT_MOTOR_CHANNEL 0
 #define RIGHT_MOTOR_CHANNEL 1
 
