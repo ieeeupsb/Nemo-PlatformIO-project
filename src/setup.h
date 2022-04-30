@@ -14,7 +14,7 @@
 #define NEMO_SPEED 120 // 140
 #define MAX_SPEED 0.19 // 0.5
 #define MIN_SPEED 0.17 // 0.25
-#define USE_WIFI 0
+#define USE_WIFI 1
 
 #include <ESP32_pinout.h>
 

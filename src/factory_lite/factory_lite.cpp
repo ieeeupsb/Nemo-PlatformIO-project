@@ -261,12 +261,37 @@ int factory_lite() {
     return 0;
 }
 void caixa1() {
+    int i = 0;
+    char aux[5];
+
+    sprintf(aux, "%d", i);
+    debug_message(aux);
     walk_line(1500, FORWARD, RIGHT_CURVE);
+    i++;
+    sprintf(aux, "%d", i);
+    debug_message(aux);
+
     walk_line(1500, FORWARD, RIGHT_CURVE);
+    i++;
+    sprintf(aux, "%d", i);
+    debug_message(aux);
+
     walk_line(1500, FORWARD, RIGHT_CURVE);
+    i++;
+    sprintf(aux, "%d", i);
+    debug_message(aux);
+
     ELECTROMAGNET_ON;
     walk_sonar(250, FORWARD);
+    i++;
+    sprintf(aux, "%d", i);
+    debug_message(aux);
+
     walk_line(200, BACKWARDS, RIGHT_CURVE);
+    i++;
+    sprintf(aux, "%d", i);
+    debug_message(aux);
+
     rotate_line(90, CLOCKWISE, NEMO_SPEED);
     walk_line(1500, FORWARD, LEFT_CURVE);
     walk_line(1500, FORWARD, LEFT_CURVE);
