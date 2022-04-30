@@ -57,6 +57,27 @@ void wifi_setup(const char *ip_address, int udp_port) {
     Serial.println("Is this your local ip: " + (String)ip_address + "?");
     wifi_is_setup = true;
 }
+// void wifi_simple() {
+//     WiFi.begin("RaF2022_2_4", "");
+//     int retries = 0;
+//     while ((WiFi.status() != WL_CONNECTED) && (retries < 15)) {
+//         retries++;
+//         delay(500);
+//         Serial.print(".");
+//     }
+//     if (retries > 14) {
+//         Serial.println(F("WiFi connection FAILED"));
+//         wifi_is_setup = false;
+//         return;
+//     } else if (WiFi.status() == WL_CONNECTED) {
+//         Serial.println(F("WiFi connected!"));
+//         Serial.println("IP address: ");
+//         Serial.println(WiFi.localIP()); // 192.168.1.151
+//     }
+//     udp.begin(udp_port);
+//     Serial.println("Is this your local ip: " + (String)ip_address + "?");
+//     wifi_is_setup = true;
+// }
 
 char *receive_data() {
     if (!wifi_is_setup)
