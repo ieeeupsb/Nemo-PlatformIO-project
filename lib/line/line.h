@@ -18,6 +18,15 @@
 #define LINE_CASE_FAST                                                         \
     (GPIO.in1.val & 0b10011100) // GPIO.in1.val & 0b10011100 = L200L1 L4L300
 
+#define PRINT_SENSOR                                                           \
+    Serial.print((LINE_CASE_FAST >> 3) & 1);                                   \
+    Serial.print(" ");                                                         \
+    Serial.print((LINE_CASE_FAST >> 2) & 1);                                   \
+    Serial.print(" ");                                                         \
+    Serial.print((LINE_CASE_FAST >> 7) & 1);                                   \
+    Serial.print(" ");                                                         \
+    Serial.println((LINE_CASE_FAST >> 4) & 1);
+
 // 35 39 34 36
 // L1 L2 L3 L4
 
