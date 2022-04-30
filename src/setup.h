@@ -11,9 +11,9 @@
 
 #if ENV == ESP32DEV
 
-#define NEMO_SPEED 125 // 140
-#define MAX_SPEED 0.12 // 0.5
-#define MIN_SPEED 0.1  // 0.25
+#define NEMO_SPEED 120 // 140
+#define MAX_SPEED 0.19 // 0.5
+#define MIN_SPEED 0.17 // 0.25
 #define USE_WIFI 0
 
 #include <ESP32_pinout.h>

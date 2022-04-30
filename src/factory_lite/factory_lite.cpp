@@ -232,11 +232,9 @@ int factory_lite() {
 
     // recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
 
-    // walk_line(1500, FORWARD, RIGHT_CURVE);
-
     // walk_line(700, FORWARD, RIGHT_CURVE);
 
-    // caixa1();
+    caixa1();
 
     // walk_line(1500, FORWARD, RIGHT_CURVE);
     // walk_line(1500, FORWARD, RIGHT_CURVE);
