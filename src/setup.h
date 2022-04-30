@@ -1,7 +1,7 @@
 #define USE_WIFI 0
 #define UDP_ADDRESS                                                            \
-    "192.168.1.43" // "192.168.120.187" //"192.168.0.116" // Comp server ip
-                   // addr
+    "192.168.1.178" // "192.168.120.187" //"192.168.0.116" // Comp server ip
+                    // addr
 #define UDP_PORT 44832U
 
 #define ENV ESP32DEV
@@ -14,7 +14,7 @@
 
 #if ENV == ESP32DEV
 
-#define NEMO_SPEED 130 // 140
+#define NEMO_SPEED 125 // 140
 #define MAX_SPEED 0.19 // 0.5
 #define MIN_SPEED 0.17 // 0.25
 
