@@ -32,10 +32,10 @@ void walk_line(int millimeters, int direction, int turn) {
     switch (direction) {
     case FORWARD:
         do {
-            DEBUG_SPEED;
-            pid_control(direction);
+            line_case_debug();
+            correct_trajectory_line_1();
             // pid_control(direction);
-            stop = (turn == LINE_CASE_FAST) || (LINE_CASE_FAST == FREE) ||
+            stop = (turn == LINE_CASE_FAST) ||
                    ((int32_t)left_motor.encoder.getCount() > ticks) ||
                    ((int32_t)right_motor.encoder.getCount() > ticks);
         } while (!stop);
@@ -44,9 +44,9 @@ void walk_line(int millimeters, int direction, int turn) {
     case BACKWARDS:
         do {
             DEBUG_SPEED;
-            correct_trajectory();
-            // pid_control(direction);
-            stop = (turn == LINE_CASE_FAST) || ((LINE_CASE_FAST == FREE)) ||
+            // correct_trajectory();
+            pid_control(direction);
+            stop = (turn == LINE_CASE_FAST) ||
                    (-(int32_t)left_motor.encoder.getCount() > ticks) ||
                    (-(int32_t)right_motor.encoder.getCount() > ticks);
         } while (!stop);
@@ -56,7 +56,7 @@ void walk_line(int millimeters, int direction, int turn) {
     left_motor.stop();
     right_motor.stop();
 
-    walk(65, FORWARD);
+    // walk(65, FORWARD);
 }
 
 void walk_sonar(int millimeters, int direction) {
@@ -86,7 +86,7 @@ void walk_sonar(int millimeters, int direction) {
         do {
             DEBUG_SPEED;
             correct_trajectory();
-            pid_control(direction);
+            // pid_control(direction);
             stop = ((distance(SONAR_TRIG, SONAR_ECHO)) <= 5) ||
                    ((int32_t)left_motor.encoder.getCount() > ticks);
         } while (!stop);
@@ -163,55 +163,33 @@ void correct_trajectory() {
 }
 
 void correct_trajectory_line_1() {
-    int _case = LINE_CASE_FAST;
-    if (_case == LINE) {
-        correct_trajectory();
-        return;
-    }
-
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());
+    int _case = LINE_CASE_FAST;
 
-    switch (_case) {
-    case CORRECT_TO_LEFT:
-        debug_message("correcting to right");
-        if (left_speed > MAX_SPEED) {
+    // char auxs[128];
+    // sprintf(auxs, "left speed; %f  | right speed: %f", left_speed,
+    // right_speed); debug_message(auxs);
+    if (_case == CORRECT_TO_LEFT) {
+        if (left_speed > MIN_SPEED) {
             left_motor.refresh(-1);
             return;
         }
-        // if (right_speed < MIN_SPEED)
-        //     right_motor.refresh(1);
-        return;
-        break;
-    case CORRECT_TO_RIGHT:
-        debug_message("correcting to left");
-        if (right_speed > MAX_SPEED) {
+        if (right_speed < MAX_SPEED) {
+            right_motor.refresh(1);
+            return;
+        }
+    }
+    if (_case == CORRECT_TO_RIGHT) {
+        if (right_speed > MIN_SPEED) {
             right_motor.refresh(-1);
             return;
         }
-        // if (left_speed < MIN_SPEED)
-        //     left_motor.refresh(1);
-        return;
-        break;
-    default:
-        debug_message("Error");
-        break;
+        if (left_speed < MAX_SPEED) {
+            left_motor.refresh(1);
+            return;
+        }
     }
-
-    // if (left_speed > right_speed) {
-    //     if (left_speed > MIN_SPEED) {
-    //         left_motor.refresh(-1);
-    //         return;
-    //     }
-    //     right_motor.refresh(1);
-    //     return;
-    // }
-    // if (right_speed > left_speed) {
-    //     right_motor.refresh(-1);
-    //     return;
-    // }
-    // left_motor.refresh(1);
-    // return;
 }
 
 int last_time_line = 0;
@@ -347,8 +325,8 @@ int rotate_line(int degrees, int direction, int speed) {
 int P = 0, I = 0;
 void pid_control(int direction) {
 
-    int Kp = 5, Ki = 0;
-    int pidValue;
+    int Kp = 3, Ki = 0;
+    int pidValue = 0;
 
     float left_speed = fabs(left_motor.get_speed());
     float right_speed = fabs(right_motor.get_speed());

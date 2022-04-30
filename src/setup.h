@@ -1,6 +1,6 @@
 #define DEBUG_MODE true
 #define UDP_ADDRESS                                                            \
-    "192.168.1.44" // "192.168.120.187" //"192.168.0.116" // Comp server ip
+    "192.168.1.43" // "192.168.120.187" //"192.168.0.116" // Comp server ip
                    // addr
 #define UDP_PORT 44832U
 
@@ -11,9 +11,9 @@
 
 #if ENV == ESP32DEV
 
-#define NEMO_SPEED 140 // 140
-#define MAX_SPEED 0.5  // 0.5
-#define MIN_SPEED 0.25 // 0.25
+#define NEMO_SPEED 125 // 140
+#define MAX_SPEED 0.12 // 0.5
+#define MIN_SPEED 0.1  // 0.25
 #define USE_WIFI 0
 
 #include <ESP32_pinout.h>
