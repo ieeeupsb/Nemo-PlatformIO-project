@@ -10,13 +10,15 @@
 #define BAUD_RATE 115200
 
 #define DEBUG_MODE true
-#define DEBUG_REFRESH_RATE 150
+#define DEBUG_REFRESH_RATE 2000
 
 #if ENV == ESP32DEV
 
-#define NEMO_SPEED 125 // 140
-#define MAX_SPEED 0.19 // 0.5
-#define MIN_SPEED 0.17 // 0.25
+#define NEMO_PWM 110 // 140
+#define MIN_PWM (NEMO_PWM - 20)
+#define AVERAGE_SPEED 0.006 // 0.20
+#define MAX_SPEED 0.03      // 0.5
+#define MIN_SPEED .0005     // 0.25
 
 #include <ESP32_pinout.h>
 

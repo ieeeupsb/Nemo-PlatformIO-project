@@ -40,25 +40,26 @@ float Motor::get_speed() {
     float time = (current_time - previous_time);
 
     if (!distance || !time)
-        return speed;
+        return Motor::speed;
 
-    float speed = distance / time;
+    Motor::speed = distance / time;
     // Refresh previous_vars in the end of the function
     previous_tick_number = encoder.getCount();
     previous_time = millis();
 
-    return speed;
+    return Motor::speed;
 }
 /*ultimas duas  não testadas*/
-void Motor::refresh(int pwm_dif) {
+int Motor::refresh(int pwm_dif) {
     pwmVal += pwm_dif;
-    if (pwmVal < 0 || pwmVal > MAX_PWM) {
-        return;
+    if (pwmVal < MIN_PWM || pwmVal > MAX_PWM) {
+        return -1;
     }
     ledcWrite(pwm_channel, pwmVal);
+    return pwmVal;
 }
 void Motor::set_pwm(unsigned int _pwmVal) {
-    if (_pwmVal < 0 || _pwmVal > 255) {
+    if (_pwmVal < 0 || _pwmVal > MAX_PWM) {
         return;
     }
     ledcWrite(pwm_channel, _pwmVal);

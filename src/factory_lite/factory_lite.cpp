@@ -40,12 +40,12 @@ int orientation(movement *mov) {
     // se voltarmos a onde estavamos anteriormente
     if (mov->anterior == mov->path[mov->path_len]) {
         if (mov->lastRotation) {
-            rotate_line(90, mov->lastRotation, NEMO_SPEED);
+            rotate_line(90, mov->lastRotation, NEMO_PWM);
             return 1;
         }
         // estamos em 1 ou 8, e damos um belo 180
-        rotate_line(90, CLOCKWISE, NEMO_SPEED);
-        rotate_line(90, CLOCKWISE, NEMO_SPEED);
+        rotate_line(90, CLOCKWISE, NEMO_PWM);
+        rotate_line(90, CLOCKWISE, NEMO_PWM);
         mov->lastRotation = CLOCKWISE;
         debug_message("180 BABYYYYYY\n");
         return 1;
@@ -53,13 +53,13 @@ int orientation(movement *mov) {
 
     if (mov->lastRotation) {
         rotate_line(90, -mov->lastRotation,
-                    NEMO_SPEED); // rodamos o inverso de onde estavamos
+                    NEMO_PWM); // rodamos o inverso de onde estavamos
         mov->lastRotation = -mov->lastRotation;
 
         return 1;
     }
 
-    rotate_line(90, CLOCKWISE, NEMO_SPEED);
+    rotate_line(90, CLOCKWISE, NEMO_PWM);
     mov->lastRotation = CLOCKWISE;
     return 1;
 }
@@ -75,22 +75,22 @@ int box_operations(movement *mov) {
             // digitalRead() dos IR correspondentes
             if (mov->turn == RIGHT_CURVE) {
                 mov->lastRotation = CLOCKWISE;
-                rotate_line(90, CLOCKWISE, NEMO_SPEED);
+                rotate_line(90, CLOCKWISE, NEMO_PWM);
             } else {
                 mov->lastRotation = ANTI_CLOCKWISE;
-                rotate_line(90, ANTI_CLOCKWISE, NEMO_SPEED);
+                rotate_line(90, ANTI_CLOCKWISE, NEMO_PWM);
             }
             // se estiver no 1 ou 8
         } else if (mov->anterior == 10 || mov->anterior == 15) {
-            rotate_line(90, CLOCKWISE, NEMO_SPEED);
+            rotate_line(90, CLOCKWISE, NEMO_PWM);
             mov->lastRotation = CLOCKWISE;
         } else
             debug_message("No rotation needed\n");
     } else if ((mov->origem >= 1) && (mov->origem <= 4)) {
-        rotate_line(90, ANTI_CLOCKWISE, NEMO_SPEED);
+        rotate_line(90, ANTI_CLOCKWISE, NEMO_PWM);
         mov->lastRotation = ANTI_CLOCKWISE;
     } else {
-        rotate_line(90, CLOCKWISE, NEMO_SPEED);
+        rotate_line(90, CLOCKWISE, NEMO_PWM);
         mov->lastRotation = CLOCKWISE;
     }
     debug_message("Robot already orientado com box\n");
@@ -188,7 +188,7 @@ void movimentacao(movement *mov) {
 
             // verifica a necessidade de virar or not e atualiza mov->turn
             if (detected(mov)) {
-                rotate_line(90, _180180360(mov), NEMO_SPEED);
+                rotate_line(90, _180180360(mov), NEMO_PWM);
                 mov->lastRotation = _180180360(mov);
                 continue;
             }
@@ -235,161 +235,93 @@ int factory_lite() {
 
     // walk_line(700, FORWARD, RIGHT_CURVE);
 
-    while (1) {
-        sprintf(help, "%d", (int)distance(SONAR_TRIG, SONAR_ECHO));
-        debug_message(help);
-    }
-
-    // caixa1();
-
-    // char input_colour[4] = {'B', 'B', 'B', 'B'};
-    // char machine_B[4] = {'X', 'X', 'X', 'X'};
-    // char output_colour[4] = {'X', 'X', 'X', 'X'};
-
-    // movement *mov = new_movement();
-    // int i = 0;
-    // switch (LEVEL) {
-
-    // case BLUE_LEVEL:
-    //     for (size_t i = 0; i < N_BOXES; i++) {
-    //         mov->destino = i + 1;
-    //         handle_movement(mov);
-    //         input_colour[i] = 'X';
-    //         mov->origem = mov->destino;
-    //         mov->destino = i + 5;
-    //         handle_movement(mov);
-    //         mov->origem = mov->destino;
-    //         output_colour[i] = 'B';
-    //     }
-    //     break;
-
-    // case GREEN_LEVEL:
-    //     // this part takes the green boxes to the machine_B
-    //     for (int i = 0; i < 4; i++) {
-    //         if (input_colour[i + 1] == 'B') {
-    //             continue;
-    //         }
-    //         mov->destino = i + 1;
-    //         handle_movement(mov);
-    //         input_colour[i] = 'X';
-    //         mov->origem = mov->destino;
-    //         // chooses where to take the box inside machine_B
-    //         if (machine_B[1] == 'X') {
-    //             mov->destino = 13;
-    //             machine_B[1] = 'B';
-    //         } else if (machine_B[3] == 'X') {
-    //             mov->destino = 12;
-    //             machine_B[3] = 'B';
-    //         } else if (machine_B[0] == 'X') {
-    //             mov->destino = 13;
-    //             machine_B[0] = 'B';
-    //         } else {
-    //             mov->destino = 12;
-    //             machine_B[2] = 'B';
-    //         }
-    //         handle_movement(mov);
-    //         mov->origem = mov->destino;
-    //     }
-    //     // we deliver the Blue boxes to the exit
-    //     for (int i = 0; i < 4; i++) {
-    //         if (input_colour[i] == 'X') {
-    //             continue;
-    //         }
-    //         // entregamos as azuis primeiro
-    //         mov->destino = i + 1;
-    //         handle_movement(mov);
-    //         input_colour[i] = 'X';
-    //         mov->origem = mov->destino;
-    //         mov->destino = i + 5;
-    //         handle_movement(mov);
-    //         mov->origem = mov->destino;
-    //         output_colour[i] = 'B';
-    //     }
-    //     // we deliver the green boxes to the exit
-    //     for (int i = 1; i < 8; i += 2) {
-    //         if (machine_B[i % 4] == 'B') {
-    //             mov->destino = 15 - ((i % 4) % 3);
-    //             handle_movement(mov);
-    //             machine_B[i % 4] = 'X';
-    //             mov->origem = mov->destino;
-    //             mov->destino = i + 5;
-    //             handle_movement(mov);
-    //             mov->origem = mov->destino;
-    //             output_colour[i] = 'B';
-    //         }
-    //     }
-    //     break;
+    // while (1) {
+    //     sprintf(help, "%d", (int)distance(SONAR_TRIG, SONAR_ECHO));
+    //     debug_message(help);
     // }
 
-    // return 0;
+    caixa1();
 }
 void caixa1() {
     int i = 0;
     char aux[5];
-    int direction = 0;
+
+    left_motor.set_speed(FORWARD, 0);
+    right_motor.set_speed(FORWARD, 0);
 
     Serial.println("jump fucntion robot crazy");
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    if (LINE_CASE_FAST == SHARP_RIGHT)
-        rotate_line(90, CLOCKWISE, ROTATION_CONST);
-    else if (LINE_CASE_FAST == SHARP_LEFT)
-        rotate_line(90, ANTI_CLOCKWISE, ROTATION_CONST);
+
+    // while (!(left_motor.get_speed() > AVERAGE_SPEED) ||
+    //        !(right_motor.get_speed() > AVERAGE_SPEED)) {
+    //     DEBUG_SPEED;
+    //     if (!(left_motor.speed > AVERAGE_SPEED)) {
+    //         left_motor.pwm_average = left_motor.refresh(1);
+    //     }
+    //     if (!(right_motor.speed > AVERAGE_SPEED)) {
+    //         right_motor.pwm_average = right_motor.refresh(1);
+    //     }
+    //     correct_trajectory();
+    // }
+
+    // para testar pela mao amanha
+    // testar em linha simples
+    // aplicar para ver se le tudo direitinho
+    andamento_linha(FORWARD, RIGHT_CURVE);
+    Serial.println("jump fucntion robot crazy");
+
+    andamento_linha(FORWARD, RIGHT_CURVE);
 
     Serial.println("jump fucntion robot crazy");
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    if (LINE_CASE_FAST == SHARP_RIGHT)
-        rotate_line(90, CLOCKWISE, ROTATION_CONST);
-    else if (LINE_CASE_FAST == SHARP_LEFT)
-        rotate_line(90, ANTI_CLOCKWISE, ROTATION_CONST);
-    Serial.println("jump fucntion robot crazy");
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    if (LINE_CASE_FAST == SHARP_RIGHT)
-        rotate_line(90, CLOCKWISE, ROTATION_CONST);
-    else if (LINE_CASE_FAST == SHARP_LEFT)
-        rotate_line(90, ANTI_CLOCKWISE, ROTATION_CONST);
+    andamento_linha(FORWARD, RIGHT_CURVE);
     Serial.println("jump fucntion robot crazy");
     ELECTROMAGNET_ON;
     Serial.println("jump fucntion robot crazy");
     walk_sonar(20, FORWARD);
-    if (LINE_CASE_FAST == SHARP_RIGHT)
-        rotate_line(90, CLOCKWISE, ROTATION_CONST);
-    else if (LINE_CASE_FAST == SHARP_LEFT)
-        rotate_line(90, ANTI_CLOCKWISE, ROTATION_CONST);
     Serial.println("jump fucntion robot crazy");
     walk_line(200, BACKWARDS, RIGHT_CURVE);
     Serial.println("jump fucntion robot crazy");
-    rotate_line(90, CLOCKWISE, NEMO_SPEED);
+    rotate_line(90, CLOCKWISE, NEMO_PWM);
     Serial.println("jump fucntion robot crazy");
     walk_line(1500, FORWARD, LEFT_CURVE);
+    Serial.println("jump fucntion robot crazy");
+
     walk_line(1500, FORWARD, LEFT_CURVE);
+    Serial.println("jump fucntion robot crazy");
+
     walk_line(1500, FORWARD, LEFT_CURVE);
+    Serial.println("jump fucntion robot crazy");
+
     walk_line(1500, FORWARD, RIGHT_CURVE);
-    rotate_line(90, CLOCKWISE, NEMO_SPEED);
+    Serial.println("jump fucntion robot crazy");
+
+    rotate_line(90, CLOCKWISE, NEMO_PWM);
+    Serial.println("jump fucntion robot crazy");
+
     walk_line(1500, FORWARD, LEFT_CURVE);
     walk_line(1500, FORWARD, INTERCEPTION);
     walk_line(1500, FORWARD, RIGHT_CURVE);
     walk_line(1500, FORWARD, INTERCEPTION);
-    rotate_line(90, ANTI_CLOCKWISE, NEMO_SPEED);
+    rotate_line(90, ANTI_CLOCKWISE, NEMO_PWM);
     walk_line(1500, FORWARD, RIGHT_CURVE);
-    rotate_line(90, CLOCKWISE, NEMO_SPEED);
+    rotate_line(90, CLOCKWISE, NEMO_PWM);
     walk_sonar(200, FORWARD);
     ELECTROMAGNET_OFF;
     walk_line(200, BACKWARDS, INTERCEPTION);
 }
 
 void caixa1__caixa2() {
-    rotate_line(90, CLOCKWISE, NEMO_SPEED);
+    rotate_line(90, CLOCKWISE, NEMO_PWM);
     walk_line(1500, FORWARD, RIGHT_CURVE);
-    rotate_line(90, CLOCKWISE, NEMO_SPEED);
+    rotate_line(90, CLOCKWISE, NEMO_PWM);
     walk_line(1500, FORWARD, LEFT_CURVE);
     walk_line(1500, FORWARD, INTERCEPTION);
     walk_line(1500, FORWARD, RIGHT_CURVE);
     walk_line(1500, FORWARD, INTERCEPTION);
-    rotate_line(90, ANTI_CLOCKWISE, NEMO_SPEED);
+    rotate_line(90, ANTI_CLOCKWISE, NEMO_PWM);
     walk_line(1500, FORWARD, RIGHT_CURVE);
     walk_line(1500, FORWARD, RIGHT_CURVE);
     walk_line(1500, FORWARD, RIGHT_CURVE);
-    rotate_line(90, CLOCKWISE, NEMO_SPEED);
+    rotate_line(90, CLOCKWISE, NEMO_PWM);
     ELECTROMAGNET_ON;
     walk_sonar(200, FORWARD);
 }

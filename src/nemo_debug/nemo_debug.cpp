@@ -56,9 +56,3 @@ void debug_encoder(Motor m) {
     sprintf(auxs, "Left encoder: %d \n", (int32_t)m.encoder.getCount());
     debug_message(auxs);
 }
-
-void debug_motor(Motor m, int time) {
-    m.set_speed(FORWARD, NEMO_SPEED);
-    debug_encoder(m);
-    // millis(time);
-}
