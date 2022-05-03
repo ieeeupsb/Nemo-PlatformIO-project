@@ -44,7 +44,7 @@ void wifi_setup(const char *ip_address, int udp_port) {
         delay(500);
         Serial.print(".");
     }
-    if (retries > 14) {
+    if (retries > 30) {
         Serial.println(F("WiFi connection FAILED"));
         wifi_is_setup = false;
         return;

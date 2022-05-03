@@ -6,7 +6,7 @@ void debug_message(const char *message) {
     if (!DEBUG_MODE)
         return;
 
-    if (millis() - last_time_debug_message > 300) {
+    if (millis() - last_time_debug_message > DEBUG_REFRESH_RATE) {
         last_time_debug_message = millis();
     } else
         return;
@@ -55,10 +55,4 @@ void debug_encoder(Motor m) {
     char auxs[32];
     sprintf(auxs, "Left encoder: %d \n", (int32_t)m.encoder.getCount());
     debug_message(auxs);
-}
-
-void debug_motor(Motor m, int time) {
-    m.set_speed(FORWARD, NEMO_SPEED);
-    debug_encoder(m);
-    // millis(time);
 }

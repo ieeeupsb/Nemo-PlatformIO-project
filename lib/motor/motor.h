@@ -2,6 +2,9 @@
 #include <Arduino.h>
 #include <ESP32Encoder.h>
 
+#define MIN_PWM 120
+#define MAX_PWM 150
+
 #define LEFT_MOTOR_CHANNEL 0
 #define RIGHT_MOTOR_CHANNEL 1
 
@@ -23,9 +26,10 @@ class Motor {
     uint32_t pwmVal;
     uint8_t dir;
     float get_speed();
-    void refresh(int pwm_dif);
+    int refresh(int pwm_dif);
     void set_pwm(unsigned int _pwmVal);
     float speed = 0;
+    int pwm_average = 0;
 
   private:
     uint8_t pwm_channel;

@@ -13,9 +13,9 @@ void sonar_setup() {
 
 void send_pulse(int trigPin) {
     digitalWrite(trigPin, LOW);
-    delayMicroseconds(1);
+    delayMicroseconds(60);
     digitalWrite(trigPin, HIGH);
-    delayMicroseconds(10);
+    delayMicroseconds(1000);
     digitalWrite(trigPin, LOW);
 }
 

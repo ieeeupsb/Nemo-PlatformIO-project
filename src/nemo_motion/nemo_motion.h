@@ -9,8 +9,8 @@
 #define DEBUG_SPEED                                                            \
     {                                                                          \
         char aux[128];                                                         \
-        sprintf(aux, "Left speed %f: Right speed %f \n", left_motor.speed,     \
-                right_motor.speed);                                            \
+        sprintf(aux, "Left speed %f: Right speed %f \n",                       \
+                left_motor.get_speed(), right_motor.get_speed());              \
         debug_message(aux);                                                    \
     }
 
@@ -27,3 +27,7 @@ void correct_trajectory();
 void correct_trajectory_line();
 void correct_trajectory_line_1();
 void pid_control(int direction);
+void andamento(int millimeters, int direction);
+void andamento_linha(int direction, int turn);
+void pid(int direction);
+void pid_speed(int direction);
