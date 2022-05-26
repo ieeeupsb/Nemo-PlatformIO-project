@@ -3,33 +3,21 @@
 #define MISSION 0 // Buscar/Deixar caixa
 #define AROUND 1  // Move around the map
 
-#define ELECTROMAGNET_ON digitalWrite(ELECTROMAGNET, HIGH)
-#define ELECTROMAGNET_OFF digitalWrite(ELECTROMAGNET, LOW)
-#define ELECTROMAGNET_SETUP pinMode(ELECTROMAGNET, OUTPUT)
-
 int orientation(movement *mov);
 int box_operations(movement *mov);
 int motor_go_forward(movement *mov, int type);
 void movimentacao(movement *mov);
 void handle_movement(movement *mov);
-void caixa1();
 
-void line_setup() {
-    pinMode(LINE_SENSOR_1, INPUT);
-    pinMode(LINE_SENSOR_2, INPUT);
-    pinMode(LINE_SENSOR_3, INPUT);
-    pinMode(LINE_SENSOR_4, INPUT);
-}
-
-void factory_lite_setup() {
+inline void factory_lite_setup() {
     if (DEBUG_MODE)
         Serial.begin(115200);
 
     if (USE_WIFI)
         wifi_setup(UDP_ADDRESS, UDP_PORT);
     motors_setup();
-    sonar_setup();
-    line_setup();
+    sonar_setup(SONAR_TRIG, SONAR_ECHO);
+    nemo_line_setup();
     ELECTROMAGNET_SETUP;
 }
 
@@ -127,12 +115,12 @@ int motor_go_forward(movement *mov, int type) {
 
     debug_message("Motor a andar para a frente\n");
 
-    if (!type) {
-        debug_message("Andamos até ter a caixa\n");
-        ELECTROMAGNET_ON;
-        walk_sonar(300, FORWARD);
-        return 1;
-    }
+    // if (!type) {
+    //     debug_message("Andamos até ter a caixa\n");
+    //     walk_sonar(300, FORWARD);
+    //     ELECTROMAGNET_ON;
+    //     return 1;
+    // }
 
     while (1) {
         walk_line(1500, FORWARD, mov->turn);
@@ -152,10 +140,10 @@ int motor_go_forward(movement *mov, int type) {
             flag = 1;
             mov->turn = LINE;
 
-        } // else if (((LINE_CASE_FAST == LINE) || (LINE_CASE_FAST == FREE))) {
-        //     debug_message("We arrived at the end of intersection\n");
-        //     return 1;
-        // }
+        } else if (((LINE_CASE_FAST == LINE) || (LINE_CASE_FAST == FREE))) {
+            debug_message("We arrived at the end of intersection\n");
+            return 1;
+        }
     }
 
     if (mov->atual != mov->destino)
@@ -221,107 +209,14 @@ movement *new_movement() {
     mov->boxAttached = 0;
     mov->origem = 0;
     mov->anterior = 0;
-
     return mov;
 }
 
-int factory_lite() {
-    int aux;
-    char help[5];
+int main_function() {
     factory_lite_setup();
     char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
 
-    // recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
+    recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
 
-    // walk_line(700, FORWARD, RIGHT_CURVE);
-
-    // while (1) {
-    //     sprintf(help, "%d", (int)distance(SONAR_TRIG, SONAR_ECHO));
-    //     debug_message(help);
-    // }
-
-    caixa1();
-}
-void caixa1() {
-    int i = 0;
-    char aux[5];
-
-    left_motor.set_speed(FORWARD, 0);
-    right_motor.set_speed(FORWARD, 0);
-
-    Serial.println("jump fucntion robot crazy");
-
-    // while (!(left_motor.get_speed() > AVERAGE_SPEED) ||
-    //        !(right_motor.get_speed() > AVERAGE_SPEED)) {
-    //     DEBUG_SPEED;
-    //     if (!(left_motor.speed > AVERAGE_SPEED)) {
-    //         left_motor.pwm_average = left_motor.refresh(1);
-    //     }
-    //     if (!(right_motor.speed > AVERAGE_SPEED)) {
-    //         right_motor.pwm_average = right_motor.refresh(1);
-    //     }
-    //     correct_trajectory();
-    // }
-
-    // para testar pela mao amanha
-    // testar em linha simples
-    // aplicar para ver se le tudo direitinho
-    andamento_linha(FORWARD, RIGHT_CURVE);
-    Serial.println("jump fucntion robot crazy");
-
-    andamento_linha(FORWARD, RIGHT_CURVE);
-
-    Serial.println("jump fucntion robot crazy");
-    andamento_linha(FORWARD, RIGHT_CURVE);
-    Serial.println("jump fucntion robot crazy");
-    ELECTROMAGNET_ON;
-    Serial.println("jump fucntion robot crazy");
-    walk_sonar(20, FORWARD);
-    Serial.println("jump fucntion robot crazy");
-    walk_line(200, BACKWARDS, RIGHT_CURVE);
-    Serial.println("jump fucntion robot crazy");
-    rotate_line(90, CLOCKWISE, NEMO_PWM);
-    Serial.println("jump fucntion robot crazy");
-    walk_line(1500, FORWARD, LEFT_CURVE);
-    Serial.println("jump fucntion robot crazy");
-
-    walk_line(1500, FORWARD, LEFT_CURVE);
-    Serial.println("jump fucntion robot crazy");
-
-    walk_line(1500, FORWARD, LEFT_CURVE);
-    Serial.println("jump fucntion robot crazy");
-
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    Serial.println("jump fucntion robot crazy");
-
-    rotate_line(90, CLOCKWISE, NEMO_PWM);
-    Serial.println("jump fucntion robot crazy");
-
-    walk_line(1500, FORWARD, LEFT_CURVE);
-    walk_line(1500, FORWARD, INTERCEPTION);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    walk_line(1500, FORWARD, INTERCEPTION);
-    rotate_line(90, ANTI_CLOCKWISE, NEMO_PWM);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    rotate_line(90, CLOCKWISE, NEMO_PWM);
-    walk_sonar(200, FORWARD);
-    ELECTROMAGNET_OFF;
-    walk_line(200, BACKWARDS, INTERCEPTION);
-}
-
-void caixa1__caixa2() {
-    rotate_line(90, CLOCKWISE, NEMO_PWM);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    rotate_line(90, CLOCKWISE, NEMO_PWM);
-    walk_line(1500, FORWARD, LEFT_CURVE);
-    walk_line(1500, FORWARD, INTERCEPTION);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    walk_line(1500, FORWARD, INTERCEPTION);
-    rotate_line(90, ANTI_CLOCKWISE, NEMO_PWM);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    walk_line(1500, FORWARD, RIGHT_CURVE);
-    rotate_line(90, CLOCKWISE, NEMO_PWM);
-    ELECTROMAGNET_ON;
-    walk_sonar(200, FORWARD);
+    return 0;
 }

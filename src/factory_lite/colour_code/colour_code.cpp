@@ -1,5 +1,4 @@
 #include "colour_code.h"
-#include "setup.h"
 
 void recieve_colour_code(char *colour_code, char local,
                          const char *udpAddress) {

@@ -1,5 +1,7 @@
 #pragma once
-#include "comm.h"
+
+#include "../../nemo_setup/nemo_setup.h"
+#include <comm.h>
 
 #define N_BOXES 4
 

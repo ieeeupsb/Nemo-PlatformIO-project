@@ -1,24 +1,6 @@
-#define USE_WIFI 0
-#define UDP_ADDRESS                                                            \
-    "192.168.1.178" // "192.168.120.187" //"192.168.0.116" // Comp server ip
-                    // addr
-#define UDP_PORT 44832U
-
-#define ENV ESP32DEV
-#define MODE FACTORY_LITE
-
-#define BAUD_RATE 115200
-
-#define DEBUG_MODE true
-#define DEBUG_REFRESH_RATE 2000
+#pragma once
 
 #if ENV == ESP32DEV
-
-#define NEMO_PWM 110 // 140
-#define MIN_PWM (NEMO_PWM - 20)
-#define AVERAGE_SPEED 0.006 // 0.20
-#define MAX_SPEED 0.03      // 0.5
-#define MIN_SPEED .0005     // 0.25
 
 #include <ESP32_pinout.h>
 
@@ -40,7 +22,7 @@
 #define DC_MOTOR_1L RDX   // in_3 -> header_1_pin1 -> rdx
 #define DC_MOTOR_2L GPIO5 // in_4 -> header_1_pin2 -> gpio5
 #define ENABLE_L GPIO12   // en_b -> header_1_pin3-> gpio12
-#define ENC1_L GPIO16     //
+#define ENC1_L GPIO16     // yellow
 #define ENC2_L GPIO17     // white
 
 // RIGHT MOTOR
@@ -53,4 +35,5 @@
 // SONAR
 #define SONAR_TRIG GPIO25 //  green
 #define SONAR_ECHO GPIO33 // red
+
 #endif

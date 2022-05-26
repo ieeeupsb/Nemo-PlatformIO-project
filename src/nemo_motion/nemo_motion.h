@@ -1,26 +1,15 @@
 #pragma once
 
-#include "../line/line.h"
 #include "../nemo_debug/nemo_debug.h"
-#include "../setup.h"
-#include "../sonar/sonar.h"
+#include "../nemo_setup/nemo_setup.h"
+
+#include <line.h>
 #include <motor.h>
-
-#define DEBUG_SPEED                                                            \
-    {                                                                          \
-        char aux[128];                                                         \
-        sprintf(aux, "Left speed %f: Right speed %f \n",                       \
-                left_motor.get_speed(), right_motor.get_speed());              \
-        debug_message(aux);                                                    \
-    }
-
-extern Motor left_motor;
-extern Motor right_motor;
+#include <sonar.h>
 
 void motors_setup();
 
 void walk_line(int millimeters, int direction, int turn);
-void walk_sonar(int millimeters, int direction);
 void rotate(int degrees, int direction, int speed);
 int rotate_line(int degrees, int direction, int speed);
 void correct_trajectory();

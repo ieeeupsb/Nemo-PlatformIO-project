@@ -1,15 +1,7 @@
 #include "sonar.h"
-
-#include "../src/setup.h"
-
 #include "Arduino.h"
 #include "wiring_private.h"
 #include <stdint.h>
-
-void sonar_setup() {
-    pinMode(SONAR_TRIG, OUTPUT);
-    pinMode(SONAR_ECHO, INPUT);
-}
 
 void send_pulse(int trigPin) {
     digitalWrite(trigPin, LOW);
@@ -22,4 +14,9 @@ void send_pulse(int trigPin) {
 float distance(int trigPin, int echoPin) {
     send_pulse(trigPin);
     return (pulseIn(echoPin, HIGH) / 2 * 0.0343);
+}
+
+void sonar_setup(int trigPin, int echoPin) {
+    pinMode(trigPin, OUTPUT);
+    pinMode(echoPin, INPUT);
 }

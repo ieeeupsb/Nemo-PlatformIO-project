@@ -5,12 +5,15 @@
 #define CORRECT_TO_RIGHT_STATE 1
 #define CORRECT_TO_LEFT_STATE 2
 
-Motor left_motor;
-Motor right_motor;
-
 void correct_trajectory_line_1();
 void correct_trajectory_line();
 float Kp = 20, Ki = 0;
+
+int last_time_walk = 0;
+#define WALK_REFRESH_RATE 10
+
+Motor left_motor;
+Motor right_motor;
 
 void motors_setup() {
     ESP32Encoder::useInternalWeakPullResistors = UP;
@@ -20,14 +23,10 @@ void motors_setup() {
                       ENC1_R, ENC2_R);
 }
 
-int last_time_walk = 0;
-#define WALK_REFRESH_RATE 10
 void walk_line(int millimeters, int direction, int turn) {
     int ticks = (int32_t)(3.7 * float(millimeters));
     bool stop = false;
     int _case;
-    int count = 0;
-    float left_total = 0, right_total = 0;
 
     left_motor.encoder.setCount(0);
     right_motor.encoder.setCount(0);
@@ -92,42 +91,6 @@ void walk_line(int millimeters, int direction, int turn) {
     // debug_message("Walking a bit");
     // walk(62, FORWARD);
     return;
-}
-
-void walk_sonar(int millimeters, int direction) {
-    int ticks = (int32_t)(3.7 * float(millimeters));
-    bool stop = false;
-
-    left_motor.encoder.setCount(0);
-    right_motor.encoder.setCount(0);
-
-    left_motor.set_speed(direction, NEMO_PWM);
-    right_motor.set_speed(direction, NEMO_PWM);
-
-    unsigned long last = 0;
-
-    switch (direction) {
-    case FORWARD:
-        do {
-            pid_control(direction);
-            stop = ((distance(SONAR_TRIG, SONAR_ECHO) <= 3) ||
-                    ((int32_t)left_motor.encoder.getCount() > ticks) ||
-                    (left_motor.get_speed() == 0) ||
-                    (right_motor.get_speed() == 0));
-        } while (!stop);
-        break;
-
-    case BACKWARDS:
-        do {
-            pid_control(direction);
-            stop = ((distance(SONAR_TRIG, SONAR_ECHO)) <= 5) ||
-                   (-(int32_t)left_motor.encoder.getCount() > ticks);
-        } while (!stop);
-        break;
-    }
-
-    left_motor.stop();
-    right_motor.stop();
 }
 
 void walk(int millimeters, int direction) {
@@ -274,8 +237,8 @@ void rotate(int degrees, int direction, int speed) {
     switch (direction) {
     case CLOCKWISE:
         ticks = (int32_t)(ROTATION_CONST * degrees);
-        left_motor.set_speed(FORWARD, left_speed);
-        right_motor.set_speed(BACKWARDS, right_speed);
+        left_motor.set_speed(FORWARD, left_motor.speed);
+        right_motor.set_speed(BACKWARDS, right_motor.speed);
 
         while (-right_motor.encoder.getCount() < ticks) {
             DEBUG_SPEED;
@@ -298,10 +261,8 @@ void rotate(int degrees, int direction, int speed) {
     right_motor.stop();
 }
 
-int rotate_line(int degrees, int direction, int speed) {
+int rotate_line(int degrees, int direction) {
 
-    int left_speed = speed;
-    int right_speed = speed;
     left_motor.encoder.setCount(0);
     right_motor.encoder.setCount(0);
     int32_t ticks;
@@ -309,8 +270,8 @@ int rotate_line(int degrees, int direction, int speed) {
     switch (direction) {
     case CLOCKWISE:
         ticks = (int32_t)((ROTATION_CONST)*degrees);
-        left_motor.set_speed(FORWARD, left_speed);
-        right_motor.set_speed(BACKWARDS, right_speed);
+        left_motor.set_speed(FORWARD, left_motor.speed);
+        right_motor.set_speed(BACKWARDS, right_motor.speed);
 
         while ((-right_motor.encoder.getCount() < ticks / 2) ||
                (LINE_CASE_FAST != LINE)) {
@@ -324,8 +285,8 @@ int rotate_line(int degrees, int direction, int speed) {
         // break;
     case ANTI_CLOCKWISE:
         ticks = (int32_t)(ROTATION_CONST * degrees);
-        left_motor.set_speed(BACKWARDS, left_speed);
-        right_motor.set_speed(FORWARD, right_speed);
+        left_motor.set_speed(BACKWARDS, left_motor.speed);
+        right_motor.set_speed(FORWARD, right_motor.speed);
 
         while (-left_motor.encoder.getCount() < (ticks / 2) ||
                !(LINE_CASE_FAST == LINE)) {
@@ -347,39 +308,36 @@ int rotate_line(int degrees, int direction, int speed) {
 }
 
 void pid_control(int direction) {
-    static float I = 0;
-    float P = 0;
-    float Kp = 25, Ki = 0;
-    float pidValue_right = 0, pidValue_left = 0;
-    int right_speed, left_speed;
-    int error = 0;
+    // static float I = 0;
+    // float P = 0;
+    // float Kp = 25, Ki = 0;
 
-    int _case = LINE_CASE_FAST;
+    // int _case = LINE_CASE_FAST;
 
-    switch (_case) {
-    case (LINE):
-        P = 0.0;
-        break;
-    case (CORRECT_TO_LEFT):
-        P = 1.0;
-        break;
-    case (CORRECT_TO_RIGHT):
-        P = -1.0;
-        break;
-    case (SHARP_LEFT):
-        P = 2.0;
-        break;
-    case (SHARP_RIGHT):
-        P = -2.0;
-        break;
-    }
+    // switch (_case) {
+    // case (LINE):
+    //     P = 0.0;
+    //     break;
+    // case (CORRECT_TO_LEFT):
+    //     P = 1.0;
+    //     break;
+    // case (CORRECT_TO_RIGHT):
+    //     P = -1.0;
+    //     break;
+    // case (SHARP_LEFT):
+    //     P = 2.0;
+    //     break;
+    // case (SHARP_RIGHT):
+    //     P = -2.0;
+    //     break;
+    // }
 
-    I += P;
+    // I += P;
 
-    int pidValue = (int)((P * Kp) + (I * Ki));
+    // int pidValue = (int)((P * Kp) + (I * Ki));
 
-    right_motor.set_pwm(right_motor.pwm_average + pidValue);
-    left_motor.set_pwm(left_motor.pwm_average - pidValue);
+    // right_motor.set_pwm(right_motor.pwm_average + pidValue);
+    // left_motor.set_pwm(left_motor.pwm_average - pidValue);
 }
 
 void andamento(int millimeters, int direction) {
@@ -387,8 +345,6 @@ void andamento(int millimeters, int direction) {
 
     left_motor.encoder.setCount(0);
     right_motor.encoder.setCount(0);
-
-    bool stop = false;
 
     while (fabs((int32_t)left_motor.encoder.getCount()) < ticks) {
         delay(30);
@@ -433,7 +389,6 @@ void pid(int direction) {
     float P = 0;
     float pidValue = 0;
     int right_speed, left_speed;
-    int error = 0;
 
     right_speed = fabs(right_motor.get_speed());
     left_speed = fabs(left_motor.get_speed());
