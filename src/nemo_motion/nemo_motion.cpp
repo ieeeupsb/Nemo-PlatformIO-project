@@ -99,8 +99,8 @@ void walk(int millimeters, int direction) {
     left_motor.encoder.setCount(0);
     right_motor.encoder.setCount(0);
 
-    // left_motor.set_speed(direction, NEMO_PWM);
-    // right_motor.set_speed(direction, NEMO_PWM);
+    left_motor.set_speed(direction, NEMO_PWM);
+    right_motor.set_speed(direction, NEMO_PWM);
 
     bool stop = false;
 
@@ -108,14 +108,14 @@ void walk(int millimeters, int direction) {
     case FORWARD:
         do {
             stop = ((int32_t)left_motor.encoder.getCount() >= ticks);
-            line_case_debug();
+            // line_case_debug();
             correct_trajectory();
         } while (!stop);
         break;
     case BACKWARDS:
         do {
             stop = (-(int32_t)left_motor.encoder.getCount() >= ticks);
-            line_case_debug();
+            // line_case_debug();
             correct_trajectory();
         } while (!stop);
         break;
@@ -422,16 +422,16 @@ void pid(int direction) {
     I += P;
 
     // certifica-se de que anda
-    if ((right_speed <= 0.001) || (left_speed <= 0.001)) {
-        if (!right_speed > 0.001) {
-            right_motor.refresh(1);
-        }
+    // if ((right_speed <= 0.001) || (left_speed <= 0.001)) {
+    //     if (!right_speed > 0.001) {
+    //         right_motor.refresh(1);
+    //     }
 
-        if (left_speed > 0.001) {
-            left_motor.refresh(1);
-        }
-        return;
-    }
+    //     if (left_speed > 0.001) {
+    //         left_motor.refresh(1);
+    //     }
+    //     return;
+    // }
 
     pidValue = P * Kp + I * Ki;
 
@@ -451,16 +451,16 @@ void pid_speed(int direction) {
     float right_speed = fabs(right_motor.get_speed());
 
     // certifica-se de que anda
-    if ((right_speed <= 0.001) || (left_speed <= 0.001)) {
-        if (!right_speed > 0.001) {
-            right_motor.refresh(1);
-        }
+    // if ((right_speed <= 0.001) || (left_speed <= 0.001)) {
+    //     if (!right_speed > 0.001) {
+    //         right_motor.refresh(1);
+    //     }
 
-        if (left_speed > 0.001) {
-            left_motor.refresh(1);
-        }
-        return;
-    }
+    //     if (left_speed > 0.001) {
+    //         left_motor.refresh(1);
+    //     }
+    //     return;
+    // }
 
     if (left_speed > right_speed) {
         P = 1;

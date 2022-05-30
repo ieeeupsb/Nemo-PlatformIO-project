@@ -1,8 +1,11 @@
+#if USE_WIFI
+
 #include "colour_code.h"
 
 void recieve_colour_code(char *colour_code, char local,
                          const char *udpAddress) {
-    if (!wifi_is_setup) return;
+    if (!wifi_is_setup)
+        return;
     char *message = NULL;
 
     switch (local) {
@@ -39,3 +42,4 @@ void recieve_colour_code(char *colour_code, char local,
         colour_code[i] = aux;
     }
 }
+#endif

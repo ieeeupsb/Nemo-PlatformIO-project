@@ -11,20 +11,20 @@ void handle_movement(movement *mov);
 
 inline void factory_lite_setup() {
     if (DEBUG_MODE)
-        Serial.begin(115200);
+        Serial.begin(BAUD_RATE);
 
-    if (USE_WIFI)
-        wifi_setup(UDP_ADDRESS, UDP_PORT);
+#if USE_WIFI
+    wifi_setup(UDP_ADDRESS, UDP_PORT);
+#endif
     motors_setup();
-    sonar_setup(SONAR_TRIG, SONAR_ECHO);
-    nemo_line_setup();
-    ELECTROMAGNET_SETUP;
+    // sonar_setup(SONAR_TRIG, SONAR_ECHO);
+    // nemo_line_setup();
+    // ELECTROMAGNET_SETUP;
 }
 
 // serve para orientar para o sitio certo sempre que tivermos um novo
 // dijkstra
 int orientation(movement *mov) {
-    debug_message("Entramos em orientation\n");
     // se voltarmos a onde estavamos anteriormente
     if (mov->anterior == mov->path[mov->path_len]) {
         if (mov->lastRotation) {
@@ -55,7 +55,6 @@ int orientation(movement *mov) {
 // vai buscar a box ao sitio, rotates , goes and backs but with box ;)
 // substituir line() por digitalWrite
 int box_operations(movement *mov) {
-    debug_message("Entramos em Box operations, orientating\n");
 
     if ((mov->atual != 12)) {
         if ((LINE_CASE_FAST == LINE) && (mov->atual != 1) &&
@@ -152,8 +151,6 @@ int motor_go_forward(movement *mov, int type) {
 
 // vai pegar em dois nós (atual e em path)
 void movimentacao(movement *mov) {
-    char aux[64];
-
     // serve para ir de ponto a ponto, very beautiful indeed
     while (1) {
         // esta só a ir até um local
@@ -164,11 +161,10 @@ void movimentacao(movement *mov) {
         // vai até local que queremos
         mov->anterior = mov->atual;
         mov->atual = mov->path[mov->path_len];
-
         // se estiver a caminho do destino
         if (mov->atual != mov->destino) {
             --mov->path_len;
-            sprintf(aux, "Intersection number %d\n", mov->path_len + 1);
+            print_message(aux, "Intersection number %d\n", mov->path_len + 1);
             debug_message(aux);
             sprintf(aux, "mov->atual=%d || proximo=%d\n", mov->atual,
                     mov->path[mov->path_len]);
@@ -214,9 +210,11 @@ movement *new_movement() {
 
 int main_function() {
     factory_lite_setup();
-    char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
+    // char colour_code[N_BOXES] = {'B', 'B', 'B', 'B'};
 
-    recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
+    // recieve_colour_code(colour_code, 'I', UDP_ADDRESS);
+
+    walk(300, FORWARD);
 
     return 0;
 }

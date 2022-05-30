@@ -1,7 +1,9 @@
-#include "nemo_debug.h"
+#if DEBUG_MODE
+
+#include "nemo_communications.h"
 
 unsigned long last_time_debug_message = 0;
-void debug_message(const char *message) {
+void send_message(const char *message) {
 
     if (!DEBUG_MODE)
         return;
@@ -10,14 +12,17 @@ void debug_message(const char *message) {
         last_time_debug_message = millis();
     } else
         return;
+#if USE_SERIAL
+
     Serial.println(message);
 
-    if (!USE_WIFI)
-        return;
+#endif
+#if USE_WIFI
     udp.beginPacket(UDP_ADDRESS, UDP_PORT); // Initiate transmission of data
 
     udp.printf(message);
     udp.endPacket(); // Close communication
+#endif
 }
 
 int line_case_debug() {
@@ -56,3 +61,5 @@ void debug_encoder(Motor m) {
     sprintf(auxs, "Left encoder: %d \n", (int32_t)m.encoder.getCount());
     debug_message(auxs);
 }
+
+#endif

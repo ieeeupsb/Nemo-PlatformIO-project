@@ -1,6 +1,8 @@
 #pragma once
 
-#include "../nemo_debug/nemo_debug.h"
+#include "../nemo_communications/nemo_communications.h"
+#include </scr/nemo_communications/nemo_communications.h>
+// #include PATH_NEMO_COMMUNICATIONS_H
 #include "../nemo_setup/nemo_setup.h"
 
 #include <line.h>
@@ -20,3 +22,4 @@ void andamento(int millimeters, int direction);
 void andamento_linha(int direction, int turn);
 void pid(int direction);
 void pid_speed(int direction);
+void walk(int millimeters, int direction);

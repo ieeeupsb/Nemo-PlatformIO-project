@@ -1,8 +1,11 @@
 #pragma once
 
-#include "../nemo_debug/nemo_debug.h"
-#include "../nemo_motion/nemo_motion.h"
+
 #include "../nemo_setup/nemo_setup.h"
+
+#include PATH_NEMO_MOTION_H
+
+#include "../nemo_debug/nemo_debug.h"
 #include "colour_code/colour_code.h"
 #include "positioning/positioning.h"
 #include <comm.h>

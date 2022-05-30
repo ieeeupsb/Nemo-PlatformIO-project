@@ -1,4 +1,4 @@
-#if MODE == FACTORY_LITE
+#if MODE == FACTORY_LITE_MODE
 
 #include "factory_lite/factory_lite.h"
 

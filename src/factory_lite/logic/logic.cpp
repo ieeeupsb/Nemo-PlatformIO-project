@@ -88,4 +88,5 @@ int logic_miguel_score() {
     // break;
 
     // }
+    return 0;
 }
