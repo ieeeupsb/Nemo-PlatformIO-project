@@ -1,16 +1,15 @@
 #pragma once
 
+#include <nemo_setup.h>
 
-#include "../nemo_setup/nemo_setup.h"
+#include <nemo_motion.h>
 
-#include PATH_NEMO_MOTION_H
-
-#include "../nemo_debug/nemo_debug.h"
 #include "colour_code/colour_code.h"
 #include "positioning/positioning.h"
 #include <comm.h>
 #include <line.h>
 #include <motor.h>
+#include <nemo_communications.h>
 #include <sonar.h>
 
 #define BLUE_LEVEL 1

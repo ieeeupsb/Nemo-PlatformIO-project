@@ -1,9 +1,7 @@
 #pragma once
 
-#include "nemo_pinout.h"
-#define PATH_NEMO_MOTION_H "../nemo_motion/nemo_motion.h"
-
-#define ENV ESP32DEV
+#define ESP32DEV 1
+#include <nemo_pinout.h>
 
 #if DEBUG_MODE
 #define DEBUG_REFRESH_RATE 300
@@ -20,8 +18,4 @@
 #define UDP_PORT 44832U
 #endif
 
-#define ELECTROMAGNET_ON digitalWrite(ELECTROMAGNET, HIGH)
-#define ELECTROMAGNET_OFF digitalWrite(ELECTROMAGNET, LOW)
-#define ELECTROMAGNET_SETUP pinMode(ELECTROMAGNET, OUTPUT)
-
-void nemo_line_setup();
+#define MAIN_PATH "rc_nemo/rc_nemo.h"   

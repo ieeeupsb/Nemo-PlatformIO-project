@@ -1,9 +1,8 @@
-#if MODE == FACTORY_LITE_MODE
+// #include <nemo_setup.sh>
 
-#include "factory_lite/factory_lite.h"
+#include "rc_nemo/rc_nemo.h"
 
-#endif
-
-void setup() { main_function(); }
-
-void loop() {}
+int main() {
+    main_function();
+    return 0;
+}

@@ -35,7 +35,7 @@ int orientation(movement *mov) {
         rotate_line(90, CLOCKWISE, NEMO_PWM);
         rotate_line(90, CLOCKWISE, NEMO_PWM);
         mov->lastRotation = CLOCKWISE;
-        debug_message("180 BABYYYYYY\n");
+        printf("180 BABYYYYYY\n");
         return 1;
     }
 
@@ -72,7 +72,7 @@ int box_operations(movement *mov) {
             rotate_line(90, CLOCKWISE, NEMO_PWM);
             mov->lastRotation = CLOCKWISE;
         } else
-            debug_message("No rotation needed\n");
+            printf("No rotation needed\n");
     } else if ((mov->origem >= 1) && (mov->origem <= 4)) {
         rotate_line(90, ANTI_CLOCKWISE, NEMO_PWM);
         mov->lastRotation = ANTI_CLOCKWISE;
@@ -80,10 +80,10 @@ int box_operations(movement *mov) {
         rotate_line(90, CLOCKWISE, NEMO_PWM);
         mov->lastRotation = CLOCKWISE;
     }
-    debug_message("Robot already orientado com box\n");
+    printf("Robot already orientado com box\n");
 
     if (!motor_go_forward(mov, MISSION)) {
-        debug_message("Motor go forward failed on a Mission\nKABUUUUUMMM");
+        printf("Motor go forward failed on a Mission\nKABUUUUUMMM");
     }
 
     // anda para trás ate detetar interseção
@@ -96,7 +96,7 @@ int box_operations(movement *mov) {
     // rodar
     walk_line(100, FORWARD, LEFT_CURVE);
 
-    debug_message("We retrieved box and recuated até intersection detected "
+    printf("We retrieved box and recuated até intersection detected "
                   "again and a little forward\n");
 
     return 0;
@@ -112,10 +112,10 @@ int box_operations(movement *mov) {
 int motor_go_forward(movement *mov, int type) {
     int flag = 0; // indica se ja detetamos a interseçao alguma vez or not
 
-    debug_message("Motor a andar para a frente\n");
+    printf("Motor a andar para a frente\n");
 
     // if (!type) {
-    //     debug_message("Andamos até ter a caixa\n");
+    //     printf("Andamos até ter a caixa\n");
     //     walk_sonar(300, FORWARD);
     //     ELECTROMAGNET_ON;
     //     return 1;
@@ -126,21 +126,21 @@ int motor_go_forward(movement *mov, int type) {
 
         if (!flag) {
             if (LINE_CASE_FAST == mov->turn) {
-                debug_message("Detetamos interseçao a direita, correctly\n");
+                printf("Detetamos interseçao a direita, correctly\n");
             } else if ((LINE_CASE_FAST == mov->turn)) {
-                debug_message("Detetamos interseçao a esquerda, correctly\n");
+                printf("Detetamos interseçao a esquerda, correctly\n");
             } else if ((LINE_CASE_FAST == mov->turn)) {
-                debug_message(
+                printf(
                     "Detetamos interseçao em ambos os lados, correctly\n");
             } else {
-                debug_message("Intersecao mal detetada\n");
+                printf("Intersecao mal detetada\n");
             }
 
             flag = 1;
             mov->turn = LINE;
 
         } else if (((LINE_CASE_FAST == LINE) || (LINE_CASE_FAST == FREE))) {
-            debug_message("We arrived at the end of intersection\n");
+            printf("We arrived at the end of intersection\n");
             return 1;
         }
     }
@@ -155,7 +155,7 @@ void movimentacao(movement *mov) {
     while (1) {
         // esta só a ir até um local
         if (!motor_go_forward(mov, AROUND)) {
-            debug_message("funçao go_forward failed\n");
+            printf("funçao go_forward failed\n");
         }
         // verificar como funciona k, cause I dont really remember
         // vai até local que queremos
@@ -164,11 +164,11 @@ void movimentacao(movement *mov) {
         // se estiver a caminho do destino
         if (mov->atual != mov->destino) {
             --mov->path_len;
-            print_message(aux, "Intersection number %d\n", mov->path_len + 1);
-            debug_message(aux);
+            printf(aux, "Intersection number %d\n", mov->path_len + 1);
+            printf(aux);
             sprintf(aux, "mov->atual=%d || proximo=%d\n", mov->atual,
                     mov->path[mov->path_len]);
-            debug_message(aux);
+            printf(aux);
 
             // verifica a necessidade de virar or not e atualiza mov->turn
             if (detected(mov)) {
@@ -188,12 +188,12 @@ void movimentacao(movement *mov) {
 void handle_movement(movement *mov) {
     mov->path_len = dijkstra(mov->path, MAX, mov->origem, mov->destino);
     if (mov->origem) { // não precisavamos de orientar no inicio da prova
-        debug_message("roda o robo para o caminho certo\n");
+        printf("roda o robo para o caminho certo\n");
         orientation(mov);
     }
     mov->atual = mov->origem; // robo está na origem
     detected(mov);            // atualiza o valor de mov->turn
-    debug_message("Going into movimentaçao\n");
+    printf("Going into movimentaçao\n");
     movimentacao(mov); // anda até mov->destino
     // vai buscar box e volta atras ate intersection, also rotates
     box_operations(mov);

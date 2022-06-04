@@ -1,12 +1,10 @@
 #pragma once
 
-#include "../nemo_communications/nemo_communications.h"
-#include </scr/nemo_communications/nemo_communications.h>
-// #include PATH_NEMO_COMMUNICATIONS_H
-#include "../nemo_setup/nemo_setup.h"
-
 #include <line.h>
 #include <motor.h>
+#include <nemo_communications.h>
+#include <nemo_pinout.h>
+#include <nemo_setup.h>
 #include <sonar.h>
 
 void motors_setup();

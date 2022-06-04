@@ -1,6 +1,6 @@
 #pragma once
 
-#if ENV == ESP32DEV
+#if ESP32DEV
 
 #include <ESP32_pinout.h>
 
