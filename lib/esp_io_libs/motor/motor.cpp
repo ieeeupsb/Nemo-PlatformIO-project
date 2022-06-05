@@ -1,5 +1,15 @@
 #include "motor.h"
 
+#ifndef MIN_PWM
+#define MIN_PWM 0
+#endif
+#ifndef MAX_PWM
+#define MAX_PWM 255
+#endif
+
+#define WALK_CONST 3.43
+#define ROTATION_CONST_DEGREES (2120.0 / 360.0)
+
 void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
                   uint8_t enable_pin, uint8_t channel, int enc1_pin,
                   int enc2_pin) {
@@ -39,14 +49,14 @@ float Motor::get_speed() {
     float time = (current_time - previous_time);
 
     if (!distance || !time)
-        return Motor::speed;
+        return Motor::current_speed;
 
-    Motor::speed = distance / time;
+    Motor::current_speed = distance / time;
     // Refresh previous_vars in the end of the function
     previous_tick_number = encoder.getCount();
     previous_time = millis();
 
-    return Motor::speed;
+    return Motor::current_speed;
 }
 int Motor::pwm_refresh(int pwm_dif) {
     pwmVal += pwm_dif;
