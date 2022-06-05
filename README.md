@@ -14,9 +14,13 @@ Use "platformio.ini" for mode configuration:
 
 Git workflow:
 
-git checkout main
-git fetch origin
-git reset --hard origin/main
+(get the lastest version)
+git checkout master (go to the main branch)
+git fetch origin (download objects and refs from the repo)
+git reset origin (reset the branch to origin)
+
+(create and checkout to new branch)
+git checkout -b new_feature
 
 Setting up wifi(old):
 
