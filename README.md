@@ -2,7 +2,7 @@ Useful links:
     https://github.com/P33a/RobotAtFactoryLite
 
 How to contribute:
-Create new branches for new features
+Create new branches for new features (git workflow)
 Do not modify "main.cpp", use main_test.cpp instead
 Use "platformio.ini" for mode configuration:
 ; If you want to build or upload a specific mode use
@@ -11,6 +11,12 @@ Use "platformio.ini" for mode configuration:
 ; project, for small changes, like activating
 ; or deactivating the debug, go to 
 ; nemo_libs/nemo_global_macros.h
+
+Git workflow:
+
+git checkout main
+git fetch origin
+git reset --hard origin/main
 
 Setting up wifi(old):
 
