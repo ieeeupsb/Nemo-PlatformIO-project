@@ -22,6 +22,19 @@ git reset origin (reset the branch to origin)
 (create and checkout to new branch)
 git checkout -b new_feature
 
+(update, commit and push)
+git status
+git add <some-file>
+git commit
+git push -u origin new_feature
+
+(Pull request)
+In the "Branch" menu, choose the branch that contains your commits. 
+Above the list of files, click Pull request. 
+Use the base branch dropdown menu to select the branch you'd like to merge your changes into, then use the compare branch drop-down menu to choose the topic branch you made your changes in.
+Type a title and description for your pull request.
+
+
 Setting up wifi(old):
 
 Put your wifi credentials here:
