@@ -1,5 +1,4 @@
 #include "motor.h"
-#include <ESP32Encoder.h>
 
 void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
                   uint8_t enable_pin, uint8_t channel, int enc1_pin,
@@ -18,7 +17,7 @@ void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
     encoder.attachHalfQuad(enc1_pin, enc2_pin);
 }
 
-void Motor::set_speed(uint8_t _dir, uint32_t _pwmVal) {
+void Motor::set_dir_set_pwm(uint8_t _dir, uint32_t _pwmVal) {
     ledcWrite(pwm_channel, _pwmVal);
     digitalWrite(dc_motor_1, _dir);
     digitalWrite(dc_motor_2, !_dir);
@@ -49,8 +48,7 @@ float Motor::get_speed() {
 
     return Motor::speed;
 }
-/*ultimas duas  não testadas*/
-int Motor::refresh(int pwm_dif) {
+int Motor::pwm_refresh(int pwm_dif) {
     pwmVal += pwm_dif;
     if (pwmVal < MIN_PWM || pwmVal > MAX_PWM) {
         return -1;
