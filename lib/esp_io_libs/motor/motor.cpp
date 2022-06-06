@@ -1,3 +1,14 @@
+/**
+ * @file motor.cpp
+ * @author ManelMCCS
+ * @brief
+ * @version 1.1
+ * @date 2022-06-06
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #include "motor.h"
 
 #ifndef MIN_PWM
@@ -10,6 +21,16 @@
 #define WALK_CONST 3.43
 #define ROTATION_CONST_DEGREES (2120.0 / 360.0)
 
+/**
+ * @brief
+ *
+ * @param dc_motor_1_pin
+ * @param dc_motor_2_pin
+ * @param enable_pin
+ * @param channel
+ * @param enc1_pin
+ * @param enc2_pin
+ */
 void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
                   uint8_t enable_pin, uint8_t channel, int enc1_pin,
                   int enc2_pin) {
@@ -26,6 +47,12 @@ void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
 
     encoder.attachHalfQuad(enc1_pin, enc2_pin);
 }
+/**
+ * @brief
+ *
+ * @param _dir
+ * @param _pwmVal
+ */
 
 void Motor::set_dir_set_pwm(uint8_t _dir, uint32_t _pwmVal) {
     ledcWrite(pwm_channel, _pwmVal);

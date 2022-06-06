@@ -1,10 +1,11 @@
 # Nemo
 
-
 ## How to contribute:
-* Create new branches for new features ([more aboutgit workflow](###-git-workflow))
+* Create new branches for new features ([more about git workflow](###-git-workflow))
 * Do not modify `main.cpp`, use `main_test.cpp` instead
-* Use "platformio.ini" for mode configuration ([more about .ini file](###-.ini-file))
+* Use `platformio.ini` for mode configuration ([more about .ini file](###-.ini-file))
+* Use proper documentation ([more about documentation](###-.ini-file))
+* Use code auto-format (enabled in this workspace)
 
 ### Git workflow
 
@@ -25,6 +26,11 @@ git add <some-file>
 git commit
 git push -u origin new_feature
 ```
+#### Git crendential manager
+```
+git config --global credential.credentialStore gpg
+```
+[More about Git Credential Manager](https://github.com/GitCredentialManager/)
 
 4. Pull request <br>
     * In the "Branch" menu, choose the branch that contains your commits. 
@@ -50,6 +56,10 @@ build_type = test
 ; test/release
 ;##########################################################
 ```
+### Documention
+* Install https://github.com/cschlosser/doxdocgen#templates extension
+* Before function declaration or after creating a new file for auto-complete doxygen commands type `/**`, and press `Enter`
+
 Setting up wifi(old):
 
 Put your wifi credentials here:

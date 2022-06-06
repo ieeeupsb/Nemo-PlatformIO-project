@@ -6,7 +6,10 @@
 class Pid {
     int p, i, d;
 };
-
+/**
+ * @brief
+ *
+ */
 class motion {
   public:
     float linear_speed = 0;
