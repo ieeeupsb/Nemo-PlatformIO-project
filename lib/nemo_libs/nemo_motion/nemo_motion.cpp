@@ -3,6 +3,10 @@
 #define LEFT_MOTOR_CHANNEL 0
 #define RIGHT_MOTOR_CHANNEL 1
 
+/**
+ * @brief Setup the left and right nemo wheel motors
+ *
+ */
 void motion::setup() {
     ESP32Encoder::useInternalWeakPullResistors = UP;
     left_motor.setup(DC_MOTOR_1L, DC_MOTOR_2L, ENABLE_L, LEFT_MOTOR_CHANNEL,
