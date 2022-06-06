@@ -1,3 +1,13 @@
+/**
+ * @file motor.h
+ * @author manel
+ * @brief
+ * @version 0.1
+ * @date 2022-06-06
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
 #if MOTORS
 
 #ifndef MOTOR_H
@@ -9,6 +19,11 @@
 #include "nemo_global_macros.h"
 #pragma message("using global macros in motor.h for test reasons")
 
+/**
+ * @brief Motor is a class that contains motor function data and controls the DC
+ * motor through the signals from the encoders.
+ *
+ */
 class Motor {
   public:
     ESP32Encoder encoder;
