@@ -68,7 +68,11 @@ void Motor::stop() {
     digitalWrite(dc_motor_1, LOW);
     digitalWrite(dc_motor_2, LOW);
 }
-
+/**
+ * @brief Refresh current_speed variable and return the robot speed
+ *
+ * @return float
+ */
 float Motor::get_speed() {
     float current_tick_number = (float)encoder.getCount();
     float current_time = (float)millis();
