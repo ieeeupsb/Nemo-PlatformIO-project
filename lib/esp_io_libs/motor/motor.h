@@ -1,8 +1,10 @@
-#pragma once
 #if MOTORS
 
+#ifndef MOTOR_H
+#define MOTOR_H
+
 #include "Arduino.h"
-#include <ESP32Encoder.h>
+#include "ESP32Encoder.h"
 
 #include "nemo_global_macros.h"
 #pragma message("using global macros in motor.h for test reasons")
@@ -36,4 +38,5 @@ class Motor {
     float previous_time = 0;
 };
 
+#endif
 #endif
