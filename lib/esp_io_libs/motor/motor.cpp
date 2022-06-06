@@ -1,14 +1,3 @@
-/**
- * @file motor.cpp
- * @author ManelMCCS
- * @brief
- * @version 1.1
- * @date 2022-06-06
- *
- * @copyright Copyright (c) 2022
- *
- */
-
 #include "motor.h"
 
 #ifndef MIN_PWM
@@ -17,20 +6,13 @@
 #ifndef MAX_PWM
 #define MAX_PWM 255
 #endif
-
+/**
+ * \def
+ * @brief 3.43 encoder ticks represents 1 mm
+ */
 #define WALK_CONST 3.43
 #define ROTATION_CONST_DEGREES (2120.0 / 360.0)
 
-/**
- * @brief
- *
- * @param dc_motor_1_pin
- * @param dc_motor_2_pin
- * @param enable_pin
- * @param channel
- * @param enc1_pin
- * @param enc2_pin
- */
 void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
                   uint8_t enable_pin, uint8_t channel, int enc1_pin,
                   int enc2_pin) {
@@ -68,21 +50,19 @@ void Motor::stop() {
     digitalWrite(dc_motor_1, LOW);
     digitalWrite(dc_motor_2, LOW);
 }
-/**
- * @brief Refresh current_speed variable and return the robot speed
- *
- * @return float
- */
+
 float Motor::get_speed() {
     float current_tick_number = (float)encoder.getCount();
     float current_time = (float)millis();
-    float distance = (current_tick_number - previous_tick_number) / WALK_CONST;
+    float distance = (current_tick_number - previous_tick_number) * WALK_CONST;
     float time = (current_time - previous_time);
 
-    if (!distance || !time)
+    if (!distance || !time) // if the distance or the time diference is zero
+                            // acelaration is zero
         return Motor::current_speed;
 
     Motor::current_speed = distance / time;
+
     // Refresh previous_vars in the end of the function
     previous_tick_number = encoder.getCount();
     previous_time = millis();

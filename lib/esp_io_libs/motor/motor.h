@@ -1,17 +1,18 @@
+#if MOTORS
+
+#ifndef MOTOR_H
+#define MOTOR_H
+
 /**
- * @file motor.h
- * @author manel
+ * @file motor.cpp
+ * @author ManelMCCS
  * @brief
- * @version 0.1
+ * @version 1.1
  * @date 2022-06-06
  *
  * @copyright Copyright (c) 2022
  *
  */
-#if MOTORS
-
-#ifndef MOTOR_H
-#define MOTOR_H
 
 #include "Arduino.h"
 #include "ESP32Encoder.h"
@@ -39,6 +40,12 @@ class Motor {
     void set_pwm(unsigned int _pwmVal);
 
     float current_speed = 0;
+    /**
+     * @brief Refresh current_speed variable for the motor and return the motor
+     * speed
+     *
+     * @return float Motor::current_speed
+     */
     float get_speed();
 
   private:
