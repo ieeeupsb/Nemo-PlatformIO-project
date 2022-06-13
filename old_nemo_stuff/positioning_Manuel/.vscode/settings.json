@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "positioning.h": "c",
-        "stdlib.h": "c",
-        "map.h": "c"
-    }
-}
