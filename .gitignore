@@ -4,3 +4,4 @@
 .vscode/launch.json
 .vscode/ipch
 src/communication/wifi_credentials_private.h
+bluetooth_app/.vscode/c_cpp_properties.json
