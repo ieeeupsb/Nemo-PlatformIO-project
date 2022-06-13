@@ -1,0 +1,6 @@
+{
+    "C_Cpp.default.enableConfigurationSquiggles": true,
+    "files.associations": {
+        "ostream": "cpp"
+    },
+}
