@@ -1,0 +1,14 @@
+{
+  "name": "bluetooth_app",
+  "version": "1.0.0",
+  "description": "Nemo monitor throw bluetooth",
+  "main": "index.js",
+  "scripts": {
+    "test": "??"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^19.0.4"
+  }
+}
