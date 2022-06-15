@@ -13,6 +13,7 @@ void motion::setup() {
                       ENC1_R, ENC2_R);
 }
 
+// TODO: test this function
 void motion::refresh() {
     if (max_ticks == MASTER_MOTOR.encoder.getCount())
         stop();
@@ -22,6 +23,11 @@ void motion::refresh() {
 void motion::walk(int direction) {
     // TODO: Change this in the future to set with default speed;
     left_motor.set_dir_set_pwm(direction, 150);
+}
+
+// TODO: test this function
+void motion::set_max_distance(unsigned distance_ms) {
+    max_ticks = WALK_CONST * distance_ms;
 }
 
 void motion::walk(int direction, unsigned speed) {

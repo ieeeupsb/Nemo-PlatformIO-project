@@ -25,8 +25,16 @@
  *
  */
 #define FORWARD 1
-#define STOP 0
-#define BACKWARDS -1
+#define BACKWARDS 0
+#define DIR_NOT_DEF -1
+
+/**
+ * \def
+ * @brief 3.43 encoder ticks represents 1 mm
+ */
+#define WALK_CONST 3.43
+
+#define ROTATION_CONST_DEGREES (2120.0 / 360.0)
 
 /**
  * @brief Motor is a class that contains motor function data and controls the DC
@@ -41,8 +49,8 @@ class Motor {
                uint8_t enable_pin, uint8_t channel, int enc1_pin, int enc2_pin);
     void stop();
 
-    uint8_t dir;
-    uint32_t pwmVal;
+    uint8_t dir = DIR_NOT_DEF;
+    uint32_t pwmVal = 0;
     void set_dir_set_pwm(uint8_t _dir, uint32_t _pwmVal);
     int pwm_refresh(int pwm_dif);
     void set_pwm(unsigned int _pwmVal);

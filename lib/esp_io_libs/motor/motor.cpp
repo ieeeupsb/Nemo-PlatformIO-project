@@ -6,12 +6,6 @@
 #ifndef MAX_PWM
 #define MAX_PWM 255
 #endif
-/**
- * \def
- * @brief 3.43 encoder ticks represents 1 mm
- */
-#define WALK_CONST 3.43
-#define ROTATION_CONST_DEGREES (2120.0 / 360.0)
 
 void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
                   uint8_t enable_pin, uint8_t channel, int enc1_pin,

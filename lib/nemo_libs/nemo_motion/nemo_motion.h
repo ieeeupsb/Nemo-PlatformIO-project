@@ -48,6 +48,8 @@ class motion {
     void walk(int direction);
     void walk(int direction, unsigned speed);
 
+    void set_max_distance(unsigned distance_ms);
+
     void rotate_degrees(int degrees, int direction, long unsigned speed);
     /**
      * @brief Refresh current robot speed and stop the motors at
