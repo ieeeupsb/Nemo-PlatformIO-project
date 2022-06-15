@@ -28,7 +28,7 @@
 #include "ESP32Encoder.h"
 
 #include "nemo_global_macros.h"
-#pragma message("using global macros in motor.h for test reasons")
+// TODO: using global macros in motor.h for test reasons
 
 /**
  * @brief Motor is a class that contains motor function data and controls the DC
