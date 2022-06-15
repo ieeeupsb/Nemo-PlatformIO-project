@@ -16,7 +16,7 @@ void motion::setup() {
 void motion::refresh() {
     if (max_ticks == MASTER_MOTOR.encoder.getCount())
         stop();
-    linear_speed = MASTER_MOTOR.current_speed();
+    linear_speed = MASTER_MOTOR.get_speed();
 }
 
 void motion::stop() {
