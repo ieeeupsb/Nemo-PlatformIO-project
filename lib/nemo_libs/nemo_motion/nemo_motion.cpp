@@ -18,6 +18,11 @@ void motion::refresh() {
         stop();
     linear_speed = MASTER_MOTOR.get_speed();
 }
+// TODO: test this function
+void motion::walk(int direction) {
+    // TODO: Change this in the future to set with default speed;
+    left_motor.set_dir_set_pwm(direction, 150);
+}
 
 void motion::stop() {
     left_motor.stop();

@@ -35,7 +35,21 @@ class motion {
      *
      */
     void stop();
-    void walk_distance(int millimeters, int direction, int turn);
+    // TODO : overload functions not implemented
+    /**
+     * @brief make robot walk with a certain direction distance or speed.
+     * Non-blocking function;
+     *
+     * @param millimeters robot max travelled distance after function
+     * call. Non-blocking function
+     * @param direction robot direction use FORWARD or
+     * @param speed pretended robot speed in m/s
+     */
+    void walk(int direction);
+    void walk(int direction, unsigned int millimiters);
+    void walk(int direction, unsigned int millimiters);
+    void walk(int direction, unsigned int speed);
+    void walk(int direction, unsigned int millimiters, int speed);
     void rotate_degrees(int degrees, int direction, int speed);
     /**
      * @brief Refresh current robot speed and stop the motors at
