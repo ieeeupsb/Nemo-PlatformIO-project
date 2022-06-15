@@ -3,7 +3,8 @@
     // for the documentation about the extensions.json format
     "recommendations": [
         "cschlosser.doxdocgen",
-        "platformio.platformio-ide"
+        "platformio.platformio-ide",
+        "Gruntfuggly.todo-tree"
     ],
     "unwantedRecommendations": [
         "ms-vscode.cpptools-extension-pack"

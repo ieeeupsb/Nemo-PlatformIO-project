@@ -58,8 +58,9 @@ void Motor::stop() {
 float Motor::get_speed() {
     float current_tick_number = (float)encoder.getCount();
     float current_time = (float)millis();
-    float distance = (current_tick_number - previous_tick_number) * WALK_CONST;
-    float time = (current_time - previous_time);
+    float distance =
+        (current_tick_number - previous_tick_number) * WALK_CONST; // in mm
+    float time = (current_time - previous_time);                   // in ms
 
     if (!distance || !time) // if the distance or the time diference is zero
                             // acelaration is zero
