@@ -1,23 +1,13 @@
-/**
- * @file motor.h
- * @author manel
- * @brief
- * @version 0.1
- * @date 2022-06-06
- *
- * @copyright Copyright (c) 2022
- *
- */
 #if MOTORS
 
 #ifndef MOTOR_H
 #define MOTOR_H
 
 /**
- * @file motor.cpp
- * @author ManelMCCS
+ * @file motor.h
+ * @author manel
  * @brief
- * @version 1.1
+ * @version 0.1
  * @date 2022-06-06
  *
  * @copyright Copyright (c) 2022
@@ -29,6 +19,10 @@
 
 #include "nemo_global_macros.h"
 // TODO: using global macros in motor.h for test reasons
+
+#define FORWARD 1
+#define STOP 0
+#define BACKWARDS -1
 
 /**
  * @brief Motor is a class that contains motor function data and controls the DC

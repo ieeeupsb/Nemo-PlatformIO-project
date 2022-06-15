@@ -24,6 +24,9 @@ void motion::walk(int direction) {
     left_motor.set_dir_set_pwm(direction, 150);
 }
 
+void motion::walk(int direction, unsigned speed) {
+}
+
 void motion::stop() {
     left_motor.stop();
     right_motor.stop();

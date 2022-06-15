@@ -46,9 +46,8 @@ class motion {
      * @param speed pretended robot speed in m/s
      */
     void walk(int direction);
-    void walk(int direction, long unsigned millimiters);
-    void walk(int direction, short unsigned speed);
-    void walk(int direction, unsigned int millimiters, long unsigned speed);
+    void walk(int direction, unsigned speed);
+
     void rotate_degrees(int degrees, int direction, long unsigned speed);
     /**
      * @brief Refresh current robot speed and stop the motors at
