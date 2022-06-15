@@ -20,6 +20,10 @@
 #include "nemo_global_macros.h"
 // TODO: using global macros in motor.h for test reasons
 
+/**
+ * @brief direction flags
+ *
+ */
 #define FORWARD 1
 #define STOP 0
 #define BACKWARDS -1
