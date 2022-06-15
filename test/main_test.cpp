@@ -4,6 +4,6 @@
 #include "motor.h"
 #include "nemo_motion.h"
 
-void setup() { motion() }
+void setup() {}
 
 void loop() {}

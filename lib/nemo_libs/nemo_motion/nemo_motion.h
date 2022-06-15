@@ -46,11 +46,10 @@ class motion {
      * @param speed pretended robot speed in m/s
      */
     void walk(int direction);
-    void walk(int direction, unsigned int millimiters);
-    void walk(int direction, unsigned int millimiters);
-    void walk(int direction, unsigned int speed);
-    void walk(int direction, unsigned int millimiters, int speed);
-    void rotate_degrees(int degrees, int direction, int speed);
+    void walk(int direction, long unsigned millimiters);
+    void walk(int direction, short unsigned speed);
+    void walk(int direction, unsigned int millimiters, long unsigned speed);
+    void rotate_degrees(int degrees, int direction, long unsigned speed);
     /**
      * @brief Refresh current robot speed and stop the motors at
      * standstill conditions
