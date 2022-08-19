@@ -47,6 +47,10 @@ class Motor {
 
     void setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
                uint8_t enable_pin, uint8_t channel, int enc1_pin, int enc2_pin);
+    /**
+     * @brief Stops the motor (sets pwm to 0)
+     * 
+     */
     void stop();
 
     uint8_t dir = DIR_NOT_DEF;
