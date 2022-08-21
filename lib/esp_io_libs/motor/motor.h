@@ -1,4 +1,3 @@
-#if MOTORS
 
 #ifndef MOTOR_H
 #define MOTOR_H
@@ -49,7 +48,7 @@ class Motor {
                uint8_t enable_pin, uint8_t channel, int enc1_pin, int enc2_pin);
     /**
      * @brief Stops the motor (sets pwm to 0)
-     * 
+     *
      */
     void stop();
 
@@ -80,5 +79,4 @@ class Motor {
     float previous_time = 0;
 };
 
-#endif
 #endif

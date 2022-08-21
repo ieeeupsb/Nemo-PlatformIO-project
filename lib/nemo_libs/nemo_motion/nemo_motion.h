@@ -48,7 +48,15 @@ class motion {
     void walk(int direction);
     void walk(int direction, unsigned speed);
 
-    void set_max_distance(unsigned distance_ms);
+    /**
+     * @brief Writes the pwm directly to the driver to control the left and right motors
+     *
+     * @param pwm_left value to set the left motor pwm (0 to 255)
+     * @param pwm_right value to set the right motor pwm (0 to 255)
+     */
+    void simple_walk(int pwm_left, int pwm_right);
+
+    void set_max_distance(unsigned distance_mm);
 
     void rotate_degrees(int degrees, int direction, long unsigned speed);
     /**
