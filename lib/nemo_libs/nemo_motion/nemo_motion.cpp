@@ -26,11 +26,16 @@ void motion::walk(int direction) {
 }
 
 // TODO: test this function
-void motion::set_max_distance(unsigned distance_ms) {
-    max_ticks = WALK_CONST * distance_ms;
+void motion::set_max_distance(unsigned distance_mm) {
+    max_ticks = WALK_CONST * distance_mm;
 }
 
 void motion::walk(int direction, unsigned speed) {
+}
+
+void motion::simple_walk(int pwm_left, int pwm_right) {
+    left_motor.pwm_val = pwm_left;
+    right_motor.pwm_val = pwm_right;
 }
 
 void motion::stop() {
