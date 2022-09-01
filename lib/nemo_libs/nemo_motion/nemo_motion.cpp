@@ -33,9 +33,10 @@ void motion::set_max_distance(unsigned distance_mm) {
 void motion::walk(int direction, unsigned speed) {
 }
 
+// TODO use set_dir_pwm
 void motion::simple_walk(int pwm_left, int pwm_right) {
-    left_motor.pwm_val = pwm_left;
-    right_motor.pwm_val = pwm_right;
+    // left_motor._pwmVal = pwm_left;
+    // right_motor._pwmVal = pwm_right;
 }
 
 void motion::stop() {
