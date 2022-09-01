@@ -24,19 +24,21 @@ void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
     encoder.attachHalfQuad(enc1_pin, enc2_pin);
 }
 /**
- * @brief
+ * @brief Sets the motor's direction of rotation
  *
- * @param _dir
- * @param _pwmVal
+ * @param _dir FORWARD or BACKWARD
  */
 
-void Motor::set_dir_set_pwm(uint8_t _dir, uint32_t _pwmVal) {
-    ledcWrite(pwm_channel, _pwmVal);
+int Motor::set_direction(uint8_t _dir) {
+    if (_dir != FORWARD && _dir != BACKWARDS) {
+        return MOTOR_ERROR;
+    }
+
     digitalWrite(dc_motor_1, _dir);
     digitalWrite(dc_motor_2, !_dir);
-
-    pwmVal = _pwmVal;
     dir = _dir;
+
+    return MOTOR_SUCCESS;
 }
 
 void Motor::stop() {
@@ -54,7 +56,7 @@ float Motor::get_speed() {
     float time = (current_time - previous_time);                   // in ms
 
     if (!distance || !time) // if the distance or the time diference is zero
-                            // acelaration is zero
+                            // acceleration is zero
         return Motor::current_speed;
 
     Motor::current_speed = distance / time;
@@ -65,18 +67,25 @@ float Motor::get_speed() {
 
     return Motor::current_speed;
 }
-int Motor::pwm_refresh(int pwm_dif) {
+
+int Motor::get_pwm() {
+    return pwmVal;
+}
+
+int Motor::pwm_offset(int pwm_dif) {
     pwmVal += pwm_dif;
     if (pwmVal < MIN_PWM || pwmVal > MAX_PWM) {
-        return -1;
+        return MOTOR_ERROR;
     }
     ledcWrite(pwm_channel, pwmVal);
     return pwmVal;
 }
-void Motor::set_pwm(unsigned int _pwmVal) {
+
+int Motor::set_pwm(unsigned int _pwmVal) {
     if (_pwmVal < 0 || _pwmVal > MAX_PWM) {
-        return;
+        return MOTOR_ERROR;
     }
     ledcWrite(pwm_channel, _pwmVal);
     pwmVal = _pwmVal;
+    return MOTOR_SUCCESS;
 }

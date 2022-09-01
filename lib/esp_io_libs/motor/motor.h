@@ -27,6 +27,9 @@
 #define BACKWARDS 0
 #define DIR_NOT_DEF -1
 
+#define MOTOR_ERROR -1
+#define MOTOR_SUCCESS 1
+
 /**
  * \def
  * @brief 3.43 encoder ticks represents 1 mm
@@ -54,9 +57,11 @@ class Motor {
 
     uint8_t dir = DIR_NOT_DEF;
     uint32_t pwmVal = 0;
-    void set_dir_set_pwm(uint8_t _dir, uint32_t _pwmVal);
-    int pwm_refresh(int pwm_dif);
-    void set_pwm(unsigned int _pwmVal);
+    int set_direction(uint8_t _dir);
+    int pwm_offset(int pwm_dif);
+    int set_pwm(unsigned int _pwmVal);
+
+    int get_pwm();
 
     float current_speed = 0;
     /**
