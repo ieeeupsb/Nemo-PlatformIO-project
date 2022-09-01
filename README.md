@@ -1,5 +1,11 @@
 # Nemo
 
+## Software structure:
+* Nemo's software layer is divided into 3 parts, so that it maintains consistency over different processors.
+* First layer: IO -> Controls communication with the processor and sensors. Changes with every processor. 
+* Second layer: Nemo Libs -> Parses and formats IO information. Basic robot actions are defined in this layer, such as walking forward.
+* Third layer: Modes -> Different modes use the Nemo Libs differently do to different things. One mode might be an RC car, another mode might be an autonomous mode that doesn't use Bluetooth. Here is the main function.
+
 ## How to contribute:
 * Create new branches for new features ([more about git workflow](###-git-workflow))
 * Do not modify `main.cpp`, use `main_test.cpp` instead
@@ -56,7 +62,7 @@ build_type = test
 ; test/release
 ;##########################################################
 ```
-### Documention
+### Documentation
 * Install https://github.com/cschlosser/doxdocgen#templates extension
 * Before function declaration or after creating a new file for auto-complete doxygen commands type `/**`, and press `Enter`
 
