@@ -42,8 +42,8 @@ class motion {
      *
      * @param millimeters robot max travelled distance after function
      * call. Non-blocking function
-     * @param direction robot direction use FORWARD or
-     * @param speed pretended robot speed in m/s
+     * @param direction robot direction. use FORWARD or BACKWARDS
+     * @param speed intended robot speed in m/s
      */
     void walk(int direction);
     void walk(int direction, unsigned speed);
@@ -60,9 +60,8 @@ class motion {
 
     void rotate_degrees(int degrees, int direction, long unsigned speed);
     /**
-     * @brief Refresh current robot speed and stop the motors at
-     * standstill conditions
-     *
+     * @brief Update current speed measurement and stop the motors if
+     * standstill conditions are met
      */
     void refresh();
     float linear_speed_update();

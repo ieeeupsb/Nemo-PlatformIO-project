@@ -19,18 +19,22 @@ void motion::refresh() {
         stop();
     linear_speed = MASTER_MOTOR.get_speed();
 }
+// FIXME: pwm is at 150
 // TODO: test this function
 void motion::walk(int direction) {
     // TODO: Change this in the future to set with default speed;
-    left_motor.set_dir_set_pwm(direction, 150);
+    left_motor.set_direction(direction);
+    left_motor.set_pwm(150);
+    right_motor.set_direction(direction);
+    right_motor.set_pwm(150);
+}
+
+void motion::walk(int direction, unsigned speed) {
 }
 
 // TODO: test this function
 void motion::set_max_distance(unsigned distance_mm) {
     max_ticks = WALK_CONST * distance_mm;
-}
-
-void motion::walk(int direction, unsigned speed) {
 }
 
 // TODO use set_dir_pwm
