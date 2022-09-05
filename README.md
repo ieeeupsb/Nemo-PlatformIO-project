@@ -1,5 +1,6 @@
 # Nemo
-
+TODO: explain how to use the todo extension
+TODO: create another README for the physical configurations and connections of the robot
 ## Software structure:
 * Nemo's software layer is divided into 3 parts, so that it maintains consistency over different processors.
 * First layer: IO -> Controls communication with the processor and sensors. Changes with every processor. 
