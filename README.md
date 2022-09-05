@@ -1,4 +1,4 @@
-# Nemo
+# Nemo PIO Project
 TODO: explain how to use the todo extension
 TODO: create another README for the physical configurations and connections of the robot
 ## Software structure:
@@ -11,8 +11,9 @@ TODO: create another README for the physical configurations and connections of t
 * Create new branches for new features ([more about git workflow](###-git-workflow))
 * Do not modify `main.cpp`, use `main_test.cpp` instead
 * Use `platformio.ini` for mode configuration ([more about .ini file](###-.ini-file))
-* Use proper documentation ([more about documentation](###-.ini-file))
+* Use proper documentation ([more about documentation](###-.documentation))
 * Use code auto-format (enabled in this workspace)
+* Use TODO Tree extension properly ([more about TODO Tree](###-.todo-tree))
 
 ### Git workflow
 
@@ -67,13 +68,15 @@ build_type = test
 * Install https://github.com/cschlosser/doxdocgen#templates extension
 * Before function declaration or after creating a new file for auto-complete doxygen commands type `/**`, and press `Enter`
 
-Setting up wifi(old):
+Setting up wifi (depracated):
 
 Put your wifi credentials here:
 src/udp_client/wifi_credentials_private.h
 
 in terminal:    linux: ipconfig -> ipv4     add to setup.h
                 windows: ifconfig -> inet
+
+### TODO Tree
 
 ## Useful links:
     https://github.com/P33a/RobotAtFactoryLite
