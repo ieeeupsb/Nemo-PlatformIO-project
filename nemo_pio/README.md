@@ -4,6 +4,7 @@ TODO: create another README for the physical configurations and connections of t
 
 ## How to contribute to the PIO project with VS Code:
 * First check the main project README.md file.
+* Open nemo/nemo_pio folder in VS Code.
 * Do not modify `main.cpp`, use `main_test.cpp` instead for testing.
 * Use `platformio.ini` for mode configuration ([more about .ini file](###-.ini-file))
 * Use proper documentation ([more about documentation](###-.documentation))
