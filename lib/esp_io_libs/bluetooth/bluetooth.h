@@ -1,1 +1,0 @@
-// TODO Criar a biblioteca para o bluetooth
