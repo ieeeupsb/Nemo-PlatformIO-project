@@ -68,7 +68,7 @@ build_type = test
 * Install https://github.com/cschlosser/doxdocgen#templates extension
 * Before function declaration or after creating a new file for auto-complete doxygen commands type `/**`, and press `Enter`
 
-Setting up wifi (depracated):
+Setting up wifi (deprecated):
 
 Put your wifi credentials here:
 src/udp_client/wifi_credentials_private.h
