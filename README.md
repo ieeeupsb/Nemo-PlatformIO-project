@@ -1,19 +1,9 @@
-# Nemo PIO Project
-TODO: explain how to use the todo extension
-TODO: create another README for the physical configurations and connections of the robot
-## Software structure:
-* Nemo's software layer is divided into 3 parts, so that it maintains consistency over different processors.
-* First layer: IO -> Controls communication with the processor and sensors. Changes with every processor. 
-* Second layer: Nemo Libs -> Parses and formats IO information. Basic robot actions are defined in this layer, such as walking forward.
-* Third layer: Modes -> Different modes use the Nemo Libs differently do to different things. One mode might be an RC car, another mode might be an autonomous mode that doesn't use Bluetooth. Here is the main function.
+# Nemo
 
 ## How to contribute:
-* Create new branches for new features ([more about git workflow](###-git-workflow))
-* Do not modify `main.cpp`, use `main_test.cpp` instead
-* Use `platformio.ini` for mode configuration ([more about .ini file](###-.ini-file))
-* Use proper documentation ([more about documentation](###-.documentation))
-* Use code auto-format (enabled in this workspace)
-* Use TODO Tree extension properly ([more about TODO Tree](###-.todo-tree))
+* Learn how to use the git workflow first([more about git workflow](###-git-workflow)).
+* Create new branches for new features ([more about git workflow](###-git-workflow)).
+* For the robot software contribuition check the pio project README.md file.
 
 ### Git workflow
 
