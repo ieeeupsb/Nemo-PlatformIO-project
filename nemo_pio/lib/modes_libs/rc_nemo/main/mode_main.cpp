@@ -1,4 +1,23 @@
 #include "mode_main.h"
 #include "nemo_global_macros.h"
+// TODO Fazer o Esqueleto do código para o controlo pela app bluetooth
+int main_function() {
+    // setup
+    // while (main while)
+    // [
+    //     pedir os valores a app
 
-int main_function() { return 0; }
+    //     se available
+    //         pwm_esquerdo_temp = incremento_esquerdo*multiplicador
+    //         se pwm_esquerdo_temp dentro da RANGE
+    //             pwm_esquerdo = pwm_esquerdo_temp
+    //         senão
+    //             continua
+    //         ->mesma coisa para o direito
+    //     senão
+    //         continua
+
+    // ]
+
+    return 0;
+}

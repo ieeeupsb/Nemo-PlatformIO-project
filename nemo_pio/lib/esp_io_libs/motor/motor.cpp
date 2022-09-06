@@ -1,14 +1,3 @@
-/**
- * @file motor.cpp
- * @author ManelMCCS
- * @brief
- * @version 1.1
- * @date 2022-06-06
- *
- * @copyright Copyright (c) 2022
- *
- */
-
 #include "motor.h"
 
 #ifndef MIN_PWM
@@ -18,19 +7,6 @@
 #define MAX_PWM 255
 #endif
 
-#define WALK_CONST 3.43
-#define ROTATION_CONST_DEGREES (2120.0 / 360.0)
-
-/**
- * @brief
- *
- * @param dc_motor_1_pin
- * @param dc_motor_2_pin
- * @param enable_pin
- * @param channel
- * @param enc1_pin
- * @param enc2_pin
- */
 void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
                   uint8_t enable_pin, uint8_t channel, int enc1_pin,
                   int enc2_pin) {
@@ -48,19 +24,21 @@ void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
     encoder.attachHalfQuad(enc1_pin, enc2_pin);
 }
 /**
- * @brief
+ * @brief Sets the motor's direction of rotation
  *
- * @param _dir
- * @param _pwmVal
+ * @param _dir FORWARD or BACKWARD
  */
 
-void Motor::set_dir_set_pwm(uint8_t _dir, uint32_t _pwmVal) {
-    ledcWrite(pwm_channel, _pwmVal);
+motor_return_t Motor::set_direction(motor_direction_t _dir) {
+    if (_dir != FORWARD && _dir != BACKWARDS) {
+        return MOTOR_ERROR;
+    }
+
     digitalWrite(dc_motor_1, _dir);
     digitalWrite(dc_motor_2, !_dir);
-
-    pwmVal = _pwmVal;
     dir = _dir;
+
+    return MOTOR_SUCCESS;
 }
 
 void Motor::stop() {
@@ -69,34 +47,45 @@ void Motor::stop() {
     digitalWrite(dc_motor_2, LOW);
 }
 
-float Motor::get_speed() {
+// TODO : test this function with the robot
+float Motor::get_speed_ms() {
     float current_tick_number = (float)encoder.getCount();
     float current_time = (float)millis();
-    float distance = (current_tick_number - previous_tick_number) / WALK_CONST;
-    float time = (current_time - previous_time);
+    float distance =
+        (current_tick_number - previous_tick_number) * WALK_CONST; // in mm
+    float time = (current_time - previous_time);                   // in ms
 
-    if (!distance || !time)
-        return Motor::current_speed;
+    if (!distance || !time) // if the distance or the time diference is zero
+                            // acceleration is zero
+        return Motor::current_speed_ms;
 
-    Motor::current_speed = distance / time;
+    Motor::current_speed_ms = distance / time;
+
     // Refresh previous_vars in the end of the function
     previous_tick_number = encoder.getCount();
     previous_time = millis();
 
-    return Motor::current_speed;
+    return Motor::current_speed_ms;
 }
-int Motor::pwm_refresh(int pwm_dif) {
-    pwmVal += pwm_dif;
-    if (pwmVal < MIN_PWM || pwmVal > MAX_PWM) {
-        return -1;
-    }
-    ledcWrite(pwm_channel, pwmVal);
-    return pwmVal;
+
+int Motor::get_pwm() {
+    return pwm_val;
 }
-void Motor::set_pwm(unsigned int _pwmVal) {
-    if (_pwmVal < 0 || _pwmVal > MAX_PWM) {
-        return;
+
+int Motor::pwm_offset(int pwm_dif) {
+    pwm_val += pwm_dif;
+    if (pwm_val < MIN_PWM || pwm_val > MAX_PWM) {
+        return MOTOR_ERROR;
     }
-    ledcWrite(pwm_channel, _pwmVal);
-    pwmVal = _pwmVal;
+    ledcWrite(pwm_channel, pwm_val);
+    return pwm_val;
+}
+
+int Motor::set_pwm(unsigned int _pwm_val) {
+    if (_pwm_val < 0 || _pwm_val > MAX_PWM) {
+        return MOTOR_ERROR;
+    }
+    ledcWrite(pwm_channel, _pwm_val);
+    Motor::pwm_val = _pwm_val;
+    return MOTOR_SUCCESS;
 }
