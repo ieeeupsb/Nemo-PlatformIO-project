@@ -12,8 +12,8 @@ TODO: create another README for the physical configurations and connections of t
 * Use TODO Tree extension properly ([more about TODO Tree](###-.todo-tree))
 
 ## Software structure:
-* Nemo's software layer is divided into 3 parts, so that it maintains consistency over different processors.
-* First layer: IO -> Controls communication with the processor and sensors. Changes with every processor. 
+* Nemo's software is designed is a three layer pyramid structure, so that it maintains consistency over different microcontrollers and functioning modes.
+* First layer (bottom): IO -> Controls communication between the microcontroller and the hardware. This layer may change with different microcontrollers. 
 * Second layer: Nemo Libs -> Parses and formats IO information. Basic robot actions are defined in this layer, such as walking forward.
 * Third layer: Modes -> Different modes use the Nemo Libs differently do to different things. One mode might be an RC car, another mode might be an autonomous mode that doesn't use Bluetooth. Here is the main function.
 
