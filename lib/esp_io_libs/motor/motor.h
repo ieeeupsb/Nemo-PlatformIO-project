@@ -19,16 +19,16 @@
 #include "nemo_global_macros.h"
 // TODO: using global macros in motor.h for test reasons
 
+typedef enum { MOTOR_ERROR = 0,
+               MOTOR_SUCCESS } motor_return_t;
+
 /**
- * @brief direction flags
+ * @brief Motor direction flags
  *
  */
-#define FORWARD 1
-#define BACKWARDS 0
-#define DIR_NOT_DEF -1
-
-#define MOTOR_ERROR -1
-#define MOTOR_SUCCESS 1
+typedef enum { DIR_NOT_DEF = 0,
+               FORWARD,
+               BACKWARDS } motor_direction_t;
 
 /**
  * \def
@@ -56,21 +56,22 @@ class Motor {
     void stop();
 
     uint8_t dir = DIR_NOT_DEF;
-    uint32_t pwmVal = 0;
-    int set_direction(uint8_t _dir);
+    uint32_t pwm_val = 0;
+
+    motor_return_t set_direction(motor_direction_t _dir);
     int pwm_offset(int pwm_dif);
     int set_pwm(unsigned int _pwmVal);
 
     int get_pwm();
 
-    float current_speed = 0;
+    float current_speed_ms = 0;
     /**
-     * @brief Refresh current_speed variable for the motor and return the motor
+     * @brief Refresh current_speed_ms variable for the motor and return the motor
      * speed
      *
-     * @return float Motor::current_speed
+     * @return float Motor::current_speed_ms
      */
-    float get_speed();
+    float get_speed_ms();
 
   private:
     uint8_t pwm_channel;

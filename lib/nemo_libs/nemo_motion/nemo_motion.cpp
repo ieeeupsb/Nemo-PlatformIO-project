@@ -17,19 +17,19 @@ void motion::setup() {
 void motion::refresh() {
     if (max_ticks == MASTER_MOTOR.encoder.getCount())
         stop();
-    linear_speed = MASTER_MOTOR.get_speed();
+    linear_speed = MASTER_MOTOR.get_speed_ms();
 }
 // FIXME: pwm is at 150
 // TODO: test this function
-void motion::walk(int direction) {
-    // TODO: Change this in the future to set with default speed;
+void motion::walk(motor_direction_t direction) {
+    // TODO: Change this in the future to set with default speed_ms;
     left_motor.set_direction(direction);
     left_motor.set_pwm(150);
     right_motor.set_direction(direction);
     right_motor.set_pwm(150);
 }
 
-void motion::walk(int direction, unsigned speed) {
+void motion::walk(motor_direction_t direction, unsigned speed_ms) {
 }
 
 // TODO: test this function

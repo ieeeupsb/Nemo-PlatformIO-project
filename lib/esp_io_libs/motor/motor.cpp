@@ -29,7 +29,7 @@ void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
  * @param _dir FORWARD or BACKWARD
  */
 
-int Motor::set_direction(uint8_t _dir) {
+motor_return_t Motor::set_direction(motor_direction_t _dir) {
     if (_dir != FORWARD && _dir != BACKWARDS) {
         return MOTOR_ERROR;
     }
@@ -48,7 +48,7 @@ void Motor::stop() {
 }
 
 // TODO : test this function with the robot
-float Motor::get_speed() {
+float Motor::get_speed_ms() {
     float current_tick_number = (float)encoder.getCount();
     float current_time = (float)millis();
     float distance =
@@ -57,35 +57,35 @@ float Motor::get_speed() {
 
     if (!distance || !time) // if the distance or the time diference is zero
                             // acceleration is zero
-        return Motor::current_speed;
+        return Motor::current_speed_ms;
 
-    Motor::current_speed = distance / time;
+    Motor::current_speed_ms = distance / time;
 
     // Refresh previous_vars in the end of the function
     previous_tick_number = encoder.getCount();
     previous_time = millis();
 
-    return Motor::current_speed;
+    return Motor::current_speed_ms;
 }
 
 int Motor::get_pwm() {
-    return pwmVal;
+    return pwm_val;
 }
 
 int Motor::pwm_offset(int pwm_dif) {
-    pwmVal += pwm_dif;
-    if (pwmVal < MIN_PWM || pwmVal > MAX_PWM) {
+    pwm_val += pwm_dif;
+    if (pwm_val < MIN_PWM || pwm_val > MAX_PWM) {
         return MOTOR_ERROR;
     }
-    ledcWrite(pwm_channel, pwmVal);
-    return pwmVal;
+    ledcWrite(pwm_channel, pwm_val);
+    return pwm_val;
 }
 
-int Motor::set_pwm(unsigned int _pwmVal) {
-    if (_pwmVal < 0 || _pwmVal > MAX_PWM) {
+int Motor::set_pwm(unsigned int _pwm_val) {
+    if (_pwm_val < 0 || _pwm_val > MAX_PWM) {
         return MOTOR_ERROR;
     }
-    ledcWrite(pwm_channel, _pwmVal);
-    pwmVal = _pwmVal;
+    ledcWrite(pwm_channel, _pwm_val);
+    Motor::pwm_val = _pwm_val;
     return MOTOR_SUCCESS;
 }
