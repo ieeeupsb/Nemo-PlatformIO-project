@@ -19,7 +19,7 @@ Hardware:
 * Learn how to use the git workflow first([more about git workflow](###-git-workflow)).
 * Create new branches for new features ([more about git workflow](###-git-workflow)).
 * Check the README.md file for which project part.
-* Use github tasks
+* Use github tasks .
 
 ### Git workflow
 
