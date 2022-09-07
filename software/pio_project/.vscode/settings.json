@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "positioning.h": "c",
+        "cmath": "cpp"
+    },
+    "editor.formatOnSave": true,
+    "editor.formatOnPaste": true,
+    "doxdocgen.generic.authorTag": "@author {author}",
+    "doxdocgen.generic.useGitUserName": true,
+    "todo-tree.tree.scanMode": "workspace only"
+}
