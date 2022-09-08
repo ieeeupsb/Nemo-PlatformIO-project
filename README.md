@@ -3,4 +3,4 @@
 ## Description
 
 ## How to contribute:
-Check the [wiki](./doc/Home)!
+Check the [wiki](../../wiki)!
