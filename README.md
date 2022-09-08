@@ -3,4 +3,4 @@
 ## Description
 
 ## How to contribute:
-Check the wiki!
+Check the [wiki](doc/Home.md)!
