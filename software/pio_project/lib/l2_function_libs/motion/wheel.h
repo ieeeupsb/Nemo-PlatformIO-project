@@ -20,8 +20,8 @@
  */
 class Wheel {
   private:
-    Motor motor;
     ESP32Encoder encoder;
+    Motor motor;
 
     unsigned int user_max_enconder_ticks;
 
@@ -48,6 +48,10 @@ class Wheel {
 
     float linear_speed_update();
 
+    /**
+     * @brief Set the max speed to motor.
+     *
+     */
     void set_max_speed();
     void increase_speed();
     void decrease_speed();

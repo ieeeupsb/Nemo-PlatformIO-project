@@ -30,6 +30,10 @@ void Wheel::set_max_distance(int distance_mm) {
     user_max_enconder_ticks = (float)distance_mm * TICKS_MM_RATIO;
 }
 
+void Wheel::set_max_speed() {
+    motor.set_pwm(MAX_PWM);
+}
+
 void Wheel::stop() {
     motor.stop();
 }
