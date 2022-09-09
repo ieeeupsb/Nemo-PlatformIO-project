@@ -11,7 +11,13 @@
  *
  */
 #include <ports.h>
-// #include "stdint.h"
+
+#ifndef MIN_PWM
+#define MIN_PWM 0
+#endif
+#ifndef MAX_PWM
+#define MAX_PWM 255
+#endif
 
 typedef enum { MOTOR_ERROR = 0,
                MOTOR_SUCCESS } motor_return_t;

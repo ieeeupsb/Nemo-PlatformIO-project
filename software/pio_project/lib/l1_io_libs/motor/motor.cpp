@@ -1,12 +1,5 @@
 #include "motor.h"
 
-#ifndef MIN_PWM
-#define MIN_PWM 0
-#endif
-#ifndef MAX_PWM
-#define MAX_PWM 255
-#endif
-
 void Motor::setup(uint8_t dc_motor_1_pin, uint8_t dc_motor_2_pin,
                   uint8_t enable_pin, uint8_t pwm_channel) {
 #if ESP32
@@ -67,8 +60,4 @@ motor_return_t Motor::set_pwm(unsigned int _pwm_val) {
 #endif
     Motor::pwm_val = _pwm_val;
     return MOTOR_SUCCESS;
-}
-
-void Motor::test() {
-    setup()
 }
