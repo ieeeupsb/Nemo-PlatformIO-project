@@ -1,4 +1,7 @@
 #include "mode_main.h"
+#include "motion.h"
+
+Motion motion_g;
 
 // TODO Fazer o Esqueleto do código para o controlo pela app bluetooth
 int main_function() {
@@ -18,6 +21,9 @@ int main_function() {
     //         continua
 
     // ]
+
+    motion_g.test_motors();
+    motion_g.test_encoders();
 
     return 0;
 }

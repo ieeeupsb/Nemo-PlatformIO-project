@@ -1,15 +1,11 @@
 #include "mode_main.h"
 
 #include "motion.h"
-#include "motor.h"
-motion motion_g;
 
-#ifdef ESP32
-#define FJDKSLA 23
-#endif
+Motion motion_g;
 
 void setup() {
-    int we = FJDKSLA;
+    motion_g.test_motors();
 }
 
 void loop() {
