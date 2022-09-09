@@ -11,6 +11,7 @@
 #pragma once
 
 #include "pid.h"
+#include "pin_wiring.h"
 #include "wheel.h"
 
 typedef enum { DIR_NOT_DEF = 0,
@@ -59,6 +60,18 @@ class Motion {
      */
     void refresh();
     float linear_speed_update();
+
+    /**
+     * @brief Construct a new test motors object. Max speed on both motor for 200 miliseconds.
+     *
+     */
+    void test_motors();
+
+    /**
+     * @brief Tests if encoders are working. Set max speed until the robot reach the 200 mm.
+     *
+     */
+    void test_encoders();
 
   private:
     Wheel left_wheel;
