@@ -27,7 +27,7 @@ void Motor::stop() {
     digital_write(dc_motor_2, LOW);
 }
 
-void Motor::set_direction(motor_rotation_dir_t motor_rotation_dir) {
+void Motor::set_rotation_dir(motor_rotation_dir_t motor_rotation_dir) {
 
     digital_write(dc_motor_1, motor_rotation_dir);
     digital_write(dc_motor_2, !motor_rotation_dir);

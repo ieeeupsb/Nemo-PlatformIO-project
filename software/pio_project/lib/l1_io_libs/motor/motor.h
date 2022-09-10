@@ -69,7 +69,7 @@ class Motor {
      *
      * @param motor_rotation_dir
      */
-    void set_direction(motor_rotation_dir_t motor_rotation_dir);
+    void set_rotation_dir(motor_rotation_dir_t motor_rotation_dir);
 
     /**
      * @brief Set the a PWM given by the user and stores the value.

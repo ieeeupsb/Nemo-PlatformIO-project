@@ -9,8 +9,15 @@ void Motion::setup() {
                       ENC2_R);
 }
 
-void Motion::test_motors() {
+void Motion::set_motion_test() {
     setup();
+    left_wheel.set_rotation_dir(CLOCKWISE);
+    left_wheel.set_rotation_dir(CLOCKWISE);
+}
+
+void Motion::test_motors() {
+
+    set_motion_test();
     left_wheel.set_max_speed();
     right_wheel.set_max_speed();
     delay(200);
@@ -23,7 +30,7 @@ void Motion::stop() {
 }
 
 void Motion::test_encoders() {
-    setup();
+    set_motion_test();
 
     left_wheel.set_max_distance(200);
     right_wheel.set_max_distance(200);

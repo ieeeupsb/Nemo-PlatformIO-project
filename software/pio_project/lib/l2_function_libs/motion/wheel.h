@@ -43,6 +43,8 @@ class Wheel {
      */
     void stop();
 
+    void set_rotation_dir(motor_rotation_dir_t motor_rotation_dir);
+
     void set_max_distance(int distance_mm);
     bool is_max_distance();
 
