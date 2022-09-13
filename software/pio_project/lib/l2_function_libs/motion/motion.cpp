@@ -12,7 +12,7 @@ void Motion::setup() {
 void Motion::set_motion_test() {
     setup();
     left_wheel.set_rotation_dir(CLOCKWISE);
-    left_wheel.set_rotation_dir(CLOCKWISE);
+    right_wheel.set_rotation_dir(CLOCKWISE);
 }
 
 void Motion::test_motors() {
