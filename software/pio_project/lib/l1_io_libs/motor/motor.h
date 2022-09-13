@@ -43,7 +43,7 @@ typedef enum { ROTATION_NOT_DEFINED = 0,
  */
 typedef uint8_t pwm_t;
 
-// FIXME
+// FIXME não se termo para fazer a domumentação
 /**
  * @brief Motor is a class used for controling a DC Motor.
  *
