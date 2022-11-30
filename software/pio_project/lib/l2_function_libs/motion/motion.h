@@ -61,6 +61,9 @@ class Motion {
     void refresh();
     float linear_speed_update();
 
+    // FIXME static??
+    void set_motion_test();
+
     /**
      * @brief Construct a new test motors object. Max speed on both motor for 200 miliseconds.
      *

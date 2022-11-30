@@ -25,6 +25,11 @@ bool Wheel::is_max_distance() {
     return ret;
 }
 
+// FIXME
+void Wheel::set_rotation_dir(motor_rotation_dir_t motor_rotation_dir) {
+    motor.set_rotation_dir(motor_rotation_dir);
+}
+
 // TODO: test this function
 void Wheel::set_max_distance(int distance_mm) {
     user_max_enconder_ticks = (float)distance_mm * TICKS_MM_RATIO;

@@ -9,12 +9,20 @@ void Motion::setup() {
                       ENC2_R);
 }
 
-void Motion::test_motors() {
+void Motion::set_motion_test() {
     setup();
+    left_wheel.set_rotation_dir(CLOCKWISE);
+    right_wheel.set_rotation_dir(CLOCKWISE);
+}
+
+// FIXME tirei os motores a pararem por questões de teste.
+void Motion::test_motors() {
+
+    set_motion_test();
     left_wheel.set_max_speed();
     right_wheel.set_max_speed();
     delay(200);
-    stop();
+    // stop();
 }
 
 void Motion::stop() {
@@ -23,7 +31,7 @@ void Motion::stop() {
 }
 
 void Motion::test_encoders() {
-    setup();
+    set_motion_test();
 
     left_wheel.set_max_distance(200);
     right_wheel.set_max_distance(200);
