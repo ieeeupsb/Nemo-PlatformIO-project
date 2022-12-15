@@ -10,7 +10,7 @@
  */
 #pragma once
 
-#include "ESP32Encoder.h"
+#include "encoder.h"
 #include "motor.h"
 
 /**
@@ -20,7 +20,7 @@
  */
 class Wheel {
   private:
-    ESP32Encoder encoder;
+    Encoder encoder;
     Motor motor;
 
     unsigned int user_max_enconder_ticks;
