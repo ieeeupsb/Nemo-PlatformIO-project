@@ -21,10 +21,12 @@
 
 #ifdef PICO
 
+#include "pico_pinout.h"
+
 // RIGHT MOTOR
-#define DC_MOTOR_1R GPIO15 // in_1 -> header_1_pin5 -> gpio21
-#define DC_MOTOR_2R GPIO16 // in_2 -> header_1_pin7 -> gpio23
-#define ENABLE_R GPIO17    // en_a -> header_1_pin8 -> gpio13
+#define ENABLE_L PORT17_GP13
+#define ENC1_L PORT26_GP20
+#define ENC2_L PORT27_GP21
 
 #endif
 
