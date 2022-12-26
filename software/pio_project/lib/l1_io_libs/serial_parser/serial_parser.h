@@ -2,12 +2,11 @@
 #pragma once
 
 #include "Arduino.h"
-#include <string>
-#include <unordered_map>
+#include <string.h>
 
 #define BUFFER_SIZE 64
 
-enum class Direction {
+enum Direction {
     NONE,
     FORWARD,
     BACKWARD,
@@ -48,78 +47,77 @@ class SerialParser {
     }
 
     // Method to parse command from buffer
+
     PicoCommand ParseCommand() {
+        PicoCommand parsed_args;
+        parsed_args.direction = NONE;
+        parsed_args.speed = 0;
+        parsed_args.distance = 0;
 
-        std::string serial_input = buffer_;
-        std::unordered_map<std::string, std::string>
-            args;
+        char *serial_input = buffer_;
+        char *unparsed_command = NULL;
+        size_t command_len = 0;
 
-        Serial.print("Parse command:");
-        Serial.println(buffer_);
+        printf("Parse command: %s\n", buffer_);
 
         // Get the start and end indices of the argument list
-        size_t start_idx = serial_input.find('<') + 1;
-        size_t end_idx = serial_input.find('>');
-        if (start_idx == std::string::npos || end_idx == std::string::npos) {
-            // Invalid string formatDOWN
-            Serial.println("Invalid string format");
+        char *start_idx = strchr(serial_input, '<');
+        char *end_idx = strchr(serial_input, '>');
+        if (!start_idx || !end_idx) {
+            PicoCommand error_command;
+            error_command.direction = NONE;
+
+            return error_command;
         }
-        std::string unparsed_command = serial_input.substr(start_idx + 1, end_idx - start_idx - 1);
 
-        Serial.println(unparsed_command.c_str());
+        command_len = (size_t)(end_idx - start_idx - 1);
+        unparsed_command = (char *)malloc(command_len + 1);
+        strncpy(unparsed_command, start_idx + 1, command_len);
+        unparsed_command[command_len] = '\0';
 
-        //     std::unordered_map<std::string, std::string> args;
+        Serial.print("COMMAND:");
+        Serial.print(unparsed_command);
+        Serial.println();
 
-        //     // Split the input string by semicolons
-        //     std::vector<std::string> parts = Split(input, ";");
+        // Split the input string by semicolons
+        char *parts[BUFFER_SIZE];
+        int num_parts = 0;
+        char *part = strtok(unparsed_command, ";");
+        while (part) {
+            parts[num_parts++] = part;
+            part = strtok(NULL, ";");
+        }
 
-        //     // Iterate over the parts and split each part by the colon character
-        //     for (std::string part : parts) {
-        //         // Split the part by the colon character
-        //         std::vector<std::string> key_value = Split(part, ":");
-        //         // If the part was correctly split into a key and value pair, add it to the unordered map
-        //         if (key_value.size() == 2) {
-        //             args[key_value[0]] = key_value[1];
-        //         }
-        //     }
+        // Iterate over the parts and split each part by the colon character
+        for (int i = 0; i < num_parts; i++) {
+            char *key_value[2];
+            key_value[0] = strtok(parts[i], ":");
+            key_value[1] = strtok(NULL, ":");
 
-        //     // Create a PicoCommand struct to store the parsed information
-        //     PicoCommand parsed_args;
+            // If the part was correctly split into a key and value pair, add it to the unordered map
+            if (key_value[0] && key_value[1]) {
+                if (strcmp(key_value[0], "DIR") == 0) {
+                    if (strcmp(key_value[1], "LEFT") == 0) {
+                        parsed_args.direction = LEFT;
+                    } else if (strcmp(key_value[1], "RIGHT") == 0) {
+                        parsed_args.direction = RIGHT;
+                    } else if (strcmp(key_value[1], "FORWARD") == 0) {
+                        parsed_args.direction = FORWARD;
+                    } else if (strcmp(key_value[1], "BACKWARD") == 0) {
+                        parsed_args.direction = BACKWARD;
+                    }
+                } else if (strcmp(key_value[0], "SPEED") == 0) {
+                    parsed_args.speed = atoi(key_value[1]);
+                } else if (strcmp(key_value[0], "DIST") == 0) {
+                    parsed_args.distance = atoi(key_value[1]);
+                }
+            }
+        }
 
-        //     // Try to parse the direction from the input string
-        //     if (args.count("DIR")) {
-        //         std::string dir = args["DIR"];
-        //         if (dir == "LEFT") {
-        //             parsed_args.direction = Direction::LEFT;
-        //         } else if (dir == "RIGHT") {
-        //             parsed_args.direction = Direction::RIGHT;
-        //         } else if (dir == "FORWARD") {
-        //             parsed_args.direction = Direction::FORWARD;
-        //         } else if (dir == "BACKWARD") {
-        //             parsed_args.direction = Direction::BACKWARD;
-        //         } else {
-        //             parsed_args.direction = Direction::NONE;
-        //         }
-        //     } else {
-        //         parsed_args.direction = Direction::NONE;
-        //     }
+        free(unparsed_command);
 
-        //     // Try to parse the speed from the input string
-        //     if (args.count("SPEED")) {
-        //         parsed_args.speed = std::stoi(args["SPEED"]);
-        //     } else {
-        //         parsed_args.speed = 0;
-        //     }
-
-        //     // Try to parse the distance from the input string
-        //     if (args.count("DIST")) {
-        //         parsed_args.distance = std::stoi(args["DIST"]);
-        //     } else {
-        //         parsed_args.distance = 0;
-        //     }
-
-        //     // Return the parsed PicoCommand struct
-        //     return parsed_args;
+        // Return the parsed PicoCommand struct
+        return parsed_args;
     }
 
     void GetCommand() {
