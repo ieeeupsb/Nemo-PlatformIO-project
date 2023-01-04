@@ -4,12 +4,6 @@
 
 class Encoder {
   public:
-    // Constructor
-    Encoder() {
-
-        counter_ = 0;
-    }
-
     Encoder(int pin_a, int pin_b) {
         // Save the pin numbers
         pin_a_ = pin_a;
@@ -19,8 +13,9 @@ class Encoder {
         pinMode(pin_a_, INPUT);
         pinMode(pin_b_, INPUT);
 
-        // Initialize the counter
-        counter_ = 0;
+        // Initialize the counters
+        speed_counter_ = 0;
+        rotation_counter_ = 0;
     }
 
     // Function to update the encoder count
@@ -31,24 +26,36 @@ class Encoder {
 
         // Update the counter based on the states of the A and B pins
         if (a_state == HIGH && b_state == LOW) {
-            counter_++;
+            speed_counter_++;
+            rotation_counter_++;
         } else if (a_state == LOW && b_state == HIGH) {
-            counter_--;
+            speed_counter_--;
+            rotation_counter_--;
         }
     }
 
     // Function to get the current encoder count
-    int GetCount() {
-        return counter_;
+    int GetSpeedCount() {
+        return speed_counter_;
     }
 
-    void RestartCounter() {
-        counter_ = 0;
+    int GetRotationCount() {
+        return rotation_counter_;
+    }
+
+    void RestartSpeedCounter() {
+        speed_counter_ = 0;
+        return;
+    }
+
+    void RestartRotationCounter() {
+        rotation_counter_ = 0;
         return;
     }
 
   private:
     int pin_a_;
     int pin_b_;
-    int counter_;
+    int speed_counter_;
+    int rotation_counter_;
 };

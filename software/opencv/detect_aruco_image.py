@@ -17,31 +17,32 @@ ARUCO_DICT = aruco.Dictionary_get(aruco.DICT_6X6_1000)
 
 # Create grid board object we're using in our stream
 board = aruco.GridBoard_create(
-        markersX=2,
-        markersY=2,
-        markerLength=0.09,
-        markerSeparation=0.01,
-        dictionary=ARUCO_DICT)
+    markersX=2,
+    markersY=2,
+    markerLength=0.09,
+    markerSeparation=0.01,
+    dictionary=ARUCO_DICT)
 
 # Create vectors we'll be using for rotations and translations for postures
 rvecs, tvecs = None, None
 
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(0)
 
 print("cam is open")
 
 
-while(cam.isOpened()):
+while (cam.isOpened()):
     # Capturing each frame of our video stream
-    while(1):
+    while (1):
         ret, QueryImg = cam.read()
         if ret == True:
             # grayscale image
             gray = cv2.cvtColor(QueryImg, cv2.COLOR_BGR2GRAY)
-        
+
             # Detect Aruco markers
-            corners, ids, rejectedImgPoints = aruco.detectMarkers(gray, ARUCO_DICT, parameters=ARUCO_PARAMETERS)
-            
+            corners, ids, rejectedImgPoints = aruco.detectMarkers(
+                gray, ARUCO_DICT, parameters=ARUCO_PARAMETERS)
+
             # Make sure all 5 markers were detected before printing them out
             if ids is not None and len(ids) == 1:
                 # Print corners and ids to the console
@@ -49,7 +50,8 @@ while(cam.isOpened()):
                     print('ID: {}; Corners: {}'.format(i, corner))
 
                 # Outline all of the markers detected in our image
-                QueryImg = aruco.drawDetectedMarkers(QueryImg, corners, borderColor=(0, 0, 255))
+                QueryImg = aruco.drawDetectedMarkers(
+                    QueryImg, corners, borderColor=(0, 0, 255))
 
                 # Wait on this frame
                 print("Waiting in this frame...")
@@ -58,7 +60,6 @@ while(cam.isOpened()):
 
             # Display our image
             cv2.imshow('CV Cam', QueryImg)
-
 
         # Exit at the end of the video on the 'q' keypress
         if cv2.waitKey(1) & 0xFF == ord('q'):

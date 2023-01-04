@@ -14,8 +14,9 @@
 #define DC_MOTOR_1R GPIO21 // in_1 -> header_1_pin5 -> gpio21
 #define DC_MOTOR_2R GPIO23 // in_2 -> header_1_pin7 -> gpio23
 #define ENABLE_R GPIO13    // en_a -> header_1_pin8 -> gpio13
-#define ENC1_R GPIO18      // yellow
-#define ENC2_R GPIO19      // white
+
+#define ENC1_R GPIO18 // yellow
+#define ENC2_R GPIO19 // white
 
 #endif
 
@@ -23,10 +24,15 @@
 
 #include "pico_pinout.h"
 
+// LEFT MOTOR
+#define ENABLE_L PORT14_GP10
+#define ENC1_L PORT15_GP11
+#define ENC2_L PORT16_GP12
+
 // RIGHT MOTOR
-#define ENABLE_L PORT17_GP13
-#define ENC1_L PORT26_GP20
-#define ENC2_L PORT27_GP21
+#define ENABLE_R PORT25_GP19
+#define ENC1_R PORT26_GP20
+#define ENC2_R PORT27_GP21
 
 #endif
 
