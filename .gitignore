@@ -10,3 +10,6 @@ bluetooth_app/.vscode/c_cpp_properties.json
 
 # Log files
 *.log
+
+software/doc/mangement
+open_ai_api_key.txt
