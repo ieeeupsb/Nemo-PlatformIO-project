@@ -48,11 +48,8 @@
                         <mxPoint x="362.3076923076924" y="310" as="sourcePoint"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="18" value="USB Camera" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;flipV=0;flipH=1;" vertex="1" parent="1">
+                <mxCell id="18" value="USB Camera" style="shape=cube;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;darkOpacity=0.05;darkOpacity2=0.1;flipV=0;flipH=1;" parent="1" vertex="1">
                     <mxGeometry x="320" y="240" width="120" height="80" as="geometry"/>
-                </mxCell>
-                <mxCell id="19" value="" style="whiteSpace=wrap;html=1;rounded=0;sketch=1;" vertex="1" parent="1">
-                    <mxGeometry x="480" y="530" width="120" height="60" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
