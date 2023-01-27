@@ -3,12 +3,6 @@ https://scrumguides.org/docs/scrumguide/v2020/2020-Scrum-Guide-Portuguese-Europe
 https://www.perforce.com/blog/hns/4-product-backlog-prioritization-techniques-work#stack
 
 
-Scrum team:
-
-product owner: algum professor
-scrum master: manel
-developers:
-
 ### Priority:
 
 ## MoSCoW:
