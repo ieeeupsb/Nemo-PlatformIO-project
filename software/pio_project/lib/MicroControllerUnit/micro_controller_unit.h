@@ -34,10 +34,10 @@ class MicroControllerUnit {
         return instance;
     }
 
-    void updateSpeed(float enlapsed_time) {
-        left_wheel_rpm = left_encoder_reader_.Update(enlapsed_time);
-        right_wheel_rpm = right_encoder_reader_.Update(enlapsed_time);
-    }
+    // void updateSpeed(float enlapsed_time) {
+    //     left_wheel_rpm = left_encoder_reader_.Update(enlapsed_time);
+    //     right_wheel_rpm = right_encoder_reader_.Update(enlapsed_time);
+    // }
 
     // void
 
@@ -61,7 +61,7 @@ class MicroControllerUnit {
         left_driver_controller_.stopMotor();
     }
 
-    void test_motors() {
+    void test_encoders() {
         pinMode(LED_GP25, OUTPUT);
         for (int i = 0; i < 3; i++) {
             digitalWrite(LED_GP25, HIGH);
@@ -69,16 +69,26 @@ class MicroControllerUnit {
             digitalWrite(LED_GP25, LOW);
             delay(500);
         }
-        right_driver_controller_.setPwm(120);
-        left_driver_controller_.setPwm(120);
-        right_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-        left_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-        delay(1000);
-        right_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
-        left_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
-        delay(1000);
-        right_driver_controller_.stopMotor();
+        // left_driver_controller_.setPwm(90);
+        // left_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
+        bool left_c1_pin_ok = false;
+        for (int i = 0; i < 100000; i++) {
+            if (HIGH == digitalRead(ENC_C1_PIN_L)) {
+                left_c1_pin_ok = true;
+                break;
+            }
+            delayMicroseconds(50);
+        }
         left_driver_controller_.stopMotor();
+
+        if (false == left_c1_pin_ok) {
+            for (;;) {
+                digitalWrite(LED_GP25, HIGH);
+                delay(500);
+                digitalWrite(LED_GP25, LOW);
+                delay(500);
+            }
+        }
     }
 
     void update_speed_sm() {
