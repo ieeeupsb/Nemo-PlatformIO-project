@@ -33,19 +33,17 @@ class EncoderReader {
         return speed_counter_ / enlapsed_time;
     }
 
-    int updateCount() {
+    void updateCount() {
         // Read the values of the A and B pins
         int a_state = digitalRead(pin_a_);
         int b_state = digitalRead(pin_b_);
 
         // Update the counter based on the states of the A and B pins
-        if (a_state == HIGH && b_state == LOW) {
+        if (a_state == b_state) {
             speed_counter_++;
-        } else if (a_state == LOW && b_state == HIGH) {
+        } else {
             speed_counter_--;
         }
-
-        return speed_counter_;
     }
 
     // Function to get the current encoder count
