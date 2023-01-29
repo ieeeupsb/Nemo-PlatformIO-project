@@ -18,9 +18,23 @@ class DriverController {
         enable_ = enable;
         in_a_ = in_a;
         in_b_ = in_b;
+
+        pinMode(LED_GP25, OUTPUT);
+
+        for (int i = 0; i < 3; i++) {
+            digitalWrite(LED_GP25, HIGH);
+            delay(200);
+            digitalWrite(LED_GP25, LOW);
+            delay(200);
+        }
+
+        pinMode(enable, OUTPUT);
+        pinMode(in_a, OUTPUT);
+        pinMode(in_b, OUTPUT);
     }
 
     DriverController(int enable, int in_a, int in_b) {
+
         setMotorDriverPins(enable, in_a, in_b);
     }
 
@@ -41,14 +55,3 @@ class DriverController {
         setPwm(0);
     }
 };
-
-void driver_test() {
-    DriverController driver_controller(DRIVER_ENABLE_PIN_L, DRIVER_IN_A_PIN_L, DRIVER_IN_B_PIN_L);
-
-    driver_controller.setPwm(120);
-    driver_controller.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-    delay(1000);
-    driver_controller.setDirection(motor_rotation_dir_t::CLOCKWISE);
-    delay(1000);
-    driver_controller.stopMotor();
-}

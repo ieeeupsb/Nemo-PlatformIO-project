@@ -15,7 +15,6 @@ class EncoderReader {
 
         // Initialize the counters
         speed_counter_ = 0;
-        rotation_counter_ = 0;
     }
 
     // Function to update the encoder count
