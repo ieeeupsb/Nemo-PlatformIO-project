@@ -19,7 +19,7 @@ class EncoderReader {
     }
 
     // Function to update the encoder count
-    void Update() {
+    float Update(float enlapsed_time) {
         // Read the values of the A and B pins
         int a_state = digitalRead(pin_a_);
         int b_state = digitalRead(pin_b_);
@@ -27,11 +27,11 @@ class EncoderReader {
         // Update the counter based on the states of the A and B pins
         if (a_state == HIGH && b_state == LOW) {
             speed_counter_++;
-            rotation_counter_++;
         } else if (a_state == LOW && b_state == HIGH) {
             speed_counter_--;
-            rotation_counter_--;
         }
+
+        return speed_counter_ / enlapsed_time;
     }
 
     // Function to get the current encoder count
@@ -39,17 +39,8 @@ class EncoderReader {
         return speed_counter_;
     }
 
-    int GetRotationCount() {
-        return rotation_counter_;
-    }
-
     void RestartSpeedCounter() {
         speed_counter_ = 0;
-        return;
-    }
-
-    void RestartRotationCounter() {
-        rotation_counter_ = 0;
         return;
     }
 
@@ -57,5 +48,4 @@ class EncoderReader {
     int pin_a_;
     int pin_b_;
     volatile int speed_counter_;
-    volatile int rotation_counter_;
 };

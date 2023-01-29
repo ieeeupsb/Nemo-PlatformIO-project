@@ -1,0 +1,18 @@
+name: My Workflow
+on:
+  push:
+    branches:
+      - staging
+  pull_request:
+    branches:
+      - staging
+    types: [closed]
+
+jobs:
+  build:
+    runs-on: raspberry-pi
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Run script
+      run: ./myscript.sh

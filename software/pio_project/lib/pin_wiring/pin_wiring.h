@@ -2,6 +2,28 @@
 
 #include "mcu_pinouts.h"
 
+#ifdef PICO
+
+#include "pico_pinout.h"
+
+// LEFT MOTOR
+#define DRIVER_ENABLE_PIN_L PORT26_GP20
+#define DRIVER_IN_A_PIN_L PORT25_GP19
+#define DRIVER_IN_B_PIN_L PORT24_GP18
+// THERE IS A GROUND BETWEEN THIS
+#define ENC_C1_PIN_L PORT22_GP17
+#define ENC_C2_PIN_L PORT21_GP16
+
+// RIGHT MOTOR
+#define DRIVER_ENABLE_PIN_R PORT15_GP11
+#define DRIVER_IN_A_PIN_R PORT16_GP12
+#define DRIVER_IN_B_PIN_R PORT17_GP13
+// THERE IS A GROUND BETWEEN THIS
+#define ENC_C1_PIN_R PORT19_GP14
+#define ENC_C2_PIN_R PORT20_GP15
+
+#endif
+
 #ifdef ESP32
 #include "ESP32_pinout.h"
 
@@ -19,28 +41,6 @@
 
 #define ENC1_R GPIO18 // yellow
 #define ENC2_R GPIO19 // white
-
-#endif
-
-#ifdef PICO
-
-#include "pico_pinout.h"
-
-// LEFT MOTOR
-#define DRIVER_ENABLE_PIN_L PORT26_GP20
-#define DRIVER_IN_A_PIN_L PORT25_GP19
-#define DRIVER_IN_B_PIN_L PORT24_GP18
-// THERE IS A GROUND BETWEEN THIS
-#define ENC_C1_PIN_L PORT22_GP17
-#define ENC_C2_PIN_L PORT21_GP16
-
-// RIGHT MOTOR
-#define ENABLE_R PORT15_GP11
-#define M1_R PORT16_GP12
-#define M2_R PORT17_GP13
-
-#define ENC1_R PORT19_GP14
-#define ENC2_R PORT20_GP15
 
 #endif
 
