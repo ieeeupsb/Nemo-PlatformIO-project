@@ -16,14 +16,13 @@ class EncoderReader {
     }
 
     // Function to update the encoder count
-    void updateSpeed(unsigned int enlapsed_time_ms) {
+    void updateSpeed(unsigned int enlapsed_time_ms, int counter) {
         // Read the values of the A and B pins
         speed_counter_ = counter_;
-        counter_ = 0;
         enlapsed_time_ms_ = enlapsed_time_ms;
     }
 
-    float getRpm(int speed_counter_) {
+    float getRpm() {
         // Calculate the current RPM of the motor
         // based on the number of encoder counts and the elapsed time
         // auto count = (float)encoder_reader_.GetSpeedCount();
@@ -34,7 +33,7 @@ class EncoderReader {
         //...end of not tested
 
         // return count;
-        return rpm;
+        return speed_counter_;
     }
 
     void updateCount() {
