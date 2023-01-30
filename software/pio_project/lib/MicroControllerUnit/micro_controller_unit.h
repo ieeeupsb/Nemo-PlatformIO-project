@@ -34,10 +34,17 @@ class MicroControllerUnit {
         return instance;
     }
 
-    // void updateSpeed(float enlapsed_time) {
-    //     left_wheel_rpm = left_encoder_reader_.Update(enlapsed_time);
-    //     right_wheel_rpm = right_encoder_reader_.Update(enlapsed_time);
-    // }
+    void updateSpeed(float enlapsed_time) {
+        left_wheel_rpm = left_encoder_reader_.getCount();
+        right_wheel_rpm = right_encoder_reader_.getCount();
+    }
+
+    float getLeftWheelRpm() {
+        return left_wheel_rpm;
+    }
+    float getRightftWheelRpm() {
+        return left_wheel_rpm;
+    }
 
     // void
 
@@ -60,6 +67,13 @@ class MicroControllerUnit {
         right_driver_controller_.stopMotor();
         left_driver_controller_.stopMotor();
     }
+
+    void leftEncoderUpdateCount() {
+        left_encoder_reader_.updateCount();
+    }
+
+    // void leftEncoderTimerHandler() {
+    // }
 
     void test_encoders() {
         pinMode(LED_GP25, OUTPUT);
@@ -135,7 +149,8 @@ class MicroControllerUnit {
     MicroControllerUnit() : left_driver_controller_(DRIVER_ENABLE_PIN_L, DRIVER_IN_A_PIN_L, DRIVER_IN_B_PIN_L),
                             right_driver_controller_(DRIVER_ENABLE_PIN_R, DRIVER_IN_A_PIN_R, DRIVER_IN_B_PIN_R),
                             left_encoder_reader_(ENC_C1_PIN_L, ENC_C1_PIN_L),
-                            right_encoder_reader_(ENC_C1_PIN_R, ENC_C1_PIN_R) {}
+                            right_encoder_reader_(ENC_C1_PIN_R, ENC_C1_PIN_R) {
+    }
     MicroControllerUnit(const MicroControllerUnit &) = delete;
     MicroControllerUnit &operator=(const MicroControllerUnit &) = delete;
 

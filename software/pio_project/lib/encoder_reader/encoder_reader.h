@@ -4,41 +4,43 @@
 
 class EncoderReader {
   public:
-    EncoderReader(int pin_a, int pin_b) {
-        // Save the pin numbers
-        pin_a_ = pin_a;
-        pin_b_ = pin_b;
+    EncoderReader(int pin_a, int pin_b)
+        : pin_a_(pin_a), pin_b_(pin_b) {
 
         // Set the pins as inputs
-        pinMode(pin_a_, INPUT);
-        pinMode(pin_b_, INPUT);
+        pinMode(pin_a, INPUT);
+        pinMode(pin_b, INPUT);
 
         // Initialize the counters
-        speed_counter_ = 0;
+        counter_ = 0;
     }
 
     // Function to update the encoder count
-    float updateSpeed(float enlapsed_time) {
+    void updateSpeed(unsigned int enlapsed_time_ms) {
         // Read the values of the A and B pins
-        int a_state = digitalRead(pin_a_);
-        int b_state = digitalRead(pin_b_);
+        speed_counter_ = counter_;
+        counter_ = 0;
+        enlapsed_time_ms_ = enlapsed_time_ms;
+    }
 
-        // Update the counter based on the states of the A and B pins
-        if (a_state == HIGH && b_state == LOW) {
-            speed_counter_++;
-        } else if (a_state == LOW && b_state == HIGH) {
-            speed_counter_--;
-        }
+    float getRpm(int speed_counter_) {
+        // Calculate the current RPM of the motor
+        // based on the number of encoder counts and the elapsed time
+        // auto count = (float)encoder_reader_.GetSpeedCount();
+        // encoder_reader_.RestartSpeedCounter();
 
-        return speed_counter_ / enlapsed_time;
+        //...not tested
+        float rpm = (speed_counter_ / pulses_per_revolution_) * (1000 / enlapsed_time_ms_) * 60;
+        //...end of not tested
+
+        // return count;
+        return rpm;
     }
 
     void updateCount() {
-        // Read the values of the A and B pins
         int a_state = digitalRead(pin_a_);
         int b_state = digitalRead(pin_b_);
 
-        // Update the counter based on the states of the A and B pins
         if (a_state == b_state) {
             speed_counter_++;
         } else {
@@ -60,7 +62,10 @@ class EncoderReader {
   private:
     int pin_a_;
     int pin_b_;
-    volatile int speed_counter_;
+    int speed_counter_;
+    volatile int counter_;
+    unsigned int enlapsed_time_ms_;
+    static constexpr float pulses_per_revolution_ = 400.0; // Number of pulses per revolution
 };
 
 void blocking_check_encoders_connection_with_serial_messages() {
