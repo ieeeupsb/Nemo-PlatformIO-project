@@ -1,13 +1,14 @@
-// ssh ieeeupsb@192.168.0.162
+// ssh ieeeupsb@192.168.0.162 ethernet
+// 192.168.0.128 wifi
 // pass 1234
 
 #include "Arduino.h"
 #include "PID_v1.h"
 #include "RPi_Pico_TimerInterrupt.h"
 #include "micro_controller_unit.h"
-#include "pidautotuner.h"
+#include "motion_controller.h"
 
-#define TIMER0_INTERVAL_MS 200
+#define TIMER0_INTERVAL_MS 50
 RPI_PICO_Timer ITimer0(0);
 
 MicroControllerUnit &mcu = MicroControllerUnit::getInstance();
@@ -25,13 +26,41 @@ PID rightWheelPID(&rpm_last_read_right_pid_input, &right_pwm_output, &target_spe
 volatile int encoder_counter_left = 0;
 volatile int encoder_counter_right = 0;
 
+pose_t current_pose;
+
+pose_t pose_estimator(pose_t current_pose, float enlapsed_time, float left_wheel_speed, float right_wheel_speed, float wheel_base) {
+
+    if (!left_wheel_speed && !right_wheel_speed) {
+        return current_pose;
+    }
+
+    float linear_speed = (left_wheel_speed + right_wheel_speed) / 2;
+    float angular_speed = (right_wheel_speed - left_wheel_speed) / wheel_base;
+
+    // Serial.print("linear_speed:");
+    // Serial.println(linear_speed);
+
+    pose_t estimated_pose;
+
+    estimated_pose.x_pos = current_pose.x_pos + enlapsed_time * linear_speed * cos(current_pose.angle_pos);
+    estimated_pose.y_pos = current_pose.y_pos + enlapsed_time * linear_speed * sin(current_pose.angle_pos);
+    estimated_pose.angle_pos = current_pose.angle_pos + enlapsed_time * angular_speed;
+
+    // Serial.print("estimated_pose.x_pos:");
+    // Serial.println(estimated_pose.x_pos);
+
+    return estimated_pose;
+}
+
 bool TimerHandler0(struct repeating_timer *t) {
 
-    float right_speed = (float)encoder_counter_right / (float)TIMER0_INTERVAL_MS;
-    float left_speed = (float)encoder_counter_left / (float)TIMER0_INTERVAL_MS;
+    float left_speed = (double)abs(encoder_counter_left) / (double)TIMER0_INTERVAL_MS;
+    float right_speed = (double)abs(encoder_counter_right) / (double)TIMER0_INTERVAL_MS;
 
-    rpm_last_read_right_pid_input = right_speed * 100;
     rpm_last_read_left_pid_input = left_speed * 100;
+    double left_linear_speed_m_per_s = left_speed * 3.1415 * 0.068 / 0.36;
+    rpm_last_read_right_pid_input = right_speed * 100;
+    double right_linear_speed_m_per_s = right_speed * 3.1415 * 0.068 / 0.36;
 
     encoder_counter_left = 0;
     encoder_counter_right = 0;
@@ -41,6 +70,8 @@ bool TimerHandler0(struct repeating_timer *t) {
 
     left_driver_controller.setPwm(left_pwm_output);
     right_driver_controller.setPwm(right_pwm_output);
+
+    current_pose = pose_estimator(current_pose, (double)TIMER0_INTERVAL_MS / 1000.00, left_linear_speed_m_per_s, right_linear_speed_m_per_s, 159e-3);
 
     return true;
 }
@@ -76,39 +107,84 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(ENC_C1_PIN_L), updateLeftCount, CHANGE);
     attachInterrupt(digitalPinToInterrupt(ENC_C1_PIN_R), updateRightCount, CHANGE);
     // right_driver_controller.setPwm(70);
-    // left_driver_controller.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-    right_driver_controller.setDirection(motor_rotation_dir_t::CLOCKWISE);
 
     ITimer0.attachInterruptInterval(TIMER0_INTERVAL_MS * 1000, TimerHandler0);
-    target_speed_left = 0;
-    target_speed_right = 100;
 
     // turn the PID on
     leftWheelPID.SetMode(AUTOMATIC);
     rightWheelPID.SetMode(AUTOMATIC);
+
+    left_driver_controller.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
+    right_driver_controller.setDirection(motor_rotation_dir_t::CLOCKWISE);
+
+    target_speed_left = 30;
+    target_speed_right = 30;
 }
 
 #define TIME_INTERVAL 1000
 
 int speed_control_state = 0;
+int start_stop_state = 0;
+
+String incomingString;
 
 void loop() {
 
-    Serial.print("rpm left: ");
-    Serial.println(rpm_last_read_left_pid_input);
-    Serial.print("rpm right: ");
-    Serial.println(rpm_last_read_right_pid_input);
+    if (Serial.available() > 0) {
+        // read the incoming string:
+        incomingString = Serial.readString();
 
-    switch (speed_control_state) {
-    case 0: // from small loop for PID
+        // prints the received data
+        Serial.print("I received '");
+        Serial.print(incomingString);
+        Serial.println("' from serial \n");
+    }
 
-        speed_control_state = 1;
+    // Serial.print("rpm left: ");
+    // Serial.println(rpm_last_read_left_pid_input);
+    // Serial.print("rpm right: ");
+    // Serial.println(rpm_last_read_right_pid_input);
+    // Serial.println("rpm right: ");
+    // Serial.print("x:");
+    // Serial.println(current_pose.x_pos);
+
+    // if (current_pose.x_pos == 1) {
+    //     left_driver_controller.stopMotor();
+    //     right_driver_controller.stopMotor();
+    // }
+
+    switch (start_stop_state) {
+    case 0:
+
+        left_driver_controller.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
+        right_driver_controller.setDirection(motor_rotation_dir_t::CLOCKWISE);
+
+        target_speed_left = 30;
+        target_speed_right = 30;
+
+        incomingString.toLowerCase(); // convert the input to lowercase // read the data as string
+        if (incomingString == "stop\n" || incomingString == "stop") {
+
+            Serial.println("Robot going to stop state");
+
+            start_stop_state = 1;
+        }
         break;
-    case 1: // get target
-        // gets target from User
-        // sets speed_control_state to 0
-        break;
-    default:
+
+    case 1:
+
+        target_speed_left = 0;
+        target_speed_right = 0; // compare the input with "stop"
+
+        left_driver_controller.stopMotor();
+        right_driver_controller.stopMotor();
+
+        incomingString.toLowerCase(); // convert the input to lowercase // read the data as string
+        if (incomingString == "start\n" || incomingString == "start") {
+            Serial.println("Robot going to start state");
+
+            start_stop_state = 0;
+        }
         break;
     }
 }
