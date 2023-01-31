@@ -169,21 +169,22 @@ void loop() {
             start_stop_state = 0;
         }
         break;
+
+    case 1:
+
+        left_driver_controller.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
+        right_driver_controller.setDirection(motor_rotation_dir_t::CLOCKWISE);
+
+        target_speed_left = 30;
+        target_speed_right = 30;
+
+        incomingString.toLowerCase(); // convert the input to lowercase // read the data as string
+        if (incomingString == "stop\n" || incomingString == "stop") {
+
+            Serial.println("Robot going to stop state");
+
+            start_stop_state = 1;
+        }
+        break;
     }
-case 1:
-
-    left_driver_controller.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-    right_driver_controller.setDirection(motor_rotation_dir_t::CLOCKWISE);
-
-    target_speed_left = 30;
-    target_speed_right = 30;
-
-    incomingString.toLowerCase(); // convert the input to lowercase // read the data as string
-    if (incomingString == "stop\n" || incomingString == "stop") {
-
-        Serial.println("Robot going to stop state");
-
-        start_stop_state = 1;
-    }
-    break;
 }
