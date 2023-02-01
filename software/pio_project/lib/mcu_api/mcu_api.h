@@ -1,96 +1,168 @@
-
 #pragma once
 
 #include "Arduino.h"
+#include <list>
 #include <string.h>
 
+#define MAX_FAILED_COMMANDS
 #define BUFFER_SIZE 64
+#define BAUD_RATE 9600
+#define TIMER0_INTERVAL_MS 500
+#define TIMEOUT_MS 10000
 
-struct PicoCommand {
-    int x_pos;
-    int y_pos;
-    int speed;
+struct pico_command_t {
+    double x = 0;
+    double y = 0;
+    double v = 0;
+    double w = 0;
 };
 
 class McuAPI {
 
   private:
-    // Class variables
-    char buffer_[BUFFER_SIZE];  // Buffer for storing serial input
-    char command_[BUFFER_SIZE]; // String for storing command
+    std::list<String> input_buffer_;
+    std::list<pico_command_t> command_list;
+    unsigned int error_counting_ = 0;
+    int info_list_size_delete_me = 3;
+
+    void createPositionCommand(double x, double y, double v) {
+        createNewCommand(x, y, v, 0);
+    }
+    void createPositionCommand(double x, double y) {
+        createNewCommand(x, y, 0, 0);
+    }
+    void createTrajectoryCommand(double v, double w) {
+        createNewCommand(0, 0, v, w);
+    }
+
+    void readFromSerial() {
+        if (Serial.available() > 0) {
+            // read the incoming string:
+            String incomming = Serial.readString();
+            input_buffer_.push_back(incomming);
+            Serial.print("ACK");
+            Serial.println(":" + incomming);
+
+            return;
+        }
+
+        if (error_counting_ > TIMEOUT_MS / TIMER0_INTERVAL_MS) {
+
+            send_error_command();
+            error_counting_ = 0;
+        }
+    }
+
+    void createNewCommand(double x, double y, double v, double w) {
+        pico_command_t new_command;
+
+        new_command.x = x;
+        new_command.y = y;
+        new_command.v = v;
+        new_command.w = w;
+
+        Serial.print("x:");
+        Serial.println(x);
+        Serial.print("y:");
+        Serial.println(y);
+        Serial.print("v:");
+        Serial.println(v);
+        Serial.print("w:");
+        Serial.println(w);
+
+        command_list.push_back(new_command);
+    }
 
   public:
     // Constructor
-    McuAPI() {
+    McuAPI(int baud_rate) {
         // Initialize serial port
         Serial.begin(BAUD_RATE);
     }
 
-    // Method to read serial input into buffer
-    char *ReadInput() {
-        // Read serial input into buffer
-        int index = 0;
-        while (Serial.available() > 0 && index < BUFFER_SIZE - 1) {
-            buffer_[index++] = Serial.read();
-        }
-        buffer_[index] = '\0'; // Null terminate the string
-
-        return buffer_;
+    void send_error_command() {
+        Serial.println("Sending error command");
+        pico_command_t empty_command;
+        command_list.push_front(empty_command);
     }
 
-    // Method to parse command from buffer
+    bool parseInputAndCreateCommand() { // use in data treatement
+        String incoming;
 
-    PicoCommand ParseCommand() {
-        PicoCommand parsed_args;
-        parsed_args.x_pos = 0;
-        parsed_args.y_pos = 0;
-        parsed_args.speed = 0;
+        if (input_buffer_.size() < 1) {
+            return false;
+        }
+        incoming = *input_buffer_.begin();
+        input_buffer_.pop_front();
 
-        char *serial_input = buffer_;
-        char *unparsed_command = NULL;
-        size_t command_len = 0;
+        int x_index = incoming.indexOf("x:");
+        int y_index = incoming.indexOf("y:");
+        int v_index = incoming.indexOf("v:");
+        int w_index = incoming.indexOf("w:");
 
-        printf("Parse command: %s\n", buffer_);
+        if (x_index == -1 || y_index == -1 || v_index == -1 || w_index == -1) {
 
-        // Get the start and end indices of the argument list
-        char *start_idx = strchr(serial_input, '<');
-        char *end_idx = strchr(serial_input, '>');
-        if (!start_idx || !end_idx) {
+            // if (error_counting_ > MAX_FAILED_COMMANDS) {
 
-            return parsed_args;
+            //     pico_command_t empty_command;
+            //     command_list.push_front(empty_command);
+            //     Serial.println(error_counting_);
+            //     Serial.end();
+            // }
+            // FIXME
+            return false;
         }
 
-        command_len = (size_t)(end_idx - start_idx - 1);
-        unparsed_command = (char *)malloc(command_len + 1);
-        strncpy(unparsed_command, start_idx + 1, command_len);
-        unparsed_command[command_len] = '\0';
+        int semi_colon_index = 0;
+        error_counting_ = 0;
 
-        Serial.print("COMMAND:");
-        Serial.print(unparsed_command);
-        Serial.println();
+        semi_colon_index = incoming.indexOf(";");
+        String x_substring = incoming.substring(2, semi_colon_index);
+        incoming = incoming.substring(semi_colon_index + 1);
 
-        // Split the input string by semicolons
-        char *parts[BUFFER_SIZE];
-        int num_parts = 0;
-        char *part = strtok(unparsed_command, ";");
-        while (part) {
-            parts[num_parts++] = part;
-            part = strtok(NULL, ";");
-        }
+        semi_colon_index = incoming.indexOf(";");
+        String y_substring = incoming.substring(2, semi_colon_index);
+        incoming = incoming.substring(semi_colon_index + 1);
 
-        parsed_args.x_pos = atoi(parts[0]);
-        parsed_args.y_pos = atoi(parts[1]);
-        parsed_args.speed = atoi(parts[2]);
+        semi_colon_index = incoming.indexOf(";");
+        String v_substring = incoming.substring(2, semi_colon_index);
+        incoming = incoming.substring(semi_colon_index + 1);
 
-        free(unparsed_command);
+        semi_colon_index = incoming.indexOf(";");
+        String w_substring = incoming.substring(2, semi_colon_index + 1);
 
-        // Return the parsed PicoCommand struct
-        return parsed_args;
+        createNewCommand(x_substring.toDouble(), y_substring.toDouble(), v_substring.toDouble(), w_substring.toDouble());
+
+        return true;
     }
 
-    void
-    GetCommand() {
-        ReadInput();
-        ParseCommand();
+    void timerHandler(double left_wheel_speed, double right_wheel_speed) {
+        readFromSerial();
+        error_counting_++;
+        // sendInfo(left_wheel_speed, right_wheel_speed);
+    }
+
+    void sendInfo(double left_wheel_speed, double right_wheel_speed) {
+        Serial.print("left wheel speed = ");
+        Serial.println(left_wheel_speed);
+        Serial.print("right wheel speed = ");
+        Serial.println(right_wheel_speed);
+    }
+
+    int commandListSize() {
+        return command_list.size();
+    }
+
+    pico_command_t getNextCommand() {
+        if (command_list.size() <= 0) {
+            pico_command_t empty_command;
+            Serial.println("command_list is empty.");
+            return empty_command;
+        }
+
+        auto next_command = command_list.begin();
+        command_list.pop_front();
+
+        return *next_command;
     }
 };
