@@ -1,100 +1,105 @@
 import pygame
 import paramiko
 import serial
-import time
+
+canSend = False
 
 
-def serial_channel_over_ssh(host, port, username, password, serial_port):
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(host, port, username, password)
-
-    # Open a channel to the serial port
-    channel = ssh.get_transport().open_session()
-    channel.get_pty()
-    channel.exec_command("screen %s 9600" % serial_port)
-
-    return channel
-
-
-def send_command(channel, command):
+def send_command(command):
     ser.write(command.encode())
-    print("Sending commmand" + command)
-    # try:
-    #     if channel.active:
-    #         # print(command)
-    #         channel.send(command + "\r")
-    #         while True:
-    #             if channel.recv_ready():
-    #                 output = channel.recv(1024).decode("utf-8")
-    #                 print(output)
-    #                 break
-    #             if channel.exit_status_ready():
-    #                 break
-    #     else:
-    #         print("The channel is not active. Cannot send command.")
-    # except OSError as e:
-    #     print("Error sending command: ", e)
+    print("Sending commmand: " + command)
 
 
-def send_coordinates(x, y, channel):
-    # ser.write(("%.2f,%.2f" % (x, y)).encode())
-    coordinates_string = "%.2f,%.2f" % (x, y)
-    print("Your coordinates were sent and the robot was started: (%.2f, %.2f)\n")
-    send_command(coordinates_string, channel)
+def create_command(x, y, v, w):
+    return "x:" + str(x) + ";y:" + str(y) + ";v:"+str(v) + ";w:" + str(w)
 
 
-def send_joystick_command(x, y, channel):
-
-    joystick_command_string = "v:" + str(x*10) + ";w:" + str(y*10)
-
-    send_command(channel, joystick_command_string)
+coordinates_trigger_key = "c"
 
 
-def stop_robot(channel):
-    send_command(channel, "stop")
+def open_menu():
+    print("Press 'c' to select coordinates")
+    print("Press 't' to select v and w")
 
 
-def start_robot(channel):
-    send_command(channel, "start")
+def coordinates_menu():
+    print("What x do you want to go:")
+    x = input()
+    print("What y do you want to go:")
+    y = input()
+    print("What v do you want to go:")
+    v = input()
+    w = 0
+
+    return create_command(x, y, v, 0)
 
 
-# Initialize pygame and joystick
-pygame.init()
-pygame.joystick.init()
-joystick = pygame.joystick.Joystick(0)
-joystick.init()
-start = False
+def trajectory_menu():
 
-ser = serial.Serial('/dev/ttyACM0')  # open serial port
-# this would depend on the protocol for the USB device
+    print("What v do you want to go:")
+    v = input()
+    print("What w do you want to go:")
+    w = input()
 
-# Replace 'ttyACM0' with your actual serial port
-# ser = serial.Serial('/dev/ttyACM0', 9600)
-channel = 0
+    return create_command(0, 0, v, w)
 
+
+def check_controller():
+    response = input("Is the controller connected (yes/no)? ")
+    if response.lower() == "yes":
+        controller_connected = True
+        print("Controller connected")
+        return True
+    else:
+        controller_connected = False
+        print("Controller not connected")
+        return False
+
+
+ser = serial.Serial('/dev/ttyACM0')
+menu_trigger_key = "m"
+trajectory_trigger_key = "t"
+
+print("Press 'm' to open the menu")
+controller_is_connected = check_controller()
+
+if controller_is_connected:
+    pygame.init()
+    pygame.joystick.init()
+    joystick = pygame.joystick.Joystick(0)
+    joystick.init()
 
 while True:
-    pygame.event.get()
-    x_axis = joystick.get_axis(1)
-    y_axis = joystick.get_axis(3)
-    x = -int(x_axis * 10)
-    y = -int(y_axis * 10)
 
-    if start == True:
-        send_joystick_command(x, y, channel)
+    if controller_is_connected:
+        pygame.event.get()
+        x_axis = joystick.get_axis(1)
+        y_axis = joystick.get_axis(3)
+        x = -int(x_axis * 10)
+        y = -int(y_axis * 10)
+        command_to_send = create_command(0, 0, x, y)
+        canSend = True
+    elif not controller_is_connected:
+        user_input = input()
+        if user_input == menu_trigger_key:
+            command_to_send = open_menu()
+            canSend = False
+        elif user_input == coordinates_trigger_key:
+            command_to_send = coordinates_menu()
+            canSend = True
+        elif user_input == trajectory_trigger_key:
+            command_to_send = trajectory_menu()
+            canSend = True
+    else:
+        canSend = False
 
-    buttons = joystick.get_numbuttons()
-    for i in range(buttons):
-        button = joystick.get_button(i)
-        if button == 1:
-            if i == 0:
-                start_robot(channel)
-                start = True
-            elif i == 1:
-                stop_robot(channel)
-                start = False
-    time.sleep(0.75)
+    if canSend:
+        send_command(command_to_send)
+
+    # elif ser.in_waiting:
+    line = ser.readline()
+    print(line)
+    # canSend = True
 
 
 pygame.quit()

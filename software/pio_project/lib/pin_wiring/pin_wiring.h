@@ -2,6 +2,8 @@
 
 #include "mcu_pinouts.h"
 
+#define PICO
+
 #ifdef PICO
 
 #include "pico_pinout.h"

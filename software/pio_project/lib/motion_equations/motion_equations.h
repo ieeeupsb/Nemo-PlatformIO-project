@@ -71,41 +71,37 @@ pose_t pose_estimator(pose_t current_pose, float enlapsed_time, float left_wheel
 trajectory_t trajectory_calulator_straight_lines(pose_t estimated_coordinate, pose_t target_coordinate, float trajectory_max_speed) {
 
     trajectory_t trajectory;
-    double distance = sqrt(pow(target_coordinate.x_pos - estimated_coordinate.x_pos, 2) + pow(target_coordinate.x_pos - estimated_coordinate.y_pos, 2));
+    // double distance = sqrt(pow(target_coordinate.x_pos - estimated_coordinate.x_pos, 2) + pow(target_coordinate.x_pos - estimated_coordinate.y_pos, 2));
 
-    if (0 == distance) {
+    // if (0 == distance) {
 
-        trajectory.linear_speed = 0;
-        trajectory.angular_speed = 0;
+    //     trajectory.linear_speed = 0;
+    //     trajectory.angular_speed = 0;
 
-        return trajectory;
-    }
+    //     return trajectory;
+    // }
 
-    double desire_angle = atan2(estimated_coordinate.x_pos - estimated_coordinate.y_pos, target_coordinate.x_pos - estimated_coordinate.x_pos);
-    double angle_error = desire_angle - estimated_coordinate.angle_pos;
+    // double desire_angle = atan2(estimated_coordinate.x_pos - estimated_coordinate.y_pos, target_coordinate.x_pos - estimated_coordinate.x_pos);
+    // double angle_error = desire_angle - estimated_coordinate.angle_pos;
 
-    auto speed = speed_calculator(distance, trajectory_max_speed, 1);
+    // auto speed = speed_calculator(distance, trajectory_max_speed, 1);
 
-    if (angle_error > 0) {
-        trajectory.linear_speed = 0;
-        trajectory.angular_speed = speed_calculator(distance, trajectory_max_speed, 1);
+    // if (angle_error > 0) {
+    //     trajectory.linear_speed = 0;
+    //     trajectory.angular_speed = speed_calculator(distance, trajectory_max_speed, 1);
+    // }
 
-        return trajectory;
-    }
+    // if (angle_error == 0) {
+    //     trajectory.linear_speed = 0;
+    //     trajectory.angular_speed = speed_calculator(distance, trajectory_max_speed, 1);
+    // }
 
-    if (angle_error == 0) {
-        trajectory.linear_speed = 0;
-        trajectory.angular_speed = speed_calculator(distance, trajectory_max_speed, 1);
+    // if (angle_error < 0) {
+    //     trajectory.linear_speed = speed_calculator(distance, trajectory_max_speed, 1);
+    //     trajectory.angular_speed = 0;
+    // }
 
-        return trajectory;
-    }
-
-    if (angle_error < 0) {
-        trajectory.linear_speed = speed_calculator(distance, trajectory_max_speed, 1);
-        trajectory.angular_speed = 0;
-
-        return trajectory;
-    }
+    return trajectory;
 }
 
 // wheels_speed_t trajectory_to_wheels_speed_converter(trajectory_t trajectory, float wheel_base) {

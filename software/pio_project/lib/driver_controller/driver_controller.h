@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Arduino.h"
+#define PICO
+#include "mcu_pinouts.h"
 
 enum class motor_rotation_dir_t {
     CLOCKWISE = 0,

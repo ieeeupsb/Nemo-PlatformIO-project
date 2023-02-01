@@ -1,4 +1,5 @@
-#pragma once
+#ifndef __MCU_API_H__
+#define __MCU_API_H__
 
 #include "Arduino.h"
 #include <list>
@@ -6,9 +7,7 @@
 
 #define MAX_FAILED_COMMANDS
 #define BUFFER_SIZE 64
-#define BAUD_RATE 9600
-#define TIMER0_INTERVAL_MS 500
-#define TIMEOUT_MS 10000
+#define TIMEOUT_MS 20000
 
 struct pico_command_t {
     double x = 0;
@@ -25,23 +24,11 @@ class McuAPI {
     unsigned int error_counting_ = 0;
     int info_list_size_delete_me = 3;
 
-    void createPositionCommand(double x, double y, double v) {
-        createNewCommand(x, y, v, 0);
-    }
-    void createPositionCommand(double x, double y) {
-        createNewCommand(x, y, 0, 0);
-    }
-    void createTrajectoryCommand(double v, double w) {
-        createNewCommand(0, 0, v, w);
-    }
-
     void readFromSerial() {
         if (Serial.available() > 0) {
             // read the incoming string:
             String incomming = Serial.readString();
             input_buffer_.push_back(incomming);
-            Serial.print("ACK");
-            Serial.println(":" + incomming);
 
             return;
         }
@@ -61,14 +48,14 @@ class McuAPI {
         new_command.v = v;
         new_command.w = w;
 
-        Serial.print("x:");
-        Serial.println(x);
-        Serial.print("y:");
-        Serial.println(y);
-        Serial.print("v:");
-        Serial.println(v);
-        Serial.print("w:");
-        Serial.println(w);
+        // Serial.print("x:");
+        // Serial.println(x);
+        // Serial.print("y:");
+        // Serial.println(y);
+        // Serial.print("v:");
+        // Serial.println(v);
+        // Serial.print("w:");
+        // Serial.println(w);
 
         command_list.push_back(new_command);
     }
@@ -77,13 +64,13 @@ class McuAPI {
     // Constructor
     McuAPI(int baud_rate) {
         // Initialize serial port
-        Serial.begin(BAUD_RATE);
+        Serial.begin(baud_rate);
     }
 
     void send_error_command() {
         Serial.println("Sending error command");
         pico_command_t empty_command;
-        command_list.push_front(empty_command);
+        input_buffer_.push_back("x:0;y:0;v:0;w:0");
     }
 
     bool parseInputAndCreateCommand() { // use in data treatement
@@ -112,6 +99,7 @@ class McuAPI {
             // FIXME
             return false;
         }
+        Serial.println("ACK");
 
         int semi_colon_index = 0;
         error_counting_ = 0;
@@ -165,4 +153,13 @@ class McuAPI {
 
         return *next_command;
     }
+
+    void createPositionCommand(double x, double y, double v) {
+        createNewCommand(x, y, v, 0);
+    }
+    void createTrajectoryCommand(double v, double w) {
+        createNewCommand(0, 0, v, w);
+    }
 };
+
+#endif
