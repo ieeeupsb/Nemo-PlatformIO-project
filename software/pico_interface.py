@@ -68,6 +68,15 @@ if controller_is_connected:
     pygame.joystick.init()
     joystick = pygame.joystick.Joystick(0)
     joystick.init()
+    while True:
+        pygame.event.get()
+        x_axis = joystick.get_axis(1)
+        y_axis = joystick.get_axis(3)
+        x = -x_axis
+        y = -y_axis
+        command_to_send = create_command(0, 0, x, y)
+        send_command(command_to_send)
+
 
 while True:
 
@@ -75,8 +84,8 @@ while True:
         pygame.event.get()
         x_axis = joystick.get_axis(1)
         y_axis = joystick.get_axis(3)
-        x = -int(x_axis * 10)
-        y = -int(y_axis * 10)
+        x = -int(x_axis * 100)
+        y = -int(y_axis * 100)
         command_to_send = create_command(0, 0, x, y)
         canSend = True
     elif not controller_is_connected:
@@ -90,15 +99,18 @@ while True:
         elif user_input == trajectory_trigger_key:
             command_to_send = trajectory_menu()
             canSend = True
+        elif user_input == "1":
+            command_to_send = create_command(1, 0, 0, 1)
+            canSend = True
     else:
         canSend = False
 
     if canSend:
         send_command(command_to_send)
 
-    # elif ser.in_waiting:
-    line = ser.readline()
-    print(line)
+    elif ser.in_waiting:
+        line = ser.readline()
+        print(line)
     # canSend = True
 
 

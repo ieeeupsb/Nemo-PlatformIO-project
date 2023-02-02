@@ -40,6 +40,18 @@ class McuAPI {
         }
     }
 
+  public:
+    void printInput() {
+        for (const auto &str : input_buffer_) {
+            Serial.println(str);
+        }
+    }
+
+    void printCommandList() {
+        for (const auto &str : input_buffer_) {
+            Serial.println(str);
+        }
+    }
     void createNewCommand(double x, double y, double v, double w) {
         pico_command_t new_command;
 
@@ -60,7 +72,6 @@ class McuAPI {
         command_list.push_back(new_command);
     }
 
-  public:
     // Constructor
     McuAPI(int baud_rate) {
         // Initialize serial port
@@ -116,8 +127,7 @@ class McuAPI {
         String v_substring = incoming.substring(2, semi_colon_index);
         incoming = incoming.substring(semi_colon_index + 1);
 
-        semi_colon_index = incoming.indexOf(";");
-        String w_substring = incoming.substring(2, semi_colon_index + 1);
+        String w_substring = incoming.substring(2);
 
         createNewCommand(x_substring.toDouble(), y_substring.toDouble(), v_substring.toDouble(), w_substring.toDouble());
 

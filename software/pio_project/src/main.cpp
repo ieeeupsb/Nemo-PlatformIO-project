@@ -1,8 +1,8 @@
 #include "Arduino.h"
 #include "RPi_Pico_TimerInterrupt.h"
 
-#define SPEED_TIMER_INTERVAL_MS 50
-#define TIMER0_INTERVAL_MS 500
+#define UPDATE_COUNT_US 50
+#define TIMER0_INTERVAL_MS 250
 
 #include "mcu_api.h"
 #include "motion_controller.h"
@@ -12,7 +12,7 @@ RPI_PICO_Timer ITimer0(0);
 RPI_PICO_Timer ITimer1(1);
 
 McuAPI api(BAUD_RATE);
-MotionController &motion_controller = MotionController::getInstance();
+MotionController &robot = MotionController::getInstance();
 
 double current_x = 0;
 double current_y = 0;
@@ -28,47 +28,84 @@ bool TimerHandler0(struct repeating_timer *t) {
     return true;
 }
 
-bool TimerHandler1(struct repeating_timer *t) {
+// bool TimerHandler1(struct repeating_timer *t) {
 
-    motion_controller.speedTimerHandler();
+//     robot.speedTimerHandler();
 
-    return true;
-}
+//     return true;
+// }
 
 void updateLeftCount() {
-    motion_controller.updateLeftCount();
+    robot.updateLeftCount();
 }
 
 void updateRightCount() {
-    motion_controller.updateLeftCount();
+    robot.updateRightCount();
+}
+
+void wait_for_first_command() {
+    int counter = 1;
+    api.createPositionCommand(1, 3, 10);
+    Serial.println("Waiting for the first command");
+    while (0 == api.commandListSize()) {
+        if (3 < counter) {
+            counter = 0;
+            Serial.print("\r                       \r");
+        } else {
+
+            Serial.print(".");
+        }
+        counter++;
+
+        delay(500);
+        api.parseInputAndCreateCommand();
+    }
 }
 
 void setup() {
-    ITimer0.attachInterruptInterval(TIMER0_INTERVAL_MS * 1000, TimerHandler0);
-    ITimer1.attachInterruptInterval(SPEED_TIMER_INTERVAL_MS * 1000, TimerHandler1);
+
+    Serial.begin(9600);
+
+    // ITimer0.attachInterruptInterval(TIMER0_INTERVAL_MS * 1000, TimerHandler0);
+    // ITimer1.attachInterruptInterval(UPDATE_COUNT_US, TimerHandler1);
     attachInterrupt(digitalPinToInterrupt(ENC_C1_PIN_L), updateLeftCount, CHANGE);
     attachInterrupt(digitalPinToInterrupt(ENC_C1_PIN_R), updateRightCount, CHANGE);
 
-    api.createPositionCommand(1, 0, 1);
-
-    // while (0 == api.commandListSize()) {
-    //     Serial.println("Waiting for the first command...");
-    //     api.parseInputAndCreateCommand();
-    // }
+    // robot.test_motors();
+    // motion_controller.test_encoders();
 }
 
+// trajectory_t robot_trajectory;
+// wheels_speed_t generated_wheels_spe2d;
+wheels_speed_t wheels_current_speed;
+
+double left_wheel_speed = 0.25; // teoricamente m/s
+double right_wheel_speed = 0.25;
+
 void loop() {
-    // delay(1000);
+    wheels_current_speed = robot.wheel_speed_calculator();
+
+    // robot.estimate_postion();
+    // robot_trajectory = robot.motion_controller(x, y);
+    // generated_wheels_speed = robot.velocities_generator(robot_trajectory.linear_speed, robot_trajectory.angular_speed);
+    robot.motor_controller(left_wheel_speed, right_wheel_speed);
+    // if (true == last_command_done) {
+
     // api.parseInputAndCreateCommand();
+    // if (api.commandListSize()) {
 
-    // last_command_done = motion_controller.command_state_machine(current_x, current_y, current_v, current_w);
-
-    // if (0 != api.commandListSize() && true == last_command_done) {
     //     pico_command_t current_command = api.getNextCommand();
 
     //     current_x = current_command.x;
     //     current_y = current_command.y;
     //     current_v = current_command.v;
     //     current_w = current_command.w;
-    // }
+    // } else {
+    // current_x = 0;
+    // current_y = 0;
+    // current_v = 5;
+    // current_w = 0;
+    // // }
+    // //}
+    // last_command_done = motion_controller.command_state_machine(current_x, current_y, current_v, current_w);
 }

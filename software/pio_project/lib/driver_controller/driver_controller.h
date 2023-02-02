@@ -47,7 +47,7 @@ class DriverController {
 
     void setPwm(int duty_cycle) {
 
-        duty_cycle = constrain(duty_cycle, 30, 255);
+        duty_cycle = constrain(duty_cycle, 40, 255);
         analogWrite(enable_, duty_cycle);
     }
 
