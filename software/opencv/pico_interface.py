@@ -1,6 +1,6 @@
-import pygame
-import paramiko
 import serial
+import paramiko
+import pygame
 
 canSend = False
 
@@ -72,8 +72,8 @@ if controller_is_connected:
         pygame.event.get()
         x_axis = joystick.get_axis(1)
         y_axis = joystick.get_axis(3)
-        x = -x_axis
-        y = -y_axis
+        x = -round(x_axis, 0) * 0.7
+        y = -round(y_axis, 0) * 0.7
         command_to_send = create_command(0, 0, x, y)
         send_command(command_to_send)
 

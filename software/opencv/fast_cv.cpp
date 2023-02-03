@@ -41,3 +41,13 @@ std::string create_command_str(double x, double y)
 
     return command_list;
 }
+
+rvec, tvec, _ = aruco.estimatePoseSingleMarkers(corners, 0.1, (0, 0, 0), (0, 0, 0))
+
+#Convert the pose to linear and angular speed commands
+                    linear_speed = 0.0 angular_speed = 0.0 if tvec is not None :
+#Example : Set the linear speed proportional to the distance from the marker
+    linear_speed = tvec[0][2] / 10.0
+
+#Example : Set the angular speed proportional to the angle of the marker
+                   angular_speed = rvec[0][1]

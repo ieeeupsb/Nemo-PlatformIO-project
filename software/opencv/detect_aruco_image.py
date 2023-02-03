@@ -44,7 +44,7 @@ while (cam.isOpened()):
                 gray, ARUCO_DICT, parameters=ARUCO_PARAMETERS)
 
             # Make sure all 5 markers were detected before printing them out
-            if ids is not None and len(ids) == 1:
+            if ids is not None and len(ids) > 0:
                 # Print corners and ids to the console
                 for i, corner in zip(ids, corners):
                     print('ID: {}; Corners: {}'.format(i, corner))

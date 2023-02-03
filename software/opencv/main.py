@@ -1,3 +1,4 @@
+import serial
 import cv2
 import numpy as np
 import camera
@@ -145,99 +146,37 @@ def commands_to_nearest_marker(camera, marker_lenght):
     return commands
 
 
-def send_commands(commands):
-    print("Sending commands")
-    # TODO
-    print(commands)
-
-
-def add_marker_to_map_from_camera(camera, map, aruco_dict):
-    TOP_LEFT_ID = 1
-    TOP_RIGHT_ID = 2
-    BOTTON_LEFT_ID = 3
-    BOTTON_RIGHT_ID = 4
+def linear_and_angular_speed_to_marker(camera, map, aruco_dict):
+    linear_speed = 0
+    angular_speed = 0
 
     corners, ids, _ = camera.detectMarkers(aruco_dict)
-
-    if ids is None or len(ids) < 2:
-        return 0
-
-    idx_ref = None
-    if TOP_LEFT_ID in ids:
-        reference_marker_x = MAP_X_MIN
-        reference_marker_y = MAP_Y_MAX
-        idx_ref = np.where(ids == TOP_LEFT_ID)[0]
-    elif TOP_RIGHT_ID in ids:
-        reference_marker_x = MAP_X_MAX
-        reference_marker_y = MAP_Y_MAX
-        idx_ref = np.where(ids == TOP_RIGHT_ID)[0]
-    elif BOTTON_LEFT_ID in ids:
-        reference_marker_x = MAP_X_MIN
-        reference_marker_y = MAP_Y_MIN
-        idx_ref = np.where(ids == BOTTON_LEFT_ID)[0]
-    elif BOTTON_RIGHT_ID in ids:
-        reference_marker_x = MAP_X_MAX
-        reference_marker_y = MAP_Y_MIN
-        idx_ref = np.where(ids == BOTTON_RIGHT_ID)[0]
-    else:
-        return 0
 
     # Compute the pose of each marker
     rvecs, tvecs, _ = camera.estimatePoseSingleMarkers(corners, marker_lenght)
 
-    # Convert the rotation vectors to rotation matrices
-    Rs = [cv2.Rodrigues(rvec)[0] for rvec in rvecs]
+    if tvecs is not None:
+        linear_speed = np.linalg.norm(tvecs[0])
 
-    # Get the pose of the reference marker
-    R1 = Rs[idx_ref[0]]
-    t1 = tvecs[idx_ref[0]]
+    if rvecs is not None:
+        angular_speed = np.linalg.norm(rvecs[0])
 
-    reference_marker_ids = [TOP_LEFT_ID, TOP_RIGHT_ID,
-                            BOTTON_LEFT_ID, BOTTON_RIGHT_ID]
-
-    added_markers = 0
-
-    for i, marker_id in enumerate(ids):
-        if marker_id in reference_marker_ids:
-            print("Reference marker")
-        else:
-            R2 = Rs[i]
-            t2 = tvecs[i]
-
-            # Compute the relative pose of the other marker with respect to reference marker
-            R_rel = np.matmul(np.linalg.inv(R1), R2)
-            t_rel = t2 - np.matmul(R1, t1)
-
-            rel_x = t_rel[0][0]
-            rel_y = t_rel[1][0]
-            abs_x = reference_marker_x + rel_x
-            abs_y = reference_marker_y + rel_y
-
-        aruco_marker = camera.ArucoMarker(
-            aruco_dict, None, marker_id, marker_lenght)
-        added_markers = added_markers + 1
-
-        map.addMarker(aruco_marker, abs_x, abs_y)
-
-    return added_markers
+    return linear_speed, angular_speed
 
 
-def main():
+def send_command(command):
+    ser.write(command.encode())
+    print("Sending commmand: " + command)
 
-    logi_camera = camera.Camera(1, logi_filename)
 
-    # logi_camera.start()
-
-    while (logi_camera.isOpened()):
-
-        commands_list = commands_to_nearest_marker(logi_camera, marker_lenght)
-        if bool(commands_list):
-            send_commands(commands_list)
+def create_command(x, y, v, w):
+    return "x:" + str(x) + ";y:" + str(y) + ";v:"+str(v) + ";w:" + str(w)
 
 
 if __name__ == "__main__":
 
     # main()
+    ser = serial.Serial('/dev/ttyACM0')
     test_marker1 = camera.ArucoMarker(dictionary, None, 35, marker_lenght)
     test_marker2 = camera.ArucoMarker(dictionary, None, 5, marker_lenght)
 
@@ -246,12 +185,20 @@ if __name__ == "__main__":
     ace_map.addMarker(test_marker1, 1, 0.5)
     ace_map.addMarker(test_marker2, 0.5, 0.5)
 
-    logi_camera = camera.Camera(1, logi_filename)
+    logi_camera = camera.Camera(0, logi_filename)
 
     # logi_camera.start()
 
     while (logi_camera.isOpened()):
 
-        add_marker_to_map_from_camera(logi_camera, ace_map, dictionary)
+        linear_speed, angular_speed = linear_and_angular_speed_to_marker(
+            logi_camera, ace_map, dictionary)
 
-    ace_map.toImage("maps/ace_map.png")
+        if linear_speed != 0 or angular_speed != 0:
+            command_to_send = create_command(0, 0, linear_speed, angular_speed)
+            send_command(command_to_send)
+        elif ser.in_waiting:
+            line = ser.readline()
+            print(line)
+
+ser.close()

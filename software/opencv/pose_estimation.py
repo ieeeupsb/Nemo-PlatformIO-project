@@ -9,21 +9,21 @@ ARUCO_DICT = aruco.Dictionary_get(aruco.DICT_6X6_1000)
 
 # Create grid board object we're using in our stream
 board = aruco.GridBoard_create(
-        markersX=2,
-        markersY=2,
-        markerLength=0.09,
-        markerSeparation=0.01,
-        dictionary=ARUCO_DICT)
+    markersX=2,
+    markersY=2,
+    markerLength=0.09,
+    markerSeparation=0.01,
+    dictionary=ARUCO_DICT)
 
 # Create vectors we'll be using for rotations and translations for postures
 rvecs, tvecs = None, None
 
-cam = cv2.VideoCapture(1)
+cam = cv2.VideoCapture(0)
 
 print("cam is open")
 
 
-while(cam.isOpened()):
+while (cam.isOpened()):
     # Capturing each frame of our video stream
     # Load the image containing the marker
     image = cv2.imread("marker.jpg")
@@ -41,7 +41,8 @@ while(cam.isOpened()):
     corners, ids, _ = cv2.aruco.detectMarkers(gray, aruco_dict)
 
     # Extract the pose of the first marker
-    rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(corners[0], 0.05, camera_matrix, dist_coefs)
+    rvec, tvec, _ = cv2.aruco.estimatePoseSingleMarkers(
+        corners[0], 0.05, camera_matrix, dist_coefs)
 
     # Convert the rotation vector to a rotation matrix
     R, _ = cv2.Rodrigues(rvec)
@@ -55,7 +56,6 @@ while(cam.isOpened()):
     # Print the position and orientation of the marker
     print("Position:", position)
     print("Orientation:", euler_angles)
-
 
     # The following code is used to watch a video stream, detect Aruco markers, and use
     # a set of markers to determine the posture of the camera in relation to the plane
