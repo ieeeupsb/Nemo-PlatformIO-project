@@ -24,22 +24,6 @@ class McuAPI {
     unsigned int error_counting_ = 0;
     int info_list_size_delete_me = 3;
 
-    void readFromSerial() {
-        if (Serial.available() > 0) {
-            // read the incoming string:
-            String incomming = Serial.readString();
-            input_buffer_.push_back(incomming);
-
-            return;
-        }
-
-        if (error_counting_ > TIMEOUT_MS / TIMER0_INTERVAL_MS) {
-
-            send_error_command();
-            error_counting_ = 0;
-        }
-    }
-
   public:
     void printInput() {
         for (const auto &str : input_buffer_) {
@@ -134,10 +118,27 @@ class McuAPI {
         return true;
     }
 
-    void timerHandler(double left_wheel_speed, double right_wheel_speed) {
-        readFromSerial();
-        error_counting_++;
+    void readFromSerial() {
+    }
+
+    void timerHandler() {
+        if (Serial.available() > 0) {
+            // read the incoming string:
+            String incomming = Serial.readString();
+            input_buffer_.push_back(incomming);
+
+            error_counting_++;
+            return;
+        }
+    }
+
+    void loopErrorDetection() {
         // sendInfo(left_wheel_speed, right_wheel_speed);
+        if (error_counting_ > TIMEOUT_MS / TIMER0_INTERVAL_MS) {
+
+            send_error_command();
+            error_counting_ = 0;
+        }
     }
 
     void sendInfo(double left_wheel_speed, double right_wheel_speed) {

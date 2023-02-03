@@ -2,6 +2,7 @@ import serial
 import cv2
 import numpy as np
 import camera
+from aruco_functions import *
 
 # ACE parameters
 
@@ -164,15 +165,6 @@ def linear_and_angular_speed_to_marker(camera, map, aruco_dict):
     return linear_speed, angular_speed
 
 
-def send_command(command):
-    ser.write(command.encode())
-    print("Sending commmand: " + command)
-
-
-def create_command(x, y, v, w):
-    return "x:" + str(x) + ";y:" + str(y) + ";v:"+str(v) + ";w:" + str(w)
-
-
 if __name__ == "__main__":
 
     # main()
@@ -189,16 +181,30 @@ if __name__ == "__main__":
 
     # logi_camera.start()
 
+    # while (logi_camera.isOpened()):
+
+    #     linear_speed, angular_speed = linear_and_angular_speed_to_marker(
+    #         logi_camera, ace_map, dictionary)
+
+    #     if linear_speed != 0 or angular_speed != 0:
+    #         command_to_send=create_command(0, 0, linear_speed, angular_speed)
+    #         send_command(command_to_send)
+    #     # elif ser.in_waiting:
+    #     #     line = ser.readline()
+    #     #     print(line)
+
     while (logi_camera.isOpened()):
 
-        linear_speed, angular_speed = linear_and_angular_speed_to_marker(
-            logi_camera, ace_map, dictionary)
+        target_x, target_y = nearest_marker_x_y = (logi_camera, dictionary)
+        linear_speed, angular_speed = trajectory_calulator_straight_lines(
+            target_x, target_y)
 
         if linear_speed != 0 or angular_speed != 0:
             command_to_send = create_command(0, 0, linear_speed, angular_speed)
-            send_command(command_to_send)
-        elif ser.in_waiting:
-            line = ser.readline()
-            print(line)
+            send_command(command_to_send, ser)
+        # elif ser.in_waiting:
+        #     line = ser.readline()
+        #     print(line)
+
 
 ser.close()

@@ -136,6 +136,8 @@ void loop() {
     // Serial.println(right_wheel_speed);
 
     robot.motor_controller(left_wheel_speed, right_wheel_speed);
+    api.loopErrorDetection();
+    // sendInfo(double left_wheel_speed, double right_wheel_speed);
 
     //}
     // last_command_done = motion_controller.command_state_machine(current_x, current_y, current_v, current_w);
