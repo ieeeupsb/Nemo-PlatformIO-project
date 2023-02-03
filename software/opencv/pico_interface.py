@@ -1,5 +1,4 @@
 import serial
-import paramiko
 import pygame
 
 canSend = False
