@@ -1,5 +1,5 @@
 // https://www.raspberrypi.com/documentation/microcontrollers/images/pico-pinout.svg
-// https: // pico.pinout.xyz/
+// https://pico.pinout.xyz/
 
 #pragma once
 
@@ -20,6 +20,7 @@
 #define PORT25_GP19 19
 #define PORT24_GP18 18
 #define PORT27_GP21 21
+#define PORT32_GP27_ADC1 27
 #define PORT36_3V3_OUT "DON'T USE"
 #define PORT38_GND "DON'T USE"
 #define PORT40_VBUS "DON'T USE"

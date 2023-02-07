@@ -1,159 +1,180 @@
 #pragma once
 
+#include "PID_v1.h"
 #include "driver_controller.h"
-#include "encoder_reader.h"
 
-struct motor_controller_pins_t {
-    int driver_in_a;
-    int driver_in_b;
-    int driver_enable_pin;
-    int enc_pin_a;
-    int enc_pin_b;
-};
-
-#define RPM_TOLERANCE 5
+#define PID_LOOP_INTERVAL_MS 100
+#define PID_LOOP_INTERVAL_US PID_LOOP_INTERVAL_MS * 1000
 
 class MotorController {
 
   private:
-    EncoderReader encoder_reader_;
+    PID motor_pid_;
+    double pwm_output_;
     DriverController driver_controller_;
-
-    static constexpr float pulses_per_revolution_ = 360.0; // Number of pulses per revolution
-    int target_rpm_;
-    float acceleration_;
-
-    // PID controller constants
-    float kp_ = 0.0;
-    float ki_ = 0.0;
-    float kd_ = 0.0;
-
-    // PID controller state variables
-    float error_sum_ = 0.0;
-    float last_error_ = 0.0;
-
-    float ConvertLinearSpeedToRpm(float linear_speed) {
-        // Calculate the circumference of the wheel
-        float circumference = 2 * PI * wheel_radius_;
-        // Calculate the linear speed of the wheel in meters per minute
-        float linear_speed_mm = linear_speed * 60;
-        // Calculate the RPM of the motor
-        float rpm = linear_speed_mm / circumference;
-        return rpm;
-    }
-
-    int m1_pin_;
-    int m2_pin_;
-
-    static constexpr float wheel_radius_ = 360.0; // Number of pulses per revolution
+    bool is_pid_controller_enable_ = true;
+    double target_speed_;
+    double speed_read_;
 
   public:
-    MotorController(int enc_pin_a, int enc_pin_b, int driver_enable_pin, int driver_in_a, int driver_in_b)
-        // Initialize the encoder
-        : encoder_reader_(enc_pin_a, enc_pin_b),
-          driver_controller_(driver_enable_pin, driver_in_a, driver_in_b) {}
+    void enablePidControl() {
+        is_pid_controller_enable_ = true;
+    }
+
+    MotorController(int driver_enable_pin, int driver_in_a_pin, int driver_in_b_pin, double Kp, double Ki, double Kd)
+        : driver_controller_(driver_enable_pin, driver_in_a_pin, driver_in_b_pin),
+          motor_pid_(&speed_read_, &pwm_output_, &target_speed_, Kp, Ki, Kd, DIRECT) {
+
+        driver_controller_.stopMotor();
+        motor_pid_.SetMode(AUTOMATIC);
+        enablePidControl();
+        // motor_pid_.SetSampleTime(PID_LOOP_INTERVAL_MS);
+        // motor_pid_.SetOutputLimits(40, 255);
+    }
+
+    void forceDirection(motor_rotation_dir_t dir) {
+        is_pid_controller_enable_ = false;
+        driver_controller_.setDirection(dir);
+    }
+
+    void test_motor() {
+        is_pid_controller_enable_ = false;
+
+        driver_controller_.setPwm(100);
+        driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
+        delay(1000);
+        driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
+        delay(1000);
+        driver_controller_.stopMotor();
+
+        is_pid_controller_enable_ = true;
+    }
+
+    void forcePwm(int pwm) {
+        is_pid_controller_enable_ = false;
+        driver_controller_.setPwm(pwm);
+    }
+
+    void setTargetSpeed(double target_speed) {
+        if (0 < target_speed) {
+            driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
+        } else if (0 > target_speed) {
+            driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
+        } else {
+            driver_controller_.stopMotor();
+        }
+
+        target_speed_ = abs(target_speed);
+    }
+
+    void updateSpeedRead(double speed_read) {
+        speed_read_ = speed_read;
+    }
 
     void stopMotor() {
         driver_controller_.stopMotor();
     }
 
-    float getRpm() {
-        // Calculate the current RPM of the motor
-        // based on the number of encoder counts and the elapsed time
-        // auto count = (float)encoder_reader_.GetSpeedCount();
-        // encoder_reader_.RestartSpeedCounter();
-
-        // unsigned long current_time = millis();
-        // float elapsed_time_ms = (current_time - last_time_); // elapsed time in milliseconds
-        // last_time_ = current_time;
-
-        //...not tested
-        // float n_rotations = (count / pulses_per_revolution_); //
-        // float time_s = elapsed_time_ms / 1000;
-        // float rpm = n_rotations / time_s;
-        //...end of not tested
-
-        // return count;
-        return 0;
+    void SetPIDConstants(double Kp, double Ki, double Kd) {
+        motor_pid_.SetTunings(Kp, Ki, Kd);
     }
 
-    void setRpm(int target_rpm, int acceleration) {
-        if (0 == target_rpm) {
-            stopMotor();
-            return;
-        }
+    bool Compute() {
 
-        target_rpm_ = target_rpm;
-        acceleration_ = acceleration;
+        return motor_pid_.Compute();
     }
 
-    void setRpm(int target_rpm) {
-
-        setRpm(target_rpm, 0);
+    void setPwm(unsigned int pwm) {
+        driver_controller_.setPwm(pwm);
     }
+
+    void setPidPwm() {
+        driver_controller_.setPwm(pwm_output_);
+        Serial.println(pwm_output_);
+    }
+
+    PID *getPid() {
+        return &motor_pid_;
+    }
+
+    DriverController *getDriverController() {
+        return &driver_controller_;
+    }
+
+    // void test_encoders() {
+    //     return
+    // }
+
+    // void motor_controller(double left_speed_target, double right_speed_target) {
+
+    //     if (!left_speed_target && !right_speed_target) {
+    //         left_driver_controller_.stopMotor();
+    //         right_driver_controller_.stopMotor();
+    //         return;
+    //     }
+
+    //     if (left_speed_target < 0) {
+    //         left_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
+    //     } else if (left_speed_target > 0) {
+    //         left_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
+    //     } else {
+    //         left_driver_controller_.stopMotor();
+    //     }
+
+    //     if (right_speed_target < 0) {
+    //         right_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
+    //     } else if (right_speed_target > 0) {
+    //         right_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
+    //     } else {
+    //         right_driver_controller_.stopMotor();
+    //     }
+
+    //     // const double KP_20_40 = 1;
+    //     // const double KI_20_40 = 0;
+
+    //     // if (0.20 < abs(left_speed_target) && abs(left_speed_target) <= 0.40) { // low speed
+
+    //     //     leftWheelPID_.SetTunings(KP_20_40, 0, 0);
+    //     // } else if (0.40 < abs(left_speed_target) && abs(left_speed_target) <= 0.60) { // mid speed
+
+    //     //     leftWheelPID_.SetTunings(50 * 0.6, 10, 0);
+    //     // }
+
+    //     // if (0.20 < abs(right_speed_target) && abs(right_speed_target) <= 0.40) { // low speed
+
+    //     //     rightWheelPID_.SetTunings(KP_20_40, 0, 0);
+    //     // } else if (0.40 < abs(right_speed_target) && abs(right_speed_target) <= 0.60) { // mid speed
+
+    //     //     rightWheelPID_.SetTunings(50 * 0.6, 10, 0);
+    //     // }
+
+    //     left_speed_pid_output_ = left_speed_target;
+    //     right_speed_pid_output_ = right_speed_target;
+
+    //     // if (left_speed_read_ == 0) {
+    //     //     left_pwm_output_ = 90;
+    //     // } else {
+    //     leftWheelPID_.Compute();
+    //     // Serial.print("left pwm:");
+    //     // Serial.println(left_pwm_output_);
+    //     // }
+
+    //     // if (right_speed_read_ == 0) {
+    //     //     right_pwm_output_ = 90;
+    //     // }
+    //     // else {
+    //     rightWheelPID_.Compute();
+    //     // Serial.print("right pwm:");
+    //     // Serial.println(right_pwm_output_);
+    //     // }
+
+    //     left_driver_controller_.setPwm(left_pwm_output_);
+    //     right_driver_controller_.setPwm(right_pwm_output_);
+
+    //     // // // left_driver_controller_.setPwm(55);
+    //     // // // right_driver_controller_.setPwm(55);
+
+    //     // // // Serial.print("kp:");
+    //     // // // Serial.println(leftWheelPID_.GetKp());
+    // }
 };
-
-// // MotorController(motor_controller_pins_t motor_controller_pins)
-// //     // Initialize the encoder
-// //     : encoder_reader_(motor_controller_pins.enc_pin_a, motor_controller_pins.enc_pin_b),
-// //       MotorDriverController(motor_controller_pins.driver_enable_pin, motor_controller_pins.driver_in_a, motor_controller_pins.driver_in_b) {
-
-// //     // Set the motor control pin
-// // }
-
-// void rpmController() {
-//     // Calculate the current RPM of the motor
-//     float current_rpm = getRpm();
-
-//     // Calculate the error between the target RPM and the current RPM
-//     float error = target_rpm_ - current_rpm;
-
-//     if (abs(error) < RPM_TOLERANCE) {
-//         acceleration_ = 0;
-//     }
-
-//     // Update the error sum for the integral term
-//     error_sum_ += error;
-
-//     // Calculate the derivative term
-//     float derivative = error - last_error_;
-
-//     // Calculate the output of the PID controller
-//     int output = kp_ * error + ki_ * error_sum_ + kd_ * derivative + acceleration_;
-
-//     driver_controller_.setPwm(output);
-
-//     // Update the last error for the next iteration
-//     last_error_ = error;
-// }
-
-// void encoderReaderInterruptHandler() {
-//     // Update the encoder count
-//     encoder_reader_.Update();
-//     // Serial.println("Encoder Interrupt");
-// }
-
-// void setPIDConstants(float kp, float ki, float kd) {
-//     kp_ = kp;
-//     ki_ = ki;
-//     kd_ = kd;
-// }
-
-// void calibrate() {
-
-//     // ...
-//     setPIDConstants(1, 2, 3);
-// }
-
-// void stop() {
-//     digitalWrite(m1_pin_, LOW);
-//     digitalWrite(m2_pin_, LOW);
-//     setRpm(0);
-
-//     driver_controller_.stop();
-// }
-
-// // void setSpeed_ms(float speed_ms) {
-// //     float target_rpm = ConvertLinearSpeedToRpm(speed_ms);
-// //     setRpm(target_rpm);
-// // }

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Arduino.h"
-#define PICO
-#include "mcu_pinouts.h"
 
 enum class motor_rotation_dir_t {
     CLOCKWISE = 0,
@@ -21,15 +19,6 @@ class DriverController {
         in_a_ = in_a;
         in_b_ = in_b;
 
-        pinMode(LED_GP25, OUTPUT);
-
-        for (int i = 0; i < 3; i++) {
-            digitalWrite(LED_GP25, HIGH);
-            delay(200);
-            digitalWrite(LED_GP25, LOW);
-            delay(200);
-        }
-
         pinMode(enable, OUTPUT);
         pinMode(in_a, OUTPUT);
         pinMode(in_b, OUTPUT);
@@ -47,7 +36,7 @@ class DriverController {
 
     void setPwm(int duty_cycle) {
 
-        duty_cycle = constrain(duty_cycle, 40, 255);
+        duty_cycle = constrain(duty_cycle, 30, 255);
         analogWrite(enable_, duty_cycle);
     }
 

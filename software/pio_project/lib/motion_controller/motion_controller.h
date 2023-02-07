@@ -9,24 +9,10 @@
 #define WHEEL_BASE 159e-3
 #define WHEEL_RATIO 3600.00
 
-double left_speed_pid_output_, left_speed_read_;
-double left_pwm_output_ = 0;
-double right_speed_pid_output_, right_speed_read_;
-double right_pwm_output_ = 0;
+double left_speed_read_;
+double right_speed_read_;
 
-// double Kp = 50 * 0.6;
-// double Ki = 10;
-// double Kd = 0;
-double Kp = 100 * 0.6;
-double Ki = 10;
-double Kd = 0;
-// * 0.7, Ki = 0, Kd = 0;5
-// double Kp = 10 * 1, Ki = 10 * 1.4, Kd = 0;
-
-PID leftWheelPID_(&left_speed_read_, &left_pwm_output_, &left_speed_pid_output_, Kp, Ki, Kd, DIRECT);
-PID rightWheelPID_(&right_speed_read_, &right_pwm_output_, &right_speed_pid_output_, Kp, Ki, Kd, DIRECT);
-
-class MotionController {
+class Robot {
 
   private:
     bool last_command_done_ = true;
@@ -41,9 +27,6 @@ class MotionController {
 
     int encoder_counter_left_;
     int encoder_counter_right_;
-
-    DriverController left_driver_controller_;
-    DriverController right_driver_controller_;
 
     pose_t current_pose_;
 
@@ -61,23 +44,16 @@ class MotionController {
         pin_b_r_ = pin_b_r;
     }
 
-    MotionController() : left_driver_controller_(DRIVER_ENABLE_PIN_L, DRIVER_IN_A_PIN_L, DRIVER_IN_B_PIN_L),
-                         right_driver_controller_(DRIVER_ENABLE_PIN_R, DRIVER_IN_A_PIN_R, DRIVER_IN_B_PIN_R) {
+    Robot() {
         setEncoderPins(ENC_C1_PIN_L, ENC_C1_PIN_L, ENC_C1_PIN_R, ENC_C1_PIN_R);
-        leftWheelPID_.SetMode(AUTOMATIC);
-        rightWheelPID_.SetMode(AUTOMATIC);
-        leftWheelPID_.SetOutputLimits(40, 255);
-        rightWheelPID_.SetOutputLimits(40, 255);
-        left_driver_controller_.stopMotor();
-        right_driver_controller_.stopMotor();
     }
-    MotionController(const MotionController &) = delete;
-    MotionController &operator=(const MotionController &) = delete;
+    Robot(const Robot &) = delete;
+    Robot &operator=(const Robot &) = delete;
 
   public:
-    static MotionController &
+    static Robot &
     getInstance() {
-        static MotionController instance;
+        static Robot instance;
         return instance;
     }
 
@@ -112,6 +88,19 @@ class MotionController {
         return wheels_current_speed;
     }
 
+    // void test_left_encoder() {
+    //     left_motor_controller.forceDirection(motor_rotation_dir_t::CLOCKWISE);
+    //     left_motor_controller.forcePwm();
+    //     while (true) {
+    //         wheels_speed = robot.wheel_speed_calculator();
+    //         if (0 != wheels_speed.left_wheel_speed) {
+    //             break;
+    //         }
+    //         delay(100);
+    //     }
+    //     left_motor_controller.stopMotor();
+    // }
+
     pose_t estimate_postion() {
         current_pose_ = pose_estimator(current_pose_, (double)speed_read_last_time_ms_ / 1000.00, left_speed_read_, right_speed_read_, WHEEL_BASE);
 
@@ -137,79 +126,6 @@ class MotionController {
         return generate_speeds;
     }
 
-    void motor_controller(double left_speed_target, double right_speed_target) {
-
-        if (!left_speed_target && !right_speed_target) {
-            left_driver_controller_.stopMotor();
-            right_driver_controller_.stopMotor();
-            return;
-        }
-
-        if (left_speed_target < 0) {
-            left_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
-        } else if (left_speed_target > 0) {
-            left_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-        } else {
-            left_driver_controller_.stopMotor();
-        }
-
-        if (right_speed_target < 0) {
-            right_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-        } else if (right_speed_target > 0) {
-            right_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
-        } else {
-            right_driver_controller_.stopMotor();
-        }
-
-        // const double KP_20_40 = 1;
-        // const double KI_20_40 = 0;
-
-        // if (0.20 < abs(left_speed_target) && abs(left_speed_target) <= 0.40) { // low speed
-
-        //     leftWheelPID_.SetTunings(KP_20_40, 0, 0);
-        // } else if (0.40 < abs(left_speed_target) && abs(left_speed_target) <= 0.60) { // mid speed
-
-        //     leftWheelPID_.SetTunings(50 * 0.6, 10, 0);
-        // }
-
-        // if (0.20 < abs(right_speed_target) && abs(right_speed_target) <= 0.40) { // low speed
-
-        //     rightWheelPID_.SetTunings(KP_20_40, 0, 0);
-        // } else if (0.40 < abs(right_speed_target) && abs(right_speed_target) <= 0.60) { // mid speed
-
-        //     rightWheelPID_.SetTunings(50 * 0.6, 10, 0);
-        // }
-
-        left_speed_pid_output_ = left_speed_target;
-        right_speed_pid_output_ = right_speed_target;
-
-        // if (left_speed_read_ == 0) {
-        //     left_pwm_output_ = 90;
-        // } else {
-        leftWheelPID_.Compute();
-        // Serial.print("left pwm:");
-        // Serial.println(left_pwm_output_);
-        // }
-
-        // if (right_speed_read_ == 0) {
-        //     right_pwm_output_ = 90;
-        // }
-        // else {
-        rightWheelPID_.Compute();
-        // Serial.print("right pwm:");
-        // Serial.println(right_pwm_output_);
-        // }
-
-        left_driver_controller_.setPwm(left_pwm_output_);
-        right_driver_controller_.setPwm(right_pwm_output_);
-
-        // // // left_driver_controller_.setPwm(55);
-        // // // right_driver_controller_.setPwm(55);
-
-        // // // Serial.print("kp:");
-        // // // Serial.println(leftWheelPID_.GetKp());
-    }
-
     void
     updateRightCount() {
         int a_state = digitalRead(pin_a_r_);
@@ -231,48 +147,6 @@ class MotionController {
         } else {
             encoder_counter_left_--;
         }
-    }
-
-    void test_motors() {
-        is_pid_controller_enable_ = false;
-        pinMode(LED_GP25, OUTPUT);
-        for (int i = 0; i < 3; i++) {
-            digitalWrite(LED_GP25, HIGH);
-            delay(500);
-            digitalWrite(LED_GP25, LOW);
-            delay(500);
-        }
-        right_driver_controller_.setPwm(100);
-        left_driver_controller_.setPwm(100);
-        right_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-        left_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-        delay(1000);
-        right_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
-        left_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
-        delay(1000);
-        right_driver_controller_.stopMotor();
-        left_driver_controller_.stopMotor();
-        is_pid_controller_enable_ = true;
-    }
-
-    void test_encoders() {
-        is_pid_controller_enable_ = false;
-        pinMode(LED_GP25, OUTPUT);
-        for (int i = 0; i < 3; i++) {
-            digitalWrite(LED_GP25, HIGH);
-            delay(500);
-            digitalWrite(LED_GP25, LOW);
-            delay(500);
-        }
-        right_driver_controller_.setPwm(80);
-        left_driver_controller_.setPwm(80);
-        right_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-        left_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-        while (encoder_counter_left_ && encoder_counter_right_) {
-        }
-        right_driver_controller_.stopMotor();
-        left_driver_controller_.stopMotor();
-        is_pid_controller_enable_ = true;
     }
 };
 
