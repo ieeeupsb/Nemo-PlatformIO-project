@@ -5,6 +5,8 @@
 
 #define PID_LOOP_INTERVAL_MS 100
 #define PID_LOOP_INTERVAL_US PID_LOOP_INTERVAL_MS * 1000
+// 300
+// 700
 
 class MotorController {
 
@@ -15,26 +17,36 @@ class MotorController {
     bool is_pid_controller_enable_ = true;
     double target_speed_;
     double speed_read_;
+    int encoder_count_;
+    motor_rotation_dir_t motor_rotation_dir_;
+    uint8_t pin_a_, pin_b_;
 
   public:
     void enablePidControl() {
         is_pid_controller_enable_ = true;
+        motor_pid_.SetMode(AUTOMATIC);
     }
 
-    MotorController(int driver_enable_pin, int driver_in_a_pin, int driver_in_b_pin, double Kp, double Ki, double Kd)
+    MotorController(int driver_enable_pin, int driver_in_a_pin, int driver_in_b_pin, int pin_a, int pin_b, double Kp, double Ki, double Kd)
         : driver_controller_(driver_enable_pin, driver_in_a_pin, driver_in_b_pin),
-          motor_pid_(&speed_read_, &pwm_output_, &target_speed_, Kp, Ki, Kd, DIRECT) {
+          motor_pid_(&speed_read_, &pwm_output_, &target_speed_, Kp, Ki, Kd, DIRECT),
+          pin_a_(pin_a), pin_b_(pin_b) {
+
+        pinMode(pin_a, INPUT);
+        pinMode(pin_b, INPUT);
 
         driver_controller_.stopMotor();
         motor_pid_.SetMode(AUTOMATIC);
         enablePidControl();
-        // motor_pid_.SetSampleTime(PID_LOOP_INTERVAL_MS);
-        // motor_pid_.SetOutputLimits(40, 255);
     }
 
     void forceDirection(motor_rotation_dir_t dir) {
         is_pid_controller_enable_ = false;
         driver_controller_.setDirection(dir);
+    }
+
+    void SetMode(int mode) {
+        motor_pid_.SetMode(mode);
     }
 
     void test_motor() {
@@ -50,6 +62,38 @@ class MotorController {
         is_pid_controller_enable_ = true;
     }
 
+    void updateCount() {
+        int a_state = digitalRead(pin_a_);
+        int b_state = digitalRead(pin_b_);
+
+        if (a_state == b_state) {
+            encoder_count_++;
+        } else {
+            encoder_count_--;
+        }
+    }
+
+    double updateSpeed() {
+        static unsigned long last_time_ms = 0;
+        const static unsigned long interval = 50;
+        unsigned long current_time_ms = millis();
+        int last_count = encoder_count_;
+
+        if (current_time_ms - last_time_ms >= interval) {
+            unsigned long delta_time_ms = current_time_ms - last_time_ms;
+            encoder_count_ = 0;
+            speed_read_ = 1000.00 * ((double)last_count / WHEEL_RATIO) / (double)delta_time_ms;
+
+            if (motor_rotation_dir_t::CLOCKWISE == motor_rotation_dir_) {
+                speed_read_ = -speed_read_;
+            }
+
+            last_time_ms = millis();
+        }
+
+        return speed_read_;
+    }
+
     void forcePwm(int pwm) {
         is_pid_controller_enable_ = false;
         driver_controller_.setPwm(pwm);
@@ -58,13 +102,17 @@ class MotorController {
     void setTargetSpeed(double target_speed) {
         if (0 < target_speed) {
             driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
+            motor_pid_.SetControllerDirection(DIRECT);
+
         } else if (0 > target_speed) {
             driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
+            motor_pid_.SetControllerDirection(REVERSE);
+
         } else {
             driver_controller_.stopMotor();
         }
 
-        target_speed_ = abs(target_speed);
+        target_speed_ = target_speed;
     }
 
     void updateSpeedRead(double speed_read) {
@@ -88,9 +136,31 @@ class MotorController {
         driver_controller_.setPwm(pwm);
     }
 
-    void setPidPwm() {
+    unsigned int setPidPwm() {
+        static unsigned long last_time_ms = 0;
+        const static unsigned long interval = 100;
+        unsigned long current_time_ms = millis();
+        motor_pid_.Compute();
         driver_controller_.setPwm(pwm_output_);
-        Serial.println(pwm_output_);
+
+        if (current_time_ms - last_time_ms >= interval) {
+            motor_pid_.Compute();
+            driver_controller_.setPwm(pwm_output_);
+
+            last_time_ms = millis();
+        }
+
+        return pwm_output_;
+    }
+
+    void setDirection(motor_rotation_dir_t motor_rotation_dir) {
+        this->driver_controller_.setDirection(motor_rotation_dir);
+        return;
+    }
+
+    int setTargetSpeedPwm() {
+        updateSpeed();
+        return setPidPwm();
     }
 
     PID *getPid() {
@@ -103,78 +173,5 @@ class MotorController {
 
     // void test_encoders() {
     //     return
-    // }
-
-    // void motor_controller(double left_speed_target, double right_speed_target) {
-
-    //     if (!left_speed_target && !right_speed_target) {
-    //         left_driver_controller_.stopMotor();
-    //         right_driver_controller_.stopMotor();
-    //         return;
-    //     }
-
-    //     if (left_speed_target < 0) {
-    //         left_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
-    //     } else if (left_speed_target > 0) {
-    //         left_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-    //     } else {
-    //         left_driver_controller_.stopMotor();
-    //     }
-
-    //     if (right_speed_target < 0) {
-    //         right_driver_controller_.setDirection(motor_rotation_dir_t::ANTI_CLOCKWISE);
-    //     } else if (right_speed_target > 0) {
-    //         right_driver_controller_.setDirection(motor_rotation_dir_t::CLOCKWISE);
-    //     } else {
-    //         right_driver_controller_.stopMotor();
-    //     }
-
-    //     // const double KP_20_40 = 1;
-    //     // const double KI_20_40 = 0;
-
-    //     // if (0.20 < abs(left_speed_target) && abs(left_speed_target) <= 0.40) { // low speed
-
-    //     //     leftWheelPID_.SetTunings(KP_20_40, 0, 0);
-    //     // } else if (0.40 < abs(left_speed_target) && abs(left_speed_target) <= 0.60) { // mid speed
-
-    //     //     leftWheelPID_.SetTunings(50 * 0.6, 10, 0);
-    //     // }
-
-    //     // if (0.20 < abs(right_speed_target) && abs(right_speed_target) <= 0.40) { // low speed
-
-    //     //     rightWheelPID_.SetTunings(KP_20_40, 0, 0);
-    //     // } else if (0.40 < abs(right_speed_target) && abs(right_speed_target) <= 0.60) { // mid speed
-
-    //     //     rightWheelPID_.SetTunings(50 * 0.6, 10, 0);
-    //     // }
-
-    //     left_speed_pid_output_ = left_speed_target;
-    //     right_speed_pid_output_ = right_speed_target;
-
-    //     // if (left_speed_read_ == 0) {
-    //     //     left_pwm_output_ = 90;
-    //     // } else {
-    //     leftWheelPID_.Compute();
-    //     // Serial.print("left pwm:");
-    //     // Serial.println(left_pwm_output_);
-    //     // }
-
-    //     // if (right_speed_read_ == 0) {
-    //     //     right_pwm_output_ = 90;
-    //     // }
-    //     // else {
-    //     rightWheelPID_.Compute();
-    //     // Serial.print("right pwm:");
-    //     // Serial.println(right_pwm_output_);
-    //     // }
-
-    //     left_driver_controller_.setPwm(left_pwm_output_);
-    //     right_driver_controller_.setPwm(right_pwm_output_);
-
-    //     // // // left_driver_controller_.setPwm(55);
-    //     // // // right_driver_controller_.setPwm(55);
-
-    //     // // // Serial.print("kp:");
-    //     // // // Serial.println(leftWheelPID_.GetKp());
     // }
 };
