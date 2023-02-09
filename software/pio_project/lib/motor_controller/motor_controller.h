@@ -20,6 +20,7 @@ class MotorController {
     int encoder_count_;
     motor_rotation_dir_t motor_rotation_dir_;
     uint8_t pin_a_, pin_b_;
+    unsigned long last_time_ms = 0;
 
   public:
     void enablePidControl() {
@@ -74,7 +75,6 @@ class MotorController {
     }
 
     double updateSpeed() {
-        static unsigned long last_time_ms = 0;
         const static unsigned long interval = 50;
         unsigned long current_time_ms = millis();
         int last_count = encoder_count_;

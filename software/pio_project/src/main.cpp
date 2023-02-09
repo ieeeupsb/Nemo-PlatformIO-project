@@ -37,29 +37,14 @@ void updateRightCount() {
     right_motor_controller.updateCount();
 }
 
-void SerialSend(double setpoint, double input, double output) {
-    Serial.print("setpoint: ");
-    Serial.print(setpoint);
-    Serial.print(" ");
-    Serial.print("input: ");
-    Serial.print(input);
-    Serial.print(" ");
-    Serial.print("output: ");
-    Serial.print(output);
-    Serial.print(" ");
-    // if (tuning) {
-    //     Serial.print("tuning mode");
-    // } else {
-    //     Serial.print("kp: ");
-    //     Serial.print(motor_GetKp());
-    //     Serial.print(" ");
-    //     Serial.print("ki: ");
-    //     Serial.print(myPID->GetKi());
-    //     Serial.print(" ");
-    //     Serial.print("kd: ");
-    //     Serial.print(myPID->GetKd());
-    // }
-    Serial.println();
+void SerialSend(double left_speed, int left_pwm, double right_speed, int right_pwm) {
+    Serial.print(left_speed);
+    Serial.print(",");
+    Serial.print(left_pwm);
+    Serial.print(",");
+    Serial.print(right_speed);
+    Serial.print(",");
+    Serial.println(right_pwm);
 }
 
 void runEvery700ms() {
@@ -83,7 +68,7 @@ void setup() {
     // left_motor_controller.SetMode(AUTOMATIC);
     // right_motor_controller.SetMode(AUTOMATIC);
 
-    left_motor_controller.SetPIDConstants(325 * 0.7, 158, 0);
+    left_motor_controller.SetPIDConstants(300 * 0.7, 158, 0);
     right_motor_controller.SetPIDConstants(325 * 0.7, 158, 0);
     // right_motor_controller.SetPIDConstants(325 * 0.7, 158, 0);
     // right_motor_controller.SetPIDConstants(180 * 0.7, 40, 0);
@@ -106,14 +91,10 @@ void loop() {
     // // Serial.println(left_speed);
 
     double left_speed = left_motor_controller.updateSpeed();
-    left_motor_controller.updateSpeedRead(left_speed);
     int left_pwm = left_motor_controller.setPidPwm();
 
-    SerialSend(left_target_speed, left_speed, left_pwm);
-
     double right_speed = right_motor_controller.updateSpeed();
-    right_motor_controller.updateSpeedRead(right_speed);
     int right_pwm = right_motor_controller.setPidPwm();
 
-    SerialSend(right_target_speed, right_speed, right_pwm);
+    SerialSend(left_speed, left_pwm, right_speed, right_pwm);
 }
