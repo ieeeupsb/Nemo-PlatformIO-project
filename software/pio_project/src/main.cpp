@@ -1,13 +1,17 @@
 
 #include "Arduino.h"
+#include "mcu_api.h"
 #include "motion_controller.h"
 #include "motor_controller.h"
 #include "pin_wiring.h"
 #include <PID_AutoTune_v0.h>
 #include <PID_v1.h>
 
+#define TIMER0_INTERVAL_MS 200
+
 wheels_speed_t wheels_speed;
 Robot &robot = Robot::getInstance();
+McuAPI api(9600);
 
 byte ATuneModeRemember = 2;
 double input = 80, output = 50, setpoint = 180;
@@ -87,14 +91,41 @@ void setup() {
     // left_motor_controller.setPwm(255);
 }
 
+unsigned long last_time_ms;
+double current_x;
+double current_y;
+double current_v;
+double current_w;
+
 void loop() {
     // // Serial.println(left_speed);
+    if (millis() - last_time_ms >= 200) {
+        api.read();
+        // SerialSend(left_speed, left_pwm, right_speed, right_pwm);
+
+        last_time_ms = millis();
+    }
+
+    api.parseInputAndCreateCommand();
+
+    if (0 != api.commandListSize()) {
+        pico_command_t current_command = api.getNextCommand();
+
+        current_x = current_command.x;
+        current_y = current_command.y;
+        current_v = current_command.v;
+        current_w = current_command.w;
+    }
+    pico_command_t command = api.getNextCommand();
+
+    Serial.println(current_v);
+
+    left_motor_controller.setTargetSpeed(current_v);
+    right_motor_controller.setTargetSpeed(current_v);
 
     double left_speed = left_motor_controller.updateSpeed();
     int left_pwm = left_motor_controller.setPidPwm();
 
     double right_speed = right_motor_controller.updateSpeed();
     int right_pwm = right_motor_controller.setPidPwm();
-
-    SerialSend(left_speed, left_pwm, right_speed, right_pwm);
 }

@@ -8,6 +8,7 @@
 #define MAX_FAILED_COMMANDS
 #define BUFFER_SIZE 64
 #define TIMEOUT_MS 20000
+#define TIMER0_INTERVAL_MS 200
 
 struct pico_command_t {
     double x = 0;
@@ -72,8 +73,10 @@ class McuAPI {
         String incoming;
 
         if (input_buffer_.size() < 1) {
+            // Serial.println("jddddd");
             return false;
         }
+
         incoming = *input_buffer_.begin();
         input_buffer_.pop_front();
 
@@ -92,6 +95,8 @@ class McuAPI {
             //     Serial.end();
             // }
             // FIXME
+            Serial.println("encotre");
+
             return false;
         }
         Serial.println("ACK");
@@ -118,14 +123,12 @@ class McuAPI {
         return true;
     }
 
-    void readFromSerial() {
-    }
-
-    void timerHandler() {
+    void read() {
         if (Serial.available() > 0) {
             // read the incoming string:
             String incomming = Serial.readString();
             input_buffer_.push_back(incomming);
+            // Serial.println(incomming);
 
             error_counting_++;
             return;
@@ -155,7 +158,7 @@ class McuAPI {
     pico_command_t getNextCommand() {
         if (command_list.size() <= 0) {
             pico_command_t empty_command;
-            Serial.println("command_list is empty.");
+            // Serial.println("command_list is empty.");
             return empty_command;
         }
 
