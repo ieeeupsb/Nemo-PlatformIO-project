@@ -62,10 +62,12 @@ def constrain(value, lower_bound, upper_bound):
 
 
 ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200)
+
 menu_trigger_key = "m"
 trajectory_trigger_key = "t"
-
 print("Press 'm' to open the menu")
+
+
 controller_is_connected = check_controller()
 
 if controller_is_connected:
@@ -82,7 +84,6 @@ if controller_is_connected:
     absolute_max_speed = 0.3
 
     while True:
-        # user_input = input()
         pygame.event.get()
         x_axis = joystick.get_axis(1)
         y_axis = joystick.get_axis(3)
@@ -121,7 +122,6 @@ if controller_is_connected:
             line = ser.readline()
             # print(line)
         time.sleep(0.000001)
-        # usleep(0)
 
 
 while True:
