@@ -46,7 +46,7 @@ while True:
 
     send_command(command)
 
-    cv2.drawContours(frame, c, -1, (0, 255, 0), 1)
+    # cv2.drawContours(frame, c, -1, (0, 255, 0), 1)
     cv2.imshow("Mask", mask)
     cv2.imshow("Frame", frame)
 

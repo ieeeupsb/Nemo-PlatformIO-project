@@ -11,7 +11,7 @@
 
 wheels_speed_t wheels_speed;
 Robot &robot = Robot::getInstance();
-McuAPI api(9600);
+McuAPI api(115200);
 
 byte ATuneModeRemember = 2;
 double input = 80, output = 50, setpoint = 180;
@@ -69,26 +69,15 @@ void setup() {
     attachInterrupt(digitalPinToInterrupt(ENC_C1_PIN_L), updateLeftCount, CHANGE);
     attachInterrupt(digitalPinToInterrupt(ENC_C1_PIN_R), updateRightCount, CHANGE);
 
-    // left_motor_controller.SetMode(AUTOMATIC);
-    // right_motor_controller.SetMode(AUTOMATIC);
-
     left_motor_controller.SetPIDConstants(300 * 0.7, 158, 0);
     right_motor_controller.SetPIDConstants(325 * 0.7, 158, 0);
-    // right_motor_controller.SetPIDConstants(325 * 0.7, 158, 0);
-    // right_motor_controller.SetPIDConstants(180 * 0.7, 40, 0);
 
     left_motor_controller.setTargetSpeed(left_target_speed);
     right_motor_controller.setTargetSpeed(right_target_speed);
     left_motor_controller.enablePidControl();
     right_motor_controller.enablePidControl();
-    // right_motor_controller.setTargetSpeed(0.2);
-
-    // left_motor_controller.setDirection(motor_rotation_dir_t::CLOCKWISE);
-    // right_motor_controller.setDirection(motor_rotation_dir_t::CLOCKWISE);
 
     serialTime = 0;
-    Serial.begin(9600);
-    // left_motor_controller.setPwm(255);
 }
 
 unsigned long last_time_ms;
@@ -98,13 +87,11 @@ double current_v;
 double current_w;
 
 void loop() {
-    // // Serial.println(left_speed);
-    if (millis() - last_time_ms >= 200) {
-        api.read();
-        // SerialSend(left_speed, left_pwm, right_speed, right_pwm);
+    // if (millis() - last_time_ms >= 200) {
+    api.read();
 
-        last_time_ms = millis();
-    }
+    //     last_time_ms = millis();
+    // }
 
     api.parseInputAndCreateCommand();
 
@@ -116,12 +103,9 @@ void loop() {
         current_v = current_command.v;
         current_w = current_command.w;
     }
-    pico_command_t command = api.getNextCommand();
 
-    Serial.println(current_v);
-
-    left_motor_controller.setTargetSpeed(current_v);
-    right_motor_controller.setTargetSpeed(current_v);
+    left_motor_controller.setTargetSpeed(-robot.velocities_generator(current_v, current_w).left_wheel_speed);
+    right_motor_controller.setTargetSpeed(robot.velocities_generator(current_v, current_w).right_wheel_speed);
 
     double left_speed = left_motor_controller.updateSpeed();
     int left_pwm = left_motor_controller.setPidPwm();

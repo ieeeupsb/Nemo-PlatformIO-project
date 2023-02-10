@@ -1,8 +1,9 @@
 import pygame
-import paramiko
+import time
 import serial
 
 canSend = False
+def usleep(x): return time.sleep(x/1000000.0)
 
 
 def send_command(command):
@@ -56,7 +57,11 @@ def check_controller():
         return False
 
 
-ser = serial.Serial('/dev/ttyACM0')
+def constrain(value, lower_bound, upper_bound):
+    return max(lower_bound, min(value, upper_bound))
+
+
+ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200)
 menu_trigger_key = "m"
 trajectory_trigger_key = "t"
 
@@ -69,27 +74,67 @@ if controller_is_connected:
     joystick = pygame.joystick.Joystick(0)
     joystick.init()
 
-while True:
+    v = 0
+    w = 0
 
-    if controller_is_connected:
+    number_of_gears = 3
+    gear = 3
+    absolute_max_speed = 0.3
+
+    while True:
+        # user_input = input()
         pygame.event.get()
         x_axis = joystick.get_axis(1)
         y_axis = joystick.get_axis(3)
-        x = -int(x_axis * 10)
-        y = -int(y_axis * 10)
-        command_to_send = create_command(0, 0, x, y)
+
+        if joystick.get_button(1):
+            print("aug gear")
+            gear = gear + 1
+        elif joystick.get_button(2):
+            print("reduce gear")
+            gear = gear - 1
+
+        print(gear)
+        constrain(gear, -1, number_of_gears)
+
+        if gear == 0:
+            increment = 0
+        else:
+            gear_max_speed = absolute_max_speed / (number_of_gears / gear)
+            print("gear max speed:" + str(gear_max_speed))
+            increment = -round(x_axis, 1)*(1/gear)
+            print("increment:" + str(increment))
+
+        y_axis = -round(y_axis, 1)
+
+        if increment != 0:
+            v = v + increment
+        else:
+            v = v/2
+
+        v = constrain(v, 0, gear_max_speed)
+        v = round(v, 2)
+
+        send_command(create_command(0, 0, v, w))
+
+        if not ser.in_waiting:  # Or: while ser.inWaiting():
+            line = ser.readline()
+            # print(line)
+        time.sleep(0.000001)
+        # usleep(0)
+
+
+while True:
+    user_input = input()
+    if user_input == menu_trigger_key:
+        command_to_send = open_menu()
+        canSend = False
+    elif user_input == coordinates_trigger_key:
+        command_to_send = coordinates_menu()
         canSend = True
-    elif not controller_is_connected:
-        user_input = input()
-        if user_input == menu_trigger_key:
-            command_to_send = open_menu()
-            canSend = False
-        elif user_input == coordinates_trigger_key:
-            command_to_send = coordinates_menu()
-            canSend = True
-        elif user_input == trajectory_trigger_key:
-            command_to_send = trajectory_menu()
-            canSend = True
+    elif user_input == trajectory_trigger_key:
+        command_to_send = trajectory_menu()
+        canSend = True
     else:
         canSend = False
 
