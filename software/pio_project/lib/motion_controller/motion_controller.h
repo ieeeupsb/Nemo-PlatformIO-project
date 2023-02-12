@@ -125,46 +125,4 @@ class Robot {
 
         return generate_speeds;
     }
-
-    void
-    updateRightCount() {
-        int a_state = digitalRead(pin_a_r_);
-        int b_state = digitalRead(pin_b_r_);
-
-        if (a_state == b_state) {
-            encoder_counter_right_++;
-        } else {
-            encoder_counter_right_--;
-        }
-    }
-
-    void updateLeftCount() {
-        int a_state = digitalRead(pin_a_l_);
-        int b_state = digitalRead(pin_b_l_);
-
-        if (a_state == b_state) {
-            encoder_counter_left_++;
-        } else {
-            encoder_counter_left_--;
-        }
-    }
 };
-
-//     McuAPI mcu_api_;
-//     pose_t current_pose_;
-
-//     long encoder_counter_left_;
-//     long encoder_counter_right_;
-
-//   public:
-//     float left_wheel_rpm;
-//     float right_wheel_rpm;
-
-//     float getLeftWheelRpm() {
-//         return left_wheel_rpm;
-//     }
-//     float getRightftWheelRpm() {
-//         return left_wheel_rpm;
-//     }
-
-//     // void
