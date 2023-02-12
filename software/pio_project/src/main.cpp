@@ -1,4 +1,3 @@
-
 #include "Arduino.h"
 #include "mcu_api.h"
 #include "motion_controller.h"
@@ -28,10 +27,8 @@ unsigned long modelTime, serialTime;
 MotorController left_motor_controller(DRIVER_ENABLE_PIN_L, DRIVER_IN_A_PIN_L, DRIVER_IN_B_PIN_L, ENC_C1_PIN_L, ENC_C2_PIN_L, kp, ki, kd);
 MotorController right_motor_controller(DRIVER_ENABLE_PIN_R, DRIVER_IN_A_PIN_R, DRIVER_IN_B_PIN_R, ENC_C1_PIN_R, ENC_C2_PIN_R, kp, ki, kd);
 
-PID_ATune aTune(&input, &output);
-
-// set to false to connect to the real world
-boolean useSimulation = false;
+MotorController left_motor_controller(DRIVER_ENABLE_PIN_L, DRIVER_IN_A_PIN_L, DRIVER_IN_B_PIN_L, ENC_C1_PIN_L, ENC_C2_PIN_L, 0, 0, 0);
+MotorController right_motor_controller(DRIVER_ENABLE_PIN_R, DRIVER_IN_A_PIN_R, DRIVER_IN_B_PIN_R, ENC_C1_PIN_R, ENC_C2_PIN_R, 0, 0, 0);
 
 void updateLeftCount() {
     left_motor_controller.updateCount();
@@ -51,19 +48,18 @@ void SerialSend(double left_speed, int left_pwm, double right_speed, int right_p
     Serial.println(right_pwm);
 }
 
-void runEvery700ms() {
-    static unsigned long previousMillis = 0;
-    const static unsigned long interval = 700;
-    unsigned long currentMillis = millis();
 
-    if (currentMillis - previousMillis >= interval) {
-        Serial.println("ringggg");
-        previousMillis = currentMillis;
+        Serial.print(left_speed);
+        // Serial.print(",");
+        // Serial.println(right_speed);
+        Serial.println("");
+
+        last_time_ms = current_time_ms;
     }
 }
 
-double left_target_speed = -0.2;
-double right_target_speed = 0.2;
+double left_target_speed = 200;
+double right_target_speed = 200;
 
 void setup() {
     attachInterrupt(digitalPinToInterrupt(ENC_C1_PIN_L), updateLeftCount, CHANGE);
@@ -79,6 +75,7 @@ void setup() {
 
     serialTime = 0;
 }
+unsigned long last_time;
 
 unsigned long last_time_ms;
 double current_x;
@@ -113,3 +110,4 @@ void loop() {
     double right_speed = right_motor_controller.updateSpeed();
     int right_pwm = right_motor_controller.setPidPwm();
 }
+

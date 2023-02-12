@@ -34,10 +34,13 @@ class DriverController {
         digitalWrite(in_b_, !(bool)motor_rotation_dir);
     }
 
-    void setPwm(int duty_cycle) {
+    int setPwm(int duty_cycle) {
+        if (duty_cycle) {
+            duty_cycle = constrain(duty_cycle, 30, 255);
+        }
 
-        duty_cycle = constrain(duty_cycle, 30, 255);
         analogWrite(enable_, duty_cycle);
+        return duty_cycle;
     }
 
     void stopMotor() {

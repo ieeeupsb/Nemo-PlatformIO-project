@@ -48,58 +48,58 @@ pose_t pose_estimator(pose_t current_pose, float enlapsed_time, float left_wheel
     return estimated_pose;
 }
 
-// float speed_calculator(float distance, float max_speed, float braking_factor) {
+float speed_calculator(float distance, float max_speed, float braking_factor) {
 
-//     if (max_speed == 0) {
-//         return ROBOT_MIN_SPEED;
-//     }
+    if (max_speed == 0) {
+        return ROBOT_MIN_SPEED;
+    }
 
-//     float speed = (max_speed - braking_factor / (distance + braking_factor / max_speed));
+    float speed = (max_speed - braking_factor / (distance + braking_factor / max_speed));
 
-//     if (speed < ROBOT_MIN_SPEED) {
-//         return ROBOT_MIN_SPEED;
-//     }
+    if (speed < ROBOT_MIN_SPEED) {
+        return ROBOT_MIN_SPEED;
+    }
 
-//     if (speed > ROBOT_MAX_SPEED) {
+    if (speed > ROBOT_MAX_SPEED) {
 
-//         return ROBOT_MAX_SPEED;
-//     }
+        return ROBOT_MAX_SPEED;
+    }
 
-//     return speed;
-// }
+    return speed;
+}
 
 trajectory_t trajectory_calulator_straight_lines(pose_t estimated_coordinate, pose_t target_coordinate, float trajectory_max_speed) {
 
     trajectory_t trajectory;
-    // double distance = sqrt(pow(target_coordinate.x_pos - estimated_coordinate.x_pos, 2) + pow(target_coordinate.x_pos - estimated_coordinate.y_pos, 2));
+    double distance = sqrt(pow(target_coordinate.x_pos - estimated_coordinate.x_pos, 2) + pow(target_coordinate.x_pos - estimated_coordinate.y_pos, 2));
 
-    // if (0 == distance) {
+    if (0 == distance) {
 
-    //     trajectory.linear_speed = 0;
-    //     trajectory.angular_speed = 0;
+        trajectory.linear_speed = 0;
+        trajectory.angular_speed = 0;
 
-    //     return trajectory;
-    // }
+        return trajectory;
+    }
 
-    // double desire_angle = atan2(estimated_coordinate.x_pos - estimated_coordinate.y_pos, target_coordinate.x_pos - estimated_coordinate.x_pos);
-    // double angle_error = desire_angle - estimated_coordinate.angle_pos;
+    double desire_angle = atan2(estimated_coordinate.x_pos - estimated_coordinate.y_pos, target_coordinate.x_pos - estimated_coordinate.x_pos);
+    double angle_error = desire_angle - estimated_coordinate.angle_pos;
 
-    // auto speed = speed_calculator(distance, trajectory_max_speed, 1);
+    auto speed = speed_calculator(distance, trajectory_max_speed, 1);
 
-    // if (angle_error > 0) {
-    //     trajectory.linear_speed = 0;
-    //     trajectory.angular_speed = speed_calculator(distance, trajectory_max_speed, 1);
-    // }
+    if (angle_error > 0) {
+        trajectory.linear_speed = 0;
+        trajectory.angular_speed = speed_calculator(distance, trajectory_max_speed, 1);
+    }
 
-    // if (angle_error == 0) {
-    //     trajectory.linear_speed = 0;
-    //     trajectory.angular_speed = speed_calculator(distance, trajectory_max_speed, 1);
-    // }
+    if (angle_error == 0) {
+        trajectory.linear_speed = 0;
+        trajectory.angular_speed = speed_calculator(distance, trajectory_max_speed, 1);
+    }
 
-    // if (angle_error < 0) {
-    //     trajectory.linear_speed = speed_calculator(distance, trajectory_max_speed, 1);
-    //     trajectory.angular_speed = 0;
-    // }
+    if (angle_error < 0) {
+        trajectory.linear_speed = speed_calculator(distance, trajectory_max_speed, 1);
+        trajectory.angular_speed = 0;
+    }
 
     return trajectory;
 }
