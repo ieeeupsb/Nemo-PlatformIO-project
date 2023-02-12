@@ -113,7 +113,7 @@ if controller_is_connected:
         else:
             v = v/2
 
-        v = constrain(v, 0, gear_max_speed)
+        v = constrain(v, -0.3, gear_max_speed)
         v = round(v, 2)
 
         send_command(create_command(0, 0, v, w))

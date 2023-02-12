@@ -11,5 +11,6 @@
         "initializer_list": "cpp",
         "chrono": "cpp",
         "utility": "cpp"
-    }
+    },
+    "python.analysis.typeCheckingMode": "off"
 }
