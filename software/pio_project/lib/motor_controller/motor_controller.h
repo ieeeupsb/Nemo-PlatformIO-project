@@ -75,8 +75,8 @@ class MotorController {
     }
 
     double updateSpeed() {
+        const static unsigned long interval = 50;
 
-        const static unsigned long interval = 10;
         unsigned long current_time_ms = millis();
         int last_count = encoder_count_;
 

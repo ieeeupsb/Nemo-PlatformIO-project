@@ -46,12 +46,12 @@ while True:
 
     send_command(command)
 
-    cv2.drawContours(frame, c, -1, (0, 255, 0), 1)
     cv2.imshow("Mask", mask)
     cv2.imshow("Frame", frame)
 
     if cv2.waitKey(1) & 0xff == ord('q'):   # 1 is the time in ms
         command = create_command(0, 0, 0, 0)
+        send_command(command)
         break
 cap.release()
 cv2.destroyAllWindows()
