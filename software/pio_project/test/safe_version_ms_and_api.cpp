@@ -15,9 +15,9 @@ McuAPI api(BAUD_RATE);
 MotionController &robot = MotionController::getInstance();
 
 double current_x = 0;
-double current_y = 0;
-double current_v = 0;
-double current_w = 0;
+double parameter_1 = 0;
+double parameter_2 = 0;
+double parameter_3 = 0;
 
 bool api_read_serial = false;
 bool last_command_done = false;
@@ -91,18 +91,18 @@ void loop() {
         pico_command_t current_command = api.getNextCommand();
 
         current_x = current_command.x;
-        current_y = current_command.y;
-        current_v = current_command.v;
-        current_w = current_command.w;
+        parameter_1 = current_command.y;
+        parameter_2 = current_command.v;
+        parameter_3 = current_command.w;
 
     } else {
         current_x = 0;
-        current_y = 0;
-        current_v = 0;
-        current_w = 0;
+        parameter_1 = 0;
+        parameter_2 = 0;
+        parameter_3 = 0;
     }
 
-    generated_wheels_speed = robot.velocities_generator(current_v, current_w);
+    generated_wheels_speed = robot.velocities_generator(parameter_2, parameter_3);
 
     left_wheel_speed = generated_wheels_speed.left_wheel_speed;
     right_wheel_speed = generated_wheels_speed.right_wheel_speed;

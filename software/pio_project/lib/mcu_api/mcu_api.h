@@ -5,7 +5,7 @@
 #include <list>
 #include <string.h>
 
-#define MAX_FAILED_COMMANDS
+#define MAX_FAILED_COMMANDS 10
 #define BUFFER_SIZE 64
 #define TIMEOUT_MS 20000
 #define TIMER0_INTERVAL_MS 200
@@ -87,19 +87,19 @@ class McuAPI {
 
         if (x_index == -1 || y_index == -1 || v_index == -1 || w_index == -1) {
 
-            // if (error_counting_ > MAX_FAILED_COMMANDS) {
+            if (error_counting_ > MAX_FAILED_COMMANDS) {
 
-            //     pico_command_t empty_command;
-            //     command_list.push_front(empty_command);
-            //     Serial.println(error_counting_);
-            //     Serial.end();
-            // }
+                pico_command_t empty_command;
+                command_list.push_front(empty_command);
+                Serial.println(error_counting_);
+                Serial.end();
+            }
             // FIXME
-            Serial.println("encotre");
+            // Serial.println("encotre");
 
             return false;
         }
-        Serial.println("ACK");
+        // Serial.println("ACK");
 
         int semi_colon_index = 0;
         error_counting_ = 0;
