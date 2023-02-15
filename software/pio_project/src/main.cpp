@@ -63,12 +63,17 @@ void loop() {
         parameter_1 = current_command.y;
         parameter_2 = current_command.v;
         parameter_3 = current_command.w;
+
+        Serial.print("hack");
     }
 
     switch (command_type) {
     case 0:
-        left_motor_controller.setTargetSpeed(robot.velocities_generator(-500, 0).left_wheel_speed);
-        right_motor_controller.setTargetSpeed(robot.velocities_generator(500, 0).right_wheel_speed);
+        // left_motor_controller.setTargetSpeed(robot.velocities_generator(500, 0).left_wheel_speed);
+        // right_motor_controller.setTargetSpeed(robot.velocities_generator(500, 0).right_wheel_speed);
+
+        left_motor_controller.setTargetSpeed(-robot.velocities_generator(parameter_2, parameter_3).left_wheel_speed);
+        right_motor_controller.setTargetSpeed(robot.velocities_generator(parameter_2, parameter_3).right_wheel_speed);
         break;
 
     case 1:

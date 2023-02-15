@@ -77,6 +77,16 @@ def follow_line(frame):
     return command
 
 
+x: 0
+y: 0
+v: 500
+w: 0
+x: 1
+y: 0
+v: 1
+w: 0
+
+
 class Application(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
@@ -203,11 +213,14 @@ class Application(tk.Frame):
         self.fig_canvas.draw()
 
     def main_program(self):
-        follow_line(self.frame, self.ser)
+        # follow_line(self.frame, self.ser)
+        # command = create_command(0, 0, 2000, 0)
+        # send_command(self.ser, command)
 
-        # if self.ser.in_waiting:
-        #     line = self.ser.readline().strip().decode()
-        #     write_values_to_csv(line)
+        if self.ser.in_waiting:
+            line = self.ser.readline().strip().decode()
+            write_values_to_csv(line)
+            print(line)
 
     def start(self):
         self.update_camera()
