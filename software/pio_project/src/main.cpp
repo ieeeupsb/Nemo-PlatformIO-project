@@ -67,8 +67,8 @@ void loop() {
 
     switch (command_type) {
     case 0:
-        left_motor_controller.setTargetSpeed(-robot.velocities_generator(-2000, 0).left_wheel_speed);
-        right_motor_controller.setTargetSpeed(robot.velocities_generator(2000, 0).right_wheel_speed);
+        left_motor_controller.setTargetSpeed(robot.velocities_generator(-500, 0).left_wheel_speed);
+        right_motor_controller.setTargetSpeed(robot.velocities_generator(500, 0).right_wheel_speed);
         break;
 
     case 1:

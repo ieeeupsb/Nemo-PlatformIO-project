@@ -20,6 +20,10 @@ def create_command(x, y, v, w):
     return "x:" + str(x) + ";y:" + str(y) + ";v:"+str(v) + ";w:" + str(w)
 
 
+def send_speed_command(ser, v, w):
+    send_command(ser, create_command(0, 0, v*3846, w*3846))
+
+
 def follow_line(frame, serial):
     low_b = np.uint8([5, 5, 5])
     high_b = np.uint8([0, 0, 0])
@@ -64,6 +68,10 @@ class Application(tk.Frame):
             writer = csv.writer(csvfile)
             writer.writerow(values)
         self.create_widgets()
+        command = create_command(1, 0.1, 1, 0)
+        send_command(self.ser, command)
+        command = create_command(2, 0.1, 1, 0)
+        send_command(self.ser, command)
 
     def create_widgets(self):
         self.close_button = tk.Button(
@@ -171,6 +179,8 @@ class Application(tk.Frame):
         self.fig_canvas.draw()
 
     def main_program(self):
+        # follow_line(self.frame, self.ser)
+
         if self.ser.in_waiting:
             line = self.ser.readline().strip().decode()
             # print(line)
@@ -183,13 +193,11 @@ class Application(tk.Frame):
                 pr = int(pr)
 
                 values = vl, pl, vr, pr
-                print(values)
 
                 # Write the values to a CSV file
                 with open("output.csv", "a") as csvfile:
                     writer = csv.writer(csvfile)
                     writer.writerow(values)
-        print("test")
 
     def start(self):
         self.update_camera()
