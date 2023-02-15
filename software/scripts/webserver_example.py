@@ -57,6 +57,13 @@ def write_values_to_csv(line):
             writer.writerow(values)
 
 
+ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200)
+cap = cv2.VideoCapture(0)
+
+frame_queue = queue.Queue()  # Create a queue to hold frames
+command_queue = queue.Queue()  # Create a queue to hold frames
+
+
 def follow_line(frame):
     linear_speed = 0.2
     max_angular_speed = 0.2
@@ -86,13 +93,6 @@ def follow_line(frame):
     return command
 
 
-ser = serial.Serial(port='/dev/ttyACM0', baudrate=115200)
-cap = cv2.VideoCapture(0)
-
-frame_queue = queue.Queue()  # Create a queue to hold frames
-command_queue = queue.Queue()  # Create a queue to hold frames
-
-
 def read_frames():
     while True:
         success, frame = cap.read()
@@ -102,7 +102,7 @@ def read_frames():
         frame_queue.put(last_frame)  # Put the new frame in the queue
         command = follow_line(last_frame)
         command_queue.put(command)
-        time.sleep(0.020)
+        # time.sleep(0.020)
 
 
 def follow_line_and_send_command():
@@ -125,15 +125,24 @@ if __name__ == '__main__':
     send_command(ser, command)
     time.sleep(1)
 
-    # Create the two threads
-    generate_commands_thread = threading.Thread(target=read_frames)
-    send_commands_thread = threading.Thread(
-        target=follow_line_and_send_command)
+    # # Create the two threads
+    # generate_commands_thread = threading.Thread(target=read_frames)
+    # send_commands_thread = threading.Thread(
+    #     target=follow_line_and_send_command)
 
-    # Start the threads
-    generate_commands_thread.start()
-    send_commands_thread.start()
+    # # Start the threads
+    # generate_commands_thread.start()
+    # send_commands_thread.start()
 
-    # Wait for the threads to finish (which they never will, because they run indefinitely)
-    generate_commands_thread.join()
-    send_commands_thread.join()
+    # # Wait for the threads to finish (which they never will, because they run indefinitely)
+    # generate_commands_thread.join()
+    # send_commands_thread.join()
+
+    while True:
+        success, frame = cap.read()
+        if success:
+            last_frame = frame
+
+        frame_queue.put(last_frame)  # Put the new frame in the queue
+        command = follow_line(last_frame)
+        send_command(command)
