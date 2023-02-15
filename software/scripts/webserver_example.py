@@ -12,7 +12,7 @@ app = Flask(__name__)
 # Define the video stream
 
 # Define the serial port for communicating with the robot
-serial_port = "/dev/ttyUSB0"  # change this to your serial port
+serial_port = "/dev/ttyACM0"  # change this to your serial port
 
 
 def send_command(ser, command):
@@ -143,8 +143,5 @@ if __name__ == '__main__':
     while True:
         success, frame = cap.read()
         if success:
-            last_frame = frame
-
-        frame_queue.put(last_frame)  # Put the new frame in the queue
-        command = follow_line(last_frame)
+            command = follow_line(frame)
         send_command(ser, command)
