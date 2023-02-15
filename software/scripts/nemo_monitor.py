@@ -43,6 +43,8 @@ def write_values_to_csv(line):
 
 
 def follow_line(frame, serial):
+    linear_speed = 0.2
+
     low_b = np.uint8([5, 5, 5])
     high_b = np.uint8([0, 0, 0])
     mask = cv2.inRange(frame, high_b, low_b)
@@ -56,13 +58,15 @@ def follow_line(frame, serial):
             print("CX : "+str(cx)+"  CY : "+str(cy))
             if cx >= 120:
                 print("Turn Left")
-                command = create_command(0, 0, 0.2, 0.4)
+                send_speed_command(serial, linear_speed, -0.2)
             if cx < 120 and cx > 40:
                 print("On Track!")
-                command = create_command(0, 0, 0.4, 0)
+                send_speed_command(serial, linear_speed, 0)
+
             if cx <= 40:
                 print("Turn Right")
-                command = create_command(0, 0, 0.4, 0.2)
+                send_speed_command(serial, linear_speed, 0.2)
+
             cv2.circle(frame, (cx, cy), 5, (255, 255, 255), -1)
     else:
         print("I don't see the line")
