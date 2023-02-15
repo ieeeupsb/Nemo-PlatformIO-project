@@ -24,10 +24,28 @@ def send_speed_command(ser, v, w):
     send_command(ser, create_command(0, 0, v*3846, w*3846))
 
 
+def write_values_to_csv(line):
+    values = line.split(",")
+
+    if len(values) == 4:
+        vl, pl, vr, pr = values
+        vl = float(vl)/1000
+        pl = int(pl)
+        vr = float(vr)/1000
+        pr = int(pr)
+
+        values = vl, pl, vr, pr
+
+        # Write the values to a CSV file
+        with open("output.csv", "a") as csvfile:
+            writer = csv.writer(csvfile)
+            writer.writerow(values)
+
+
 def follow_line(frame, serial):
     low_b = np.uint8([5, 5, 5])
     high_b = np.uint8([0, 0, 0])
-    mask = cv2.inRange(high_b, low_b)
+    mask = cv2.inRange(frame, high_b, low_b)
     contours, hierarchy = cv2.findContours(mask, 1, cv2.CHAIN_APPROX_NONE)
     if len(contours) > 0:
         c = max(contours, key=cv2.contourArea)
@@ -82,14 +100,15 @@ class Application(tk.Frame):
         self.camera_label.grid(row=0, column=1, sticky="nsew")
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
-
-        fig, ax = plt.subplots(2, 2, figsize=(7, 8))
-
-        self.fig_canvas = FigureCanvasTkAgg(fig, self)
-        self.fig_canvas.get_tk_widget().grid(row=0, column=2, columnspan=3, sticky="w")
-
         self.cap = cv2.VideoCapture(0)
-        self.ax = ax
+
+        # plot widget
+        # fig, ax = plt.subplots(2, 2, figsize=(7, 8))
+
+        # self.fig_canvas = FigureCanvasTkAgg(fig, self)
+        # self.fig_canvas.get_tk_widget().grid(row=0, column=2, columnspan=3, sticky="w")
+
+        # self.ax = ax
 
         # left wheel buttons
 
@@ -137,10 +156,11 @@ class Application(tk.Frame):
         ret, frame = self.cap.read()
         self.frame = frame
         frame_going_to_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-        image = Image.fromarray(frame)
+        image = Image.fromarray(frame_going_to_image)
         image = ImageTk.PhotoImage(image)
         self.camera_label.configure(image=image)
         self.camera_label.image = image
+
         self.after(30, self.update_camera)
 
     def update_graph(self, num):
@@ -181,29 +201,15 @@ class Application(tk.Frame):
     def main_program(self):
         # follow_line(self.frame, self.ser)
 
-        if self.ser.in_waiting:
-            line = self.ser.readline().strip().decode()
-            # print(line)
-            values = line.split(",")
-            if len(values) == 4:
-                vl, pl, vr, pr = values
-                vl = float(vl)/1000
-                pl = int(pl)
-                vr = float(vr)/1000
-                pr = int(pr)
-
-                values = vl, pl, vr, pr
-
-                # Write the values to a CSV file
-                with open("output.csv", "a") as csvfile:
-                    writer = csv.writer(csvfile)
-                    writer.writerow(values)
+        # if self.ser.in_waiting:
+        #     line = self.ser.readline().strip().decode()
+        #     write_values_to_csv(line)
+        print("test")
 
     def start(self):
         self.update_camera()
         # self.ani = animation.FuncAnimation(
         #     self.fig_canvas.figure, self.update_graph, interval=30)
-        # send command continuously every 1000 ms (1 second)
         self.after(30, self.main_program_continuously)
         self.mainloop()
 
