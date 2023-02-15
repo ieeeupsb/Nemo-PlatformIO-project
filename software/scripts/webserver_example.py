@@ -90,6 +90,8 @@ def follow_line(frame):
             print("linear speed" + str(linear_speed) +
                   " angular speed" + str(angular_speed))
 
+    print("no line")
+
     return command
 
 
