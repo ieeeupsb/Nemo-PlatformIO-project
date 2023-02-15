@@ -203,12 +203,11 @@ class Application(tk.Frame):
         self.fig_canvas.draw()
 
     def main_program(self):
-        # follow_line(self.frame, self.ser)
+        follow_line(self.frame, self.ser)
 
         # if self.ser.in_waiting:
         #     line = self.ser.readline().strip().decode()
         #     write_values_to_csv(line)
-        print("test")
 
     def start(self):
         self.update_camera()
