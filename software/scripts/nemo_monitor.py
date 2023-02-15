@@ -20,8 +20,8 @@ def create_command(x, y, v, w):
     return "x:" + str(x) + ";y:" + str(y) + ";v:"+str(v) + ";w:" + str(w)
 
 
-def send_speed_command(ser, v, w):
-    send_command(ser, create_command(0, 0, v*3846, w*3846))
+def create_speed_command(v, w):
+    create_command(0, 0, v*3846, w*3846)
 
 
 def write_values_to_csv(line):
@@ -42,7 +42,7 @@ def write_values_to_csv(line):
             writer.writerow(values)
 
 
-def follow_line(frame, serial):
+def follow_line(frame):
     linear_speed = 0.2
 
     low_b = np.uint8([5, 5, 5])
@@ -58,14 +58,14 @@ def follow_line(frame, serial):
             print("CX : "+str(cx)+"  CY : "+str(cy))
             if cx >= 120:
                 print("Turn Left")
-                send_speed_command(serial, linear_speed, -0.2)
+                command = create_speed_command(serial, linear_speed, -0.2)
             if cx < 120 and cx > 40:
                 print("On Track!")
-                send_speed_command(serial, linear_speed, 0)
+                command = create_speed_command(serial, linear_speed, 0)
 
             if cx <= 40:
                 print("Turn Right")
-                send_speed_command(serial, linear_speed, 0.2)
+                command = create_speed_command(serial, linear_speed, 0.2)
 
             cv2.circle(frame, (cx, cy), 5, (255, 255, 255), -1)
     else:
@@ -74,7 +74,7 @@ def follow_line(frame, serial):
 
     command = create_command(0, 0, 1, 0)
 
-    send_command(serial, command)
+    return command
 
 
 class Application(tk.Frame):
