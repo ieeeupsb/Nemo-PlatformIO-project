@@ -201,8 +201,8 @@ class Application(tk.Frame):
 
     def start(self):
         self.update_camera()
-        self.ani = animation.FuncAnimation(
-            self.fig_canvas.figure, self.update_graph, interval=30)
+        # self.ani = animation.FuncAnimation(
+        #     self.fig_canvas.figure, self.update_graph, interval=30)
         # send command continuously every 1000 ms (1 second)
         self.after(30, self.main_program_continuously)
         self.mainloop()
