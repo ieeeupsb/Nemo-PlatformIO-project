@@ -145,4 +145,4 @@ if __name__ == '__main__':
 
         frame_queue.put(last_frame)  # Put the new frame in the queue
         command = follow_line(last_frame)
-        send_command(command)
+        send_command(ser, command)
