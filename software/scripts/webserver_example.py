@@ -66,6 +66,7 @@ def follow_line(frame):
     high_b = np.uint8([0, 0, 0])
     mask = cv2.inRange(frame, high_b, low_b)
     contours, hierarchy = cv2.findContours(mask, 1, cv2.CHAIN_APPROX_NONE)
+
     if len(contours) > 0:
         c = max(contours, key=cv2.contourArea)
         M = cv2.moments(c)
@@ -99,8 +100,8 @@ def read_frames():
             last_frame = frame
 
         frame_queue.put(last_frame)  # Put the new frame in the queue
-        command_queue.put(follow_line(last_frame))
-        print("getting commands")
+        command = follow_line(last_frame)
+        command_queue.put(command)
         time.sleep(0.020)
 
 
@@ -113,31 +114,8 @@ def follow_line_and_send_command():
         print("sending commands\n\n\n\n")
 
 
-def generate():
-    while True:
-        ret, buffer = cv2.imencode('.jpg', frame=frame_queue.get())
-        frame = buffer.tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-
-def live_cam():
-
-    generate_thread = threading.Thread(target=generate())
-    generate_thread.start()
-    generate_thread.join()
-
-
-@ app.route('/video_feed')
-def video_feed():
-    return Response(live_cam(),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
-
-
 # Run the web application
 if __name__ == '__main__':
-
-    # app.run(host='0.0.0.0', port=5000, debug=True)
 
     time.sleep(1)
     command = create_command(1, 0.1, 1, 0)
@@ -159,4 +137,3 @@ if __name__ == '__main__':
     # Wait for the threads to finish (which they never will, because they run indefinitely)
     generate_commands_thread.join()
     send_commands_thread.join()
-    # follow_thread.join()
