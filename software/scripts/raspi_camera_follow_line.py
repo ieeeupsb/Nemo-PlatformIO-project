@@ -4,6 +4,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 from nemo_commands import send_command, create_command, create_speed_command
+import serial
 
 
 def follow_line(frame):
