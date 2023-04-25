@@ -100,9 +100,11 @@ class MotorController {
         motor_pid_.SetSampleTime(sample_time);
     }
 
-    void forcePwm(int pwm) {
+    int forcePwm(int pwm) {
         is_pid_controller_enable_ = false;
         driver_controller_.setPwm(pwm);
+
+        return pwm;
     }
 
     void setTargetSpeed(double target_speed) {
