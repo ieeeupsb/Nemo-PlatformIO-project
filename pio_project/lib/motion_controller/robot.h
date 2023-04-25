@@ -75,11 +75,6 @@ class Robot {
         encoder_counter_left_ = 0;
         encoder_counter_right_ = 0;
 
-        // Serial.print("left_speed_read_");
-        // Serial.println(left_speed_read_);
-        // Serial.print("right_speed_read_");
-        // Serial.println(right_speed_read_);
-
         wheels_speed_t wheels_current_speed;
 
         wheels_current_speed.left_wheel_speed = left_speed_read_;
@@ -119,6 +114,8 @@ class Robot {
     wheels_speed_t velocities_generator(double v, double w) {
 
         wheels_speed_t generate_speeds;
+
+        // v = v * 3846;
 
         generate_speeds.left_wheel_speed = v - (w * WHEEL_BASE) / 2;
         generate_speeds.right_wheel_speed = v + (w * WHEEL_BASE) / 2;
